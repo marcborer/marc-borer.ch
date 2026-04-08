@@ -58,4 +58,6 @@ npm run preview  # preview the build locally
 
 Automatically deployed to GitHub Pages via GitHub Actions on push to `main`.
 
+[![Deploy to GitHub Pages](https://github.com/marcborer/marc-borer.ch/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/marcborer/marc-borer.ch/actions/workflows/deploy.yml)
+
 Site: [marc-borer.ch](https://marc-borer.ch)
