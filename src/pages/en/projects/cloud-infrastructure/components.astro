@@ -1,0 +1,10 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import { Content, frontmatter } from '../../../../content/projects/cloud-infrastructure/components.md';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['cloud-infrastructure'];
+---
+
+<DocLayout title={`${frontmatter.title} — Cloud Infrastructure`} description={frontmatter.description} sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <Content />
+</DocLayout>

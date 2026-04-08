@@ -1,0 +1,213 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import TechBadge from '../../../../components/TechBadge.astro';
+import CicdArchitectureDiagram from '../../../../components/diagrams/CicdArchitectureDiagram.astro';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['cicd-automation'];
+
+const tech = ['Ansible', 'Bamboo', 'Azure', 'Python', 'Bash', 'PowerShell', 'Elasticsearch', 'HAProxy', 'Redis', 'RabbitMQ', 'Active Directory', 'Hyper-V'];
+---
+
+<DocLayout title="Enterprise SaaS Platform — CI/CD & Infrastructure Automation — Marc Borer" ogImage="/og/cicd-automation.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <article class="case-study">
+    <a href="/en/projects/" class="back-link">
+      <span aria-hidden="true">&larr;</span> Back to Projects
+    </a>
+
+    <header class="case-header" data-animate="slide-up">
+      <h1 class="case-title">Enterprise SaaS Platform — CI/CD & Infrastructure Automation</h1>
+      <p class="case-subtitle">Infrastructure-as-Code and deployment automation for an enterprise SaaS platform</p>
+      <div class="case-tech">
+        {tech.map((t) => <TechBadge name={t} />)}
+      </div>
+      <p class="case-meta">IT Operations Manager — May 2014 – Dec 2017</p>
+    </header>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Overview</h2>
+      <p>
+        Member of the IT Operations team at an international SaaS provider for an enterprise
+        Digital Asset Management (DAM) platform. Responsible for development and operation of
+        the platform infrastructure and customer-specific implementations across multi-server
+        environments.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>My Role</h2>
+      <p>
+        IT Operations Manager — conceived and built the CI/CD pipeline from the ground up.
+        Designed the Ansible role architecture, integrated cloud providers and Azure as deployment
+        targets, managed CI/CD pipeline configuration, and led enterprise customer
+        implementations on multi-server environments.
+      </p>
+    </section>
+
+    <CicdArchitectureDiagram />
+
+    <!-- Project 1: CI/CD Pipeline -->
+    <section class="case-section project-section">
+      <h2>CI/CD Pipeline & Infrastructure Automation</h2>
+      <p class="project-tagline">Infrastructure-as-Code platform for reproducible multi-environment deployments</p>
+
+      <h3>Problem</h3>
+      <p>
+        The platform required complex multi-tier infrastructure — Elasticsearch clusters, Redis
+        caches, RabbitMQ messaging, HAProxy load balancing, Windows application servers, and
+        rendering services — all deployed across multiple environments. Deployments were manual,
+        error-prone, and time-consuming. Environment parity was impossible to maintain by hand.
+      </p>
+
+      <h3>What Was Built</h3>
+      <ul class="feature-list">
+        <li><strong>CI/CD integration</strong> — Orchestration scripts triggered by the CI/CD platform with environment-specific parameters</li>
+        <li><strong>VM provisioning</strong> — Python API client managing VM lifecycle (create, clone, snapshot, start/stop) across cloud providers and Azure</li>
+        <li><strong>Ansible automation</strong> — 30+ reusable roles for Elasticsearch, Redis, RabbitMQ, HAProxy, Keepalived, ELK, Nagios, and application services</li>
+        <li><strong>Multi-service deployment</strong> — Automated installation of a microservice architecture with 11+ services</li>
+        <li><strong>Snapshot-based testing</strong> — Hyper-V snapshot management for rapid environment resets in minutes instead of hours</li>
+        <li><strong>Metrics-driven deployments</strong> — Deployment timing pushed to Graphite for Grafana dashboards to optimize the slowest stages</li>
+        <li><strong>Automated testing</strong> — xUnit test runners with tenant provisioning, test data generation, and result aggregation</li>
+      </ul>
+
+      <h3>Environments</h3>
+      <ul class="feature-list">
+        <li><strong>QA (x5)</strong> — Five parallel QA environments for concurrent testing</li>
+        <li><strong>Development</strong> — Development environment</li>
+        <li><strong>Test</strong> — Dual-instance load-balanced testing</li>
+        <li><strong>Staging</strong> — Staging with multi-tenant customer configurations</li>
+        <li><strong>Production</strong> — Cloud production environment</li>
+      </ul>
+    </section>
+
+    <!-- Project 2: Customer Implementations -->
+    <section class="case-section project-section">
+      <h2>Enterprise Customer Implementations</h2>
+      <p class="project-tagline">Technical lead for platform deployments at enterprise customers</p>
+
+      <h3>What Was Done</h3>
+      <ul class="feature-list">
+        <li><strong>Multi-server deployments</strong> — Led installation and configuration of the SaaS platform at enterprise customers on complex multi-server environments</li>
+        <li><strong>Environment architecture</strong> — Designed server topologies tailored to customer scale and requirements (application servers, search clusters, load balancers, storage)</li>
+        <li><strong>Multi-tenant provisioning</strong> — Automated tenant creation with per-environment credentials managed via Ansible Vault</li>
+        <li><strong>Security</strong> — Active Directory domain integration, Kerberos authentication, SSL certificate management, encrypted secrets</li>
+      </ul>
+    </section>
+
+  </article>
+</DocLayout>
+
+<style>
+  .case-study {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-8);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .case-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-meta {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .case-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .project-section {
+    padding-top: var(--space-8);
+    border-top: none;
+    border-image: linear-gradient(to right, transparent, var(--color-accent-subtle), var(--color-accent), var(--color-accent-subtle), transparent) 1;
+    border-image-width: 1px 0 0 0;
+  }
+
+  .case-section h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .project-tagline {
+    font-size: var(--text-base);
+    color: var(--color-accent);
+    font-weight: 500;
+    margin-bottom: var(--space-6);
+  }
+
+  .case-section h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .case-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: var(--space-4);
+  }
+
+  .feature-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-list li strong {
+    color: var(--color-text-heading);
+  }
+</style>

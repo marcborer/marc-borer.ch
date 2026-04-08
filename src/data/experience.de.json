@@ -1,0 +1,46 @@
+[
+  {
+    "date": "Mär 2019 — Heute",
+    "title": "Senior ICT Systems Architect",
+    "company": "CTC Analytics AG, Zwingen",
+    "description": [
+      "Verantwortung für Zielarchitektur und Modernisierungsstrategie der gesamten Microsoft Cloud- und Hybrid-Infrastruktur eines internationalen Industrieunternehmens",
+      "Architekturentscheid und Umsetzung der unternehmensweiten Kommunikationsmigration (Exchange Online, Teams Direct Routing) — vollständige Migration ohne Ausfallzeit",
+      "Entwurf und Aufbau einer automatisierten Endpoint-Compliance- und BIOS-Lifecycle-Plattform mit ringbasiertem Rollout und unternehmensweiter Compliance-Sichtbarkeit",
+      "Konzeption der hybriden Identity-Architektur und User-Lifecycle-Automatisierung — abteilungsübergreifende Abstimmung mit HR, IT und Geschäftsleitung",
+      "Architektur und Einführung einer zentralen SIEM-Plattform (Elastic Stack) für Echtzeit-Bedrohungserkennung und standortübergreifende Korrelation"
+    ],
+    "projectLink": "/projects/"
+  },
+  {
+    "date": "Jan 2018 — Feb 2019",
+    "title": "Sabbatical",
+    "company": null,
+    "description": [
+      "Persönliche Auszeit"
+    ],
+    "projectLink": null
+  },
+  {
+    "date": "Mai 2014 — Dez 2017",
+    "title": "IT Operations Manager",
+    "company": "Picturepark / Vision Information Transaction AG, Aarau",
+    "description": [
+      "CI/CD-Pipeline und Infrastrukturautomatisierung für eine Enterprise SaaS-Plattform",
+      "Aufbau einer Infrastructure-as-Code-Plattform mit Ansible und Bamboo für reproduzierbare Multi-Umgebungs-Deployments",
+      "Integration von Cloud-Providern und Azure als Deployment-Ziele mit Snapshot-basiertem Testing",
+      "Leitung der technischen Implementierung bei Enterprise-Kunden auf Multi-Server-Umgebungen"
+    ],
+    "projectLink": "/projects/cicd-automation/"
+  },
+  {
+    "date": "2010 — 2014",
+    "title": "Informatiker EFZ — Systemtechnik",
+    "company": "Wirtschaftsinformatikschule, Zürich",
+    "description": [
+      "Eidgenössisches Fähigkeitszeugnis (EFZ) als Informatiker",
+      "Fachrichtung Systemtechnik"
+    ],
+    "projectLink": null
+  }
+]

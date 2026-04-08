@@ -1,0 +1,46 @@
+[
+  {
+    "date": "Mar 2019 — Present",
+    "title": "Senior ICT Systems Architect",
+    "company": "CTC Analytics AG, Zwingen",
+    "description": [
+      "Ownership of target architecture and modernization strategy for the entire Microsoft Cloud and Hybrid infrastructure at an international industrial company",
+      "Architectural decision-making and delivery of the enterprise-wide communications migration (Exchange Online, Teams Direct Routing) — complete migration with zero downtime",
+      "Designed and built an automated endpoint compliance and BIOS lifecycle platform with ring-based rollout and enterprise-wide compliance visibility",
+      "Designed the hybrid identity architecture and user lifecycle automation — cross-departmental alignment with HR, IT, and executive management",
+      "Architected and deployed a centralized SIEM platform (Elastic Stack) for real-time threat detection and cross-site correlation"
+    ],
+    "projectLink": "/projects/"
+  },
+  {
+    "date": "Jan 2018 — Feb 2019",
+    "title": "Sabbatical",
+    "company": null,
+    "description": [
+      "Personal time off"
+    ],
+    "projectLink": null
+  },
+  {
+    "date": "May 2014 — Dec 2017",
+    "title": "IT Operations Manager",
+    "company": "Picturepark / Vision Information Transaction AG, Aarau",
+    "description": [
+      "CI/CD pipeline and infrastructure automation for an enterprise SaaS platform",
+      "Built an Infrastructure-as-Code platform with Ansible and Bamboo for reproducible multi-environment deployments",
+      "Integrated cloud providers and Azure as deployment targets with snapshot-based testing",
+      "Led technical implementation at enterprise customers on multi-server environments"
+    ],
+    "projectLink": "/projects/cicd-automation/"
+  },
+  {
+    "date": "2010 — 2014",
+    "title": "Informatiker EFZ — Systemtechnik",
+    "company": "Wirtschaftsinformatikschule, Zurich",
+    "description": [
+      "Federal Diploma of Vocational Education and Training (EFZ) in IT",
+      "Specialization in systems engineering"
+    ],
+    "projectLink": null
+  }
+]

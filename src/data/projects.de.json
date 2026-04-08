@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Enterprise Cloud & Hybrid Infrastructure",
+    "description": "Unternehmensweite Infrastrukturmodernisierung: Cloud-Migration einer Messaging- und Telefonie-Plattform, automatisierte Endpoint-Compliance-Plattform, hybride Identity Lifecycle Automation und zentrale Log-Aggregation mit Elastic Stack.",
+    "tech": ["Exchange Online", "Microsoft Teams", "Direct Routing", "Microsoft Intune", "PowerShell", "Azure AD", "Elastic Stack"],
+    "link": "/projects/cloud-infrastructure/"
+  },
+  {
+    "title": "Enterprise SaaS Platform — CI/CD",
+    "description": "Infrastructure-as-Code und Deployment-Automatisierung für eine Enterprise SaaS-Plattform. Aufbau einer CI/CD-Pipeline für reproduzierbare Multi-Umgebungs-Deployments, Leitung von Enterprise-Kundenimplementierungen.",
+    "tech": ["Ansible", "Bamboo", "Azure", "Python", "Elasticsearch", "HAProxy"],
+    "link": "/projects/cicd-automation/"
+  },
+  {
+    "title": "SmallCapTrader",
+    "description": "Full-Stack algorithmische Handelsplattform mit mehreren integrierten Strategien, einer Beam Search Rule-Mining-Engine zur automatisierten Strategieentdeckung und Live-Promotion, und Dual-Mode-Architektur (monolithisch/sharded) mit Multi-Broker-Ausführung.",
+    "tech": ["Python", "FastAPI", "Next.js", "React", "TypeScript", "PostgreSQL", "QuestDB", "Redis", "Docker"],
+    "link": "/projects/smallcaptrader/"
+  }
+]

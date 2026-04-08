@@ -1,0 +1,219 @@
+---
+import DocLayout from '../../../layouts/DocLayout.astro';
+import TechBadge from '../../../components/TechBadge.astro';
+import CicdArchitectureDiagram from '../../../components/diagrams/CicdArchitectureDiagram.astro';
+import docNavs from '../../../data/doc-navs.de.json';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const t = useTranslations(lang);
+const nav = docNavs['cicd-automation'];
+
+const tech = ['Ansible', 'Bamboo', 'Azure', 'Python', 'Bash', 'PowerShell', 'Elasticsearch', 'HAProxy', 'Redis', 'RabbitMQ', 'Active Directory', 'Hyper-V'];
+---
+
+<DocLayout title="Enterprise SaaS Platform — CI/CD & Infrastructure Automation — Marc Borer" ogImage="/og/cicd-automation.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <article class="case-study">
+    <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
+      <span aria-hidden="true">&larr;</span> {t('projects.backToProjects')}
+    </a>
+
+    <header class="case-header" data-animate="slide-up">
+      <h1 class="case-title">Enterprise SaaS Platform — CI/CD & Infrastructure Automation</h1>
+      <p class="case-subtitle">Infrastructure-as-Code und Deployment-Automatisierung für eine Enterprise SaaS-Plattform</p>
+      <div class="case-tech">
+        {tech.map((t) => <TechBadge name={t} />)}
+      </div>
+      <p class="case-meta">IT Operations Manager — Mai 2014 – Dez. 2017</p>
+    </header>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Übersicht</h2>
+      <p>
+        Mitglied des IT Operations-Teams bei einem internationalen SaaS-Anbieter für eine
+        Enterprise Digital Asset Management (DAM)-Plattform. Verantwortlich für Entwicklung und
+        Betrieb der Plattforminfrastruktur und kundenspezifische Implementierungen über
+        Multi-Server-Umgebungen.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Meine Rolle</h2>
+      <p>
+        IT Operations Manager — Konzeption und Aufbau der CI/CD-Pipeline von Grund auf.
+        Entwurf der Ansible-Rollenarchitektur, Integration von Cloud- und Azure-Providern als
+        Deployment-Ziele, Verwaltung der CI/CD-Pipeline-Konfiguration und Leitung von
+        Enterprise-Kundenimplementierungen auf Multi-Server-Umgebungen.
+      </p>
+    </section>
+
+    <CicdArchitectureDiagram />
+
+    <!-- Project 1: CI/CD Pipeline -->
+    <section class="case-section project-section">
+      <h2>CI/CD-Pipeline & Infrastrukturautomatisierung</h2>
+      <p class="project-tagline">Infrastructure-as-Code-Plattform für reproduzierbare Multi-Umgebungs-Deployments</p>
+
+      <h3>Problem</h3>
+      <p>
+        Die Plattform erforderte komplexe Multi-Tier-Infrastruktur — Elasticsearch-Cluster, Redis-Caches,
+        RabbitMQ-Messaging, HAProxy Load Balancing, Windows Application Server und Rendering-Services —
+        alles verteilt über mehrere Umgebungen. Deployments waren manuell, fehleranfällig und zeitaufwändig.
+        Umgebungsparität war manuell nicht aufrechtzuerhalten.
+      </p>
+
+      <h3>Entwickelte Lösung</h3>
+      <ul class="feature-list">
+        <li><strong>CI/CD-Integration</strong> — Orchestrierungsscripts ausgelöst durch die CI/CD-Plattform mit umgebungsspezifischen Parametern</li>
+        <li><strong>VM-Provisionierung</strong> — Python API-Client zur Verwaltung des VM-Lebenszyklus (Erstellen, Klonen, Snapshot, Start/Stopp) über Cloud-Provider und Azure</li>
+        <li><strong>Ansible-Automatisierung</strong> — 30+ wiederverwendbare Roles für Elasticsearch, Redis, RabbitMQ, HAProxy, Keepalived, ELK, Nagios und Applikations-Services</li>
+        <li><strong>Multi-Service-Deployment</strong> — Automatisierte Installation einer Microservice-Architektur mit 11+ Services</li>
+        <li><strong>Snapshot-basiertes Testen</strong> — Hyper-V Snapshot-Management für schnelle Umgebungsresets in Minuten statt Stunden</li>
+        <li><strong>Metrikgesteuerte Deployments</strong> — Deployment-Zeiten an Graphite für Grafana-Dashboards zur Optimierung der langsamsten Phasen</li>
+        <li><strong>Automatisiertes Testen</strong> — xUnit-Testrunner mit Mandantenbereitstellung, Testdatengenerierung und Ergebnisaggregation</li>
+      </ul>
+
+      <h3>Umgebungen</h3>
+      <ul class="feature-list">
+        <li><strong>QA (x5)</strong> — Fünf parallele QA-Umgebungen für gleichzeitiges Testen</li>
+        <li><strong>Development</strong> — Entwicklungsumgebung</li>
+        <li><strong>Test</strong> — Dual-Instance Load-Balanced Testing</li>
+        <li><strong>Staging</strong> — Staging mit Multi-Tenant-Kundenkonfigurationen</li>
+        <li><strong>Production</strong> — Cloud-Produktionsumgebung</li>
+      </ul>
+    </section>
+
+    <!-- Project 2: Customer Implementations -->
+    <section class="case-section project-section">
+      <h2>Enterprise-Kundenimplementierungen</h2>
+      <p class="project-tagline">Technische Leitung für Plattform-Deployments bei Enterprise-Kunden</p>
+
+      <h3>Durchgeführte Arbeiten</h3>
+      <ul class="feature-list">
+        <li><strong>Multi-Server-Deployments</strong> — Leitung der Installation und Konfiguration der SaaS-Plattform bei Enterprise-Kunden auf komplexen Multi-Server-Umgebungen</li>
+        <li><strong>Umgebungsarchitektur</strong> — Entwurf von Servertopologien, zugeschnitten auf Kundengrösse und Anforderungen (Application Server, Search Cluster, Load Balancer, Storage)</li>
+        <li><strong>Multi-Tenant-Bereitstellung</strong> — Automatisierte Mandanten-Erstellung mit umgebungsspezifischen Credentials, verwaltet via Ansible Vault</li>
+        <li><strong>Sicherheit</strong> — Active Directory Domain-Integration, Kerberos-Authentifizierung, SSL-Zertifikatsverwaltung, verschlüsselte Secrets</li>
+      </ul>
+    </section>
+
+  </article>
+</DocLayout>
+
+<style>
+  .case-study {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-8);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .case-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-meta {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .case-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .project-section {
+    padding-top: var(--space-8);
+    border-top: none;
+    border-image: linear-gradient(to right, transparent, var(--color-accent-subtle), var(--color-accent), var(--color-accent-subtle), transparent) 1;
+    border-image-width: 1px 0 0 0;
+  }
+
+  .case-section h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .project-tagline {
+    font-size: var(--text-base);
+    color: var(--color-accent);
+    font-weight: 500;
+    margin-bottom: var(--space-6);
+  }
+
+  .case-section h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .case-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: var(--space-4);
+  }
+
+  .feature-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-list li strong {
+    color: var(--color-text-heading);
+  }
+</style>

@@ -1,0 +1,148 @@
+---
+import { useTranslations } from '../i18n/utils';
+import type { Lang } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const isDE = lang === 'de';
+---
+
+<div id="cookie-consent" class="cookie-banner" role="dialog" aria-label={isDE ? 'Cookie-Einstellungen' : 'Cookie settings'} hidden>
+  <div class="cookie-inner">
+    <p class="cookie-text">
+      {isDE
+        ? <>Diese Website verwendet Cookies für Analysen (Google Analytics). Ihre Daten werden anonymisiert verarbeitet. <a href="/datenschutz" class="cookie-link">Mehr erfahren</a></>
+        : <>This website uses cookies for analytics (Google Analytics). Your data is processed anonymously. <a href="/en/privacy" class="cookie-link">Learn more</a></>}
+    </p>
+    <div class="cookie-actions">
+      <button id="cookie-accept" class="cookie-btn cookie-btn--accept">
+        {isDE ? 'Akzeptieren' : 'Accept'}
+      </button>
+      <button id="cookie-decline" class="cookie-btn cookie-btn--decline">
+        {isDE ? 'Ablehnen' : 'Decline'}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initConsent() {
+    const banner = document.getElementById('cookie-consent');
+    const acceptBtn = document.getElementById('cookie-accept');
+    const declineBtn = document.getElementById('cookie-decline');
+    if (!banner || !acceptBtn || !declineBtn) return;
+
+    try {
+      const consent = localStorage.getItem('cookie-consent');
+      if (consent) return; // already decided
+    } catch(e) {}
+
+    banner.hidden = false;
+
+    acceptBtn.addEventListener('click', () => {
+      try { localStorage.setItem('cookie-consent', 'accepted'); } catch(e) {}
+      banner.hidden = true;
+      if (typeof (window as any).loadGA === 'function') (window as any).loadGA();
+    });
+
+    declineBtn.addEventListener('click', () => {
+      try { localStorage.setItem('cookie-consent', 'declined'); } catch(e) {}
+      banner.hidden = true;
+    });
+  }
+
+  initConsent();
+  document.addEventListener('astro:page-load', initConsent);
+</script>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .cookie-inner {
+    max-width: 90rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  .cookie-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .cookie-link {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .cookie-link:hover {
+    text-decoration: underline;
+  }
+
+  .cookie-actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-shrink: 0;
+  }
+
+  .cookie-btn {
+    padding: var(--space-2) var(--space-5);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .cookie-btn--accept {
+    background-color: var(--color-accent);
+    color: var(--slate-950);
+    border-color: var(--color-accent);
+  }
+
+  .cookie-btn--accept:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .cookie-btn--decline {
+    background-color: transparent;
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+  }
+
+  .cookie-btn--decline:hover {
+    border-color: var(--color-text-secondary);
+    color: var(--color-text-primary);
+  }
+
+  @media (max-width: 768px) {
+    .cookie-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .cookie-actions {
+      width: 100%;
+    }
+
+    .cookie-btn {
+      flex: 1;
+    }
+  }
+</style>

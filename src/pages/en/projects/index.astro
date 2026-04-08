@@ -1,0 +1,60 @@
+---
+import PageLayout from '../../../layouts/PageLayout.astro';
+import ProjectCard from '../../../components/ProjectCard.astro';
+import projects from '../../../data/projects.en.json';
+---
+
+<PageLayout title="Projects — Marc Borer" description="Selected projects by Marc Borer — enterprise cloud infrastructure, CI/CD automation, and algorithmic trading platforms." ogImage="/og/projects.png">
+  <section class="projects-page">
+    <h1 class="page-title" data-animate="slide-up">Projects</h1>
+    <p class="page-intro" data-animate="slide-up" data-delay="100">
+      A selection of engineering projects I have built — from enterprise automation
+      tooling to full-stack trading platforms.
+    </p>
+
+    <div class="projects-grid">
+      {projects.map((project, index) => (
+        <div data-animate="slide-up" data-delay={String(200 + index * 150)}>
+          <ProjectCard
+            title={project.title}
+            description={project.description}
+            tech={project.tech}
+            link={project.link}
+            repo={project.repo}
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .projects-page {
+    padding: var(--space-16) 0;
+  }
+
+  .page-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-intro {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 50rem;
+    margin-bottom: var(--space-12);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

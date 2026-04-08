@@ -1,0 +1,84 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+---
+
+<PageLayout title="Impressum">
+  <section class="legal">
+    <h1>Impressum</h1>
+
+    <h2>Kontakt</h2>
+    <address>
+      Marc Borer<br />
+      Hirzengarten 2<br />
+      4226 Breitenbach<br />
+      Schweiz
+    </address>
+    <p>E-Mail: <a href="mailto:mb@marc-borer.ch">mb@marc-borer.ch</a></p>
+
+    <h2>Verantwortlich für den Inhalt</h2>
+    <p>Marc Borer, an der oben genannten Adresse.</p>
+
+    <h2>Haftungsausschluss</h2>
+    <p>
+      Der Autor übernimmt keine Gewähr für die Richtigkeit, Genauigkeit, Aktualität,
+      Zuverlässigkeit und Vollständigkeit der Informationen auf dieser Website.
+    </p>
+    <p>
+      Haftungsansprüche gegen den Autor wegen Schäden materieller oder immaterieller Art,
+      die aus dem Zugriff oder der Nutzung bzw. Nichtnutzung der veröffentlichten Informationen
+      entstanden sind, werden ausgeschlossen.
+    </p>
+
+    <h2>Haftung für Links</h2>
+    <p>
+      Verweise und Links auf Websites Dritter liegen ausserhalb unseres Verantwortungsbereichs.
+      Jegliche Verantwortung für solche Websites wird abgelehnt. Der Zugriff und die Nutzung
+      solcher Websites erfolgen auf eigene Gefahr des jeweiligen Nutzers.
+    </p>
+
+    <h2>Urheberrechte</h2>
+    <p>
+      Die Urheber- und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen Dateien
+      auf dieser Website gehören ausschliesslich Marc Borer oder den speziell genannten
+      Rechteinhabern. Für die Reproduktion jeglicher Elemente ist die schriftliche Zustimmung
+      des Urheberrechtsträgers im Voraus einzuholen.
+    </p>
+  </section>
+</PageLayout>
+
+<style>
+  .legal {
+    padding: var(--space-16) 0;
+    max-width: 50rem;
+    margin: 0 auto;
+  }
+
+  .legal h1 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-8);
+  }
+
+  .legal h2 {
+    font-size: var(--text-xl);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+  }
+
+  .legal p,
+  .legal address {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+    font-style: normal;
+  }
+
+  .legal a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .legal a:hover {
+    text-decoration: underline;
+  }
+</style>

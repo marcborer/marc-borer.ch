@@ -1,0 +1,94 @@
+/* ==========================================================================
+   Design Tokens — 2-layer system: primitives + semantic
+   ========================================================================== */
+
+:root {
+  /* ---- Primitives ---- */
+
+  /* Slate scale */
+  --slate-950: #0F172A;
+  --slate-900: #1E293B;
+  --slate-800: #1E293B;
+  --slate-700: #334155;
+  --slate-400: #94A3B8;
+  --slate-200: #E2E8F0;
+  --slate-50:  #F8FAFC;
+
+  /* Cyan */
+  --cyan-400: #22D3EE;
+  --cyan-600: #0891B2;
+
+  /* Amber */
+  --amber-400: #FBBF24;
+
+  /* Spacing */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Radii */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-full: 9999px;
+
+  /* ---- Semantic tokens (dark-first) ---- */
+  --color-bg-primary:    var(--slate-950);
+  --color-bg-secondary:  var(--slate-900);
+  --color-bg-elevated:   var(--slate-800);
+
+  --color-text-primary:   var(--slate-200);
+  --color-text-secondary: var(--slate-400);
+  --color-text-heading:   #FFFFFF;
+
+  --color-border: var(--slate-800);
+
+  --color-accent:        var(--cyan-400);
+  --color-accent-hover:  var(--cyan-600);
+  --color-accent-subtle: rgba(34, 211, 238, 0.1);
+}
+
+/* ---- Light theme (explicit) ---- */
+[data-theme="light"] {
+  --color-bg-primary:    var(--slate-50);
+  --color-bg-secondary:  #FFFFFF;
+  --color-bg-elevated:   #FFFFFF;
+
+  --color-text-primary:   var(--slate-900);
+  --color-text-secondary: var(--slate-400);
+  --color-text-heading:   var(--slate-950);
+
+  --color-border: var(--slate-200);
+
+  --color-accent:        var(--cyan-600);
+  --color-accent-hover:  var(--cyan-400);
+  --color-accent-subtle: rgba(8, 145, 178, 0.08);
+}
+
+/* ---- Auto light (no explicit theme set) ---- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-bg-primary:    var(--slate-50);
+    --color-bg-secondary:  #FFFFFF;
+    --color-bg-elevated:   #FFFFFF;
+
+    --color-text-primary:   var(--slate-900);
+    --color-text-secondary: var(--slate-400);
+    --color-text-heading:   var(--slate-950);
+
+    --color-border: var(--slate-200);
+
+    --color-accent:        var(--cyan-600);
+    --color-accent-hover:  var(--cyan-400);
+    --color-accent-subtle: rgba(8, 145, 178, 0.08);
+  }
+}

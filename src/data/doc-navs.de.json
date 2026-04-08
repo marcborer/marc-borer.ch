@@ -1,0 +1,26 @@
+{
+  "cicd-automation": {
+    "title": "SaaS Platform CI/CD",
+    "items": [
+      { "label": "Übersicht", "href": "/projects/cicd-automation" },
+      { "label": "Architektur", "href": "/projects/cicd-automation/architecture" },
+      { "label": "Komponentenreferenz", "href": "/projects/cicd-automation/components" }
+    ]
+  },
+  "cloud-infrastructure": {
+    "title": "Cloud Infrastructure",
+    "items": [
+      { "label": "Übersicht", "href": "/projects/cloud-infrastructure" },
+      { "label": "Architektur", "href": "/projects/cloud-infrastructure/architecture" },
+      { "label": "Komponentenreferenz", "href": "/projects/cloud-infrastructure/components" }
+    ]
+  },
+  "smallcaptrader": {
+    "title": "SmallCapTrader",
+    "items": [
+      { "label": "Übersicht", "href": "/projects/smallcaptrader" },
+      { "label": "Architektur", "href": "/projects/smallcaptrader/architecture" },
+      { "label": "Komponentenreferenz", "href": "/projects/smallcaptrader/components" }
+    ]
+  }
+}

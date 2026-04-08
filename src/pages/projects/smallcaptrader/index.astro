@@ -1,0 +1,292 @@
+---
+import DocLayout from '../../../layouts/DocLayout.astro';
+import TechBadge from '../../../components/TechBadge.astro';
+import SmallCapTraderDiagram from '../../../components/diagrams/SmallCapTraderDiagram.astro';
+import docNavs from '../../../data/doc-navs.de.json';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const t = useTranslations(lang);
+const nav = docNavs['smallcaptrader'];
+
+const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL', 'QuestDB', 'Redis', 'Docker'];
+---
+
+<DocLayout title="SmallCapTrader — Marc Borer" ogImage="/og/smallcaptrader.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <article class="case-study">
+    <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
+      <span aria-hidden="true">&larr;</span> {t('projects.backToProjects')}
+    </a>
+
+    <header class="case-header" data-animate="slide-up">
+      <h1 class="case-title">SmallCapTrader</h1>
+      <p class="case-subtitle">Algorithmische Handelsplattform für Small-Cap-Aktien</p>
+      <div class="case-tech">
+        {tech.map((t) => <TechBadge name={t} />)}
+      </div>
+      <p class="case-private">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        Privates Repository
+      </p>
+    </header>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Problem</h2>
+      <p>
+        Der Handel mit Small-Cap-Aktien erfordert Echtzeit-Erkennung schnelllebiger Aktien,
+        anspruchsvolle Multi-Strategie-Signal-Arbitrierung und zuverlässige Ausführung über verschiedene Broker.
+        Bestehende Retail-Plattformen bieten entweder nur einfache Indikatoren mit manueller Orderaufgabe
+        oder sperren erweiterte Funktionen hinter institutionellen Preismodellen. Es existiert keine
+        selbstgehostete, vollständige Plattform, die die gesamte Pipeline abdeckt — von Marktdaten-Streaming
+        über automatisierte Strategieentdeckung bis hin zur Live-Ausführung im grossen Massstab.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Ansatz</h2>
+      <p>
+        Entwicklung eines produktionsreifen Handelssystems mit einem Python 3.12+ Async-Backend (FastAPI + Granian)
+        und einem Next.js 16-Frontend. Die Plattform deckt den vollständigen Handelslebenszyklus ab: Echtzeit-Marktdatenaufnahme,
+        mehrere integrierte Handelsstrategien für Momentum-, Pullback-, Breakout- und Volumenmuster,
+        eine automatisierte Rule-Mining-Engine zur Entdeckung und Live-Promotion neuer Strategien,
+        Backtesting mit Parameteroptimierung und Multi-Broker-Ausführung über Alpaca und Interactive Brokers.
+      </p>
+    </section>
+
+    <SmallCapTraderDiagram />
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Architektur</h2>
+      <p>
+        Clean Architecture mit Domain-Driven Design, unterstützt Dual-Mode-Deployment — monolithisch
+        für die Entwicklung und Sharded Microservices für die Produktion. Dieselbe Codebasis wechselt
+        zwischen Modi über einen Konfigurationsparameter ohne Codeänderungen.
+      </p>
+
+      <h3>Monolithischer Modus</h3>
+      <p>
+        Alle Services laufen in einem einzigen Python-Prozess: Marktdaten-Parsing, Handelsstrategien,
+        Positionsüberwachung und Telegram-Benachrichtigungen. Einfaches Deployment, minimale Latenz
+        zwischen Komponenten.
+      </p>
+
+      <h3>Sharded-Modus</h3>
+      <p>
+        Horizontal skalierbare Architektur. Ein Stream Router parst Marktdaten
+        und verteilt sie an Shard Worker via Redis Pub/Sub, partitioniert nach Symbolbereich.
+        Jeder Shard Worker führt alle Strategien unabhängig aus.
+        Ein dedizierter Tick Recorder schreibt alle Marktdaten in QuestDB für Backtest-Replay.
+        Ein zentraler Signal Consumer empfängt validierte Signale von allen Shards und leitet sie
+        zur Broker-Ausführung weiter.
+      </p>
+
+      <h3>Datenschicht</h3>
+      <ul class="feature-list">
+        <li><strong>PostgreSQL + asyncpg</strong> — Relationale Domain-Daten: Trades, Positionen, Orders, Strategie-Konfigurationen, entdeckte Regeln</li>
+        <li><strong>QuestDB</strong> — Hochdurchsatz-Zeitreihen: Tick-Daten, OHLCV-Bars (InfluxDB Line Protocol-Aufnahme)</li>
+        <li><strong>Redis</strong> — Caching, Pub/Sub für Shard-Kommunikation, Echtzeit-Zustand</li>
+      </ul>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Handelsstrategien</h2>
+      <p>Mehrere integrierte Strategien für verschiedene Marktsituationen und Erkennungstypen:</p>
+      <ul class="feature-list">
+        <li><strong>Momentum-Erkennung</strong> — Echtzeit-Identifikation von schnell- und langsamlaufenden Aktien mittels Volumen- und Preisregime-Analyse</li>
+        <li><strong>Pullback-Einstiege</strong> — Mehrere pullback-basierte Strategien für Einstiege bei laufenden Aktien zu günstigen Preisen</li>
+        <li><strong>Breakout-Muster</strong> — Volumenbestätigte Breakout-Strategien über Konsolidierungs-, Range- und Trend-Setups</li>
+        <li><strong>Mean-Reversion</strong> — Strategien, die auf technische Schlüssellevel für Support/Reclaim-Einstiege zielen</li>
+        <li><strong>Discovered Rules</strong> — Automatisch geschürfte Strategien aus der Rule-Mining-Engine, nach Validierung zum Live-Trading befördert</li>
+      </ul>
+      <p>
+        Jede Strategie enthält konfigurierbare Risikoparameter, Signal-Konfidenz-Scoring und prioritätsbasierte
+        Arbitrierung, wenn mehrere Strategien gleichzeitig für dasselbe Symbol auslösen.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Technische Schlüsselentscheidungen</h2>
+
+      <div class="decision">
+        <h3>Rule-Mining-Engine (Beam Search)</h3>
+        <p>
+          Automatisierte Strategieentdeckung mittels mehrstufigem Beam-Search-Ansatz. Die Engine
+          bewertet Indikatorbedingungen einzeln, kombiniert dann progressiv die Top-Performer
+          zu Multi-Bedingungsregeln. Exit-Parameter werden via Grid Search optimiert und
+          mehrstufige Temporalmuster (sequenzielle Bedingungsfolgen mit konfigurierbarem Timing)
+          werden für komplexe Marktverhalten erkundet. Walk-Forward-Kreuzvalidierung stellt sicher,
+          dass entdeckte Regeln über die Trainingsdaten hinaus generalisieren. Regeln, die die
+          Validierung bestehen, können direkt zum Live-Trading befördert werden. Kampagnen-Infrastruktur
+          unterstützt mehrtägige automatisierte Entdeckungsläufe.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Multi-Broker-Ausführung</h3>
+        <p>
+          Ein BaseBroker-Interface ermöglicht nahtlosen Wechsel zwischen Alpaca (Paper + Live Trading,
+          SIP Data Feed, Fractional Shares) und Interactive Brokers (Trailing Stops, globaler Marktzugang
+          einschliesslich Futures, Forex und Optionen). Konfiguration über eine einzelne Umgebungsvariable.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Auto-Backtest & Parameteroptimierung</h3>
+        <p>
+          Verteilte Backtesting-Engine, die Parameterkombinationen über alle Strategien durchläuft.
+          Ergebnisse werden gespeichert und die leistungsstärksten Konfigurationen können auf Live-Trading
+          angewendet werden. Echtzeit-Fortschrittsstreaming via WebSocket zum Frontend-Dashboard.
+          Tick-Daten-Replay aus QuestDB ermöglicht High-Fidelity-Backtesting gegen historische Marktbedingungen.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Observability Stack</h3>
+        <p>
+          Strukturiertes JSON-Logging via structlog, verteiltes Tracing mit OpenTelemetry und
+          Prometheus-Metrikerfassung. Produktions-Deployments umfassen Grafana-Dashboards und
+          Jaeger für Trace-Visualisierung. Telegram-Benachrichtigungen für Trade-Alerts und Systemereignisse.
+        </p>
+      </div>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Frontend</h2>
+      <p>
+        Next.js 16-Dashboard mit React 19, Tailwind CSS v4 und shadcn/ui-Komponenten. TanStack
+        Query für Server-State-Management. Zentrale Seiten umfassen Echtzeit-Portfolioüberwachung,
+        Orderaufgabe, Strategiekonfiguration, Backtest-Analytik mit Equity-Kurven und ein
+        Strategy-Discovery-Interface zur Visualisierung und Beförderung geschürfter Regeln.
+      </p>
+    </section>
+  </article>
+</DocLayout>
+
+<style>
+  .case-study {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-8);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .case-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-private {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .case-private svg {
+    display: inline-block;
+  }
+
+  .case-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .case-section h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-section h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .case-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: var(--space-4);
+  }
+
+  .feature-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-list li strong {
+    color: var(--color-text-heading);
+  }
+
+  .decision {
+    margin-bottom: var(--space-6);
+  }
+
+  .decision h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  .decision p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+</style>

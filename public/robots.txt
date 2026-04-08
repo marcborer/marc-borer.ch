@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://marc-borer.ch/sitemap-index.xml

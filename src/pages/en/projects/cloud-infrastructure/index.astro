@@ -1,0 +1,151 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import TechBadge from '../../../../components/TechBadge.astro';
+import CloudInfrastructureDiagram from '../../../../components/diagrams/CloudInfrastructureDiagram.astro';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['cloud-infrastructure'];
+
+const tech = ['Exchange Online', 'Microsoft Teams', 'Direct Routing', 'Microsoft Intune', 'Entra ID', 'PowerShell', 'Azure Automation', 'Graph API', 'Log Analytics', 'Elastic Stack', 'BitLocker'];
+---
+
+<DocLayout title="Enterprise Cloud & Hybrid Infrastructure — Marc Borer" ogImage="/og/cloud-infrastructure.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <article class="case-study">
+    <a href="/en/projects/" class="back-link">
+      <span aria-hidden="true">&larr;</span> Back to Projects
+    </a>
+
+    <header class="case-header" data-animate="slide-up">
+      <h1 class="case-title">Enterprise Cloud & Hybrid Infrastructure</h1>
+      <p class="case-subtitle">Microsoft 365 Modernization and Infrastructure Automation</p>
+      <div class="case-tech">
+        {tech.map((t) => <TechBadge name={t} />)}
+      </div>
+      <p class="case-meta">Senior ICT Systems Architect — Mar 2019 – Present</p>
+    </header>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Overview</h2>
+      <p>
+        Responsible for the architecture and operation of a Microsoft Cloud and Hybrid infrastructure
+        at an international industrial company. Focus on Microsoft 365, Exchange Online, Teams,
+        Active Directory, and infrastructure automation.
+      </p>
+      <p>
+        Below are the key projects I've led and delivered during my time here.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>My Role</h2>
+      <p>
+        Responsible for target architecture and modernization strategy across all initiatives below —
+        from evaluation through architectural decision-making to delivery and ongoing operations.
+      </p>
+      <ul class="feature-list">
+        <li><strong>Architectural decisions</strong> — Technology selection, migration strategy, vendor evaluation, and cost-benefit analysis for each initiative</li>
+        <li><strong>Stakeholder leadership</strong> — Cross-departmental alignment with IT, HR, executive management, and external partners including decision proposals and risk assessments</li>
+        <li><strong>Governance & rollout control</strong> — Definition of rollout rings (Canary, Pilot, Broad), change management processes, and fallback strategies</li>
+        <li><strong>Domain breadth</strong> — Messaging & telephony, endpoint management, identity & access, security monitoring — across the entire enterprise infrastructure</li>
+      </ul>
+    </section>
+
+    <CloudInfrastructureDiagram />
+
+  </article>
+</DocLayout>
+
+<style>
+  .case-study {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-8);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .case-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-meta {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .case-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .case-section h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .case-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: var(--space-4);
+  }
+
+  .feature-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-list li strong {
+    color: var(--color-text-heading);
+  }
+</style>

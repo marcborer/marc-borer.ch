@@ -1,0 +1,158 @@
+---
+import DocLayout from '../../../layouts/DocLayout.astro';
+import TechBadge from '../../../components/TechBadge.astro';
+import CloudInfrastructureDiagram from '../../../components/diagrams/CloudInfrastructureDiagram.astro';
+import docNavs from '../../../data/doc-navs.de.json';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const t = useTranslations(lang);
+const nav = docNavs['cloud-infrastructure'];
+
+const tech = ['Exchange Online', 'Microsoft Teams', 'Direct Routing', 'Microsoft Intune', 'Entra ID', 'PowerShell', 'Azure Automation', 'Graph API', 'Log Analytics', 'Elastic Stack', 'BitLocker'];
+---
+
+<DocLayout title="Enterprise Cloud & Hybrid Infrastructure — Marc Borer" ogImage="/og/cloud-infrastructure.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <article class="case-study">
+    <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
+      <span aria-hidden="true">&larr;</span> {t('projects.backToProjects')}
+    </a>
+
+    <header class="case-header" data-animate="slide-up">
+      <h1 class="case-title">Enterprise Cloud & Hybrid Infrastructure</h1>
+      <p class="case-subtitle">Microsoft 365 Modernisierung und Infrastrukturautomatisierung</p>
+      <div class="case-tech">
+        {tech.map((t) => <TechBadge name={t} />)}
+      </div>
+      <p class="case-meta">Senior ICT Systems Architect — März 2019 – Heute</p>
+    </header>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Übersicht</h2>
+      <p>
+        Verantwortlich für Architektur und Betrieb einer Microsoft Cloud- und Hybrid-Infrastruktur
+        in einem internationalen Industrieunternehmen. Schwerpunkt auf Microsoft 365, Exchange Online,
+        Teams, Active Directory und Infrastruktur-Automatisierung.
+      </p>
+      <p>
+        Nachfolgend die wichtigsten Projekte, die ich in dieser Zeit geleitet und umgesetzt habe.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Meine Rolle</h2>
+      <p>
+        Verantwortlich für die Zielarchitektur und Modernisierungsstrategie über alle nachfolgenden
+        Initiativen hinweg — von der Evaluierung über den Architekturentscheid bis zur Umsetzung und
+        zum laufenden Betrieb.
+      </p>
+      <ul class="feature-list">
+        <li><strong>Architekturentscheidungen</strong> — Technologieauswahl, Migrationsstrategie, Anbieter-Evaluation und Kosten-/Nutzenabwägung für jede Initiative</li>
+        <li><strong>Stakeholder-Führung</strong> — Abteilungsübergreifende Abstimmung mit IT, HR, Geschäftsleitung und externen Partnern inkl. Entscheidungsvorlagen und Risikobewertungen</li>
+        <li><strong>Governance & Rollout-Steuerung</strong> — Definition von Rollout-Ringen (Canary, Pilot, Broad), Change-Management-Prozessen und Rückfall-Strategien</li>
+        <li><strong>Domänenbreite</strong> — Messaging & Telefonie, Endpoint Management, Identity & Access, Security Monitoring — standortübergreifend über die gesamte Unternehmensinfrastruktur</li>
+      </ul>
+    </section>
+
+    <CloudInfrastructureDiagram />
+
+  </article>
+</DocLayout>
+
+<style>
+  .case-study {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-8);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .case-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-meta {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .case-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .case-section h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .case-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: var(--space-4);
+  }
+
+  .feature-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-list li strong {
+    color: var(--color-text-heading);
+  }
+</style>

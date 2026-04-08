@@ -1,0 +1,63 @@
+---
+import { languages } from '../i18n/ui';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getTranslatedPath } from '../i18n/utils';
+import type { Lang } from '../i18n/utils';
+
+const currentLocale = (Astro.currentLocale || 'de') as Lang;
+const currentPath = Astro.url.pathname;
+
+// Strip the locale prefix to get the base path
+let basePath = currentPath;
+if (currentLocale !== 'de' && currentPath.startsWith(`/${currentLocale}`)) {
+  basePath = currentPath.slice(`/${currentLocale}`.length) || '/';
+}
+---
+
+<div class="lang-switcher" role="navigation" aria-label="Language switcher">
+  {Object.entries(languages).map(([lang, label], index) => {
+    const targetPath = getTranslatedPath(basePath, currentLocale, lang as Lang);
+    return (
+      <>
+        {index > 0 && <span class="lang-separator" aria-hidden="true">|</span>}
+        {lang === currentLocale ? (
+          <span class="lang-link active" aria-current="true">{lang.toUpperCase()}</span>
+        ) : (
+          <a href={getRelativeLocaleUrl(lang, targetPath)} class="lang-link">{lang.toUpperCase()}</a>
+        )}
+      </>
+    );
+  })}
+</div>
+
+<style>
+  .lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .lang-separator {
+    color: var(--color-border);
+    font-size: var(--text-sm);
+    user-select: none;
+  }
+
+  .lang-link {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    padding: var(--space-1) var(--space-1);
+    transition: color 0.2s ease;
+  }
+
+  .lang-link:hover {
+    color: var(--color-text-heading);
+  }
+
+  .lang-link.active {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+</style>

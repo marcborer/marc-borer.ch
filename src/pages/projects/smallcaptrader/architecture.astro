@@ -1,0 +1,10 @@
+---
+import DocLayout from '../../../layouts/DocLayout.astro';
+import { Content, frontmatter } from '../../../content/projects/smallcaptrader/de/architecture.md';
+import docNavs from '../../../data/doc-navs.de.json';
+const nav = docNavs['smallcaptrader'];
+---
+
+<DocLayout title={`${frontmatter.title} — SmallCapTrader`} description={frontmatter.description} sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <Content />
+</DocLayout>

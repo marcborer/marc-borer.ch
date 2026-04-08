@@ -1,0 +1,292 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+interface TimelineEntry {
+  date: string;
+  title: string;
+  company: string | null;
+  description: string[];
+  projectLink: string | null;
+}
+
+interface Props {
+  entries: TimelineEntry[];
+}
+
+const { entries } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<div class="timeline">
+  {entries.map((entry, index) => (
+    <div class="timeline-item" style={`--delay: ${index * 0.1}s`}>
+      <div class="timeline-marker-wrapper">
+        <div class={`timeline-marker ${index === 0 ? 'timeline-marker--active' : ''}`} />
+      </div>
+      <div class="timeline-content">
+        <span class="timeline-date">{entry.date}</span>
+        <h3 class="timeline-title">{entry.title}</h3>
+        {entry.company && <span class="timeline-company">{entry.company}</span>}
+        <ul class="timeline-bullets">
+          {entry.description.map((bullet) => <li>{bullet}</li>)}
+        </ul>
+        {entry.projectLink && (
+          <a href={entry.projectLink} class="timeline-link">
+            {entry.projectLink === '/projects/' ? t('experience.viewProjects') : t('experience.viewProject')}
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  /* Timeline container with vertical line */
+  .timeline {
+    position: relative;
+    padding: var(--space-4) 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--space-4) - 1px);
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--color-border) 5%,
+      var(--color-border) 95%,
+      transparent
+    );
+    box-shadow: 0 0 8px 2px var(--color-accent-subtle);
+  }
+
+  /* Each timeline entry */
+  .timeline-item {
+    position: relative;
+    display: flex;
+    gap: var(--space-6);
+    padding-bottom: var(--space-12);
+    animation: timeline-fade-in 0.5s ease both;
+    animation-delay: var(--delay);
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  @keyframes timeline-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Marker */
+  .timeline-marker-wrapper {
+    position: relative;
+    flex-shrink: 0;
+    width: var(--space-8);
+    display: flex;
+    justify-content: center;
+    padding-top: var(--space-1);
+  }
+
+  .timeline-marker {
+    width: 14px;
+    height: 14px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg-primary);
+    border: 2px solid var(--color-accent);
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline-marker--active {
+    background-color: var(--color-accent);
+    box-shadow: 0 0 0 4px var(--color-accent-subtle);
+    position: relative;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .timeline-marker--active::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--color-accent);
+      animation: marker-pulse 2s ease-out infinite;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes marker-pulse {
+      0% {
+        width: 100%;
+        height: 100%;
+        opacity: 0.6;
+      }
+      100% {
+        width: 250%;
+        height: 250%;
+        opacity: 0;
+      }
+    }
+  }
+
+  /* Content card */
+  .timeline-content {
+    flex: 1;
+    padding: var(--space-6);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    min-width: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  @media (hover: hover) {
+    .timeline-content:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px var(--color-accent-subtle);
+      border-color: var(--color-accent);
+    }
+  }
+
+  .timeline-date {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-2);
+  }
+
+  .timeline-title {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-1);
+  }
+
+  .timeline-company {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-4);
+  }
+
+  .timeline-bullets {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .timeline-bullets li {
+    position: relative;
+    padding-left: var(--space-4);
+    padding-bottom: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+  }
+
+  .timeline-bullets li:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 5px;
+    height: 5px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .timeline-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+    margin-top: var(--space-4);
+    transition: color 0.2s ease, gap 0.2s ease;
+  }
+
+  .timeline-link:hover {
+    color: var(--color-accent-hover);
+    gap: var(--space-3);
+  }
+
+  /* Desktop: alternating layout */
+  @media (min-width: 768px) {
+    .timeline::before {
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 8px 2px var(--color-accent-subtle);
+    }
+
+    .timeline-item {
+      width: 50%;
+      gap: var(--space-8);
+    }
+
+    /* Odd items: right side of timeline (content on the left) */
+    .timeline-item:nth-child(odd) {
+      margin-left: auto;
+      flex-direction: row;
+      padding-left: var(--space-4);
+    }
+
+    .timeline-item:nth-child(odd) .timeline-marker-wrapper {
+      position: absolute;
+      left: calc(-1 * var(--space-4) - 1px);
+      top: 0;
+    }
+
+    /* Even items: left side of timeline (content on the right) */
+    .timeline-item:nth-child(even) {
+      margin-right: auto;
+      flex-direction: row-reverse;
+      padding-right: var(--space-4);
+    }
+
+    .timeline-item:nth-child(even) .timeline-marker-wrapper {
+      position: absolute;
+      right: calc(-1 * var(--space-4) - 1px);
+      top: 0;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+      text-align: right;
+    }
+
+    .timeline-item:nth-child(even) .timeline-bullets li {
+      padding-left: 0;
+      padding-right: var(--space-4);
+    }
+
+    .timeline-item:nth-child(even) .timeline-bullets li::before {
+      left: auto;
+      right: 0;
+    }
+
+    .timeline-item:nth-child(even) .timeline-link {
+      justify-content: flex-end;
+    }
+  }
+</style>

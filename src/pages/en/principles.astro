@@ -1,0 +1,110 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+
+<PageLayout title="Architectural Principles — Marc Borer" description="Four architectural principles that guide my decisions — from ring-based rollout to deliberate hybrid strategy." ogImage="/og/principles.png">
+  <section class="principles">
+    <h1 class="principles-heading" data-animate="slide-up">Architectural Principles</h1>
+    <p class="principles-intro" data-animate="slide-up" data-delay="100">
+      Four convictions that guide my architecture decisions — shaped by building
+      and operating enterprise-critical infrastructure across complex organizational
+      environments.
+    </p>
+
+    <div class="principles-list">
+      <article class="principle" data-animate="slide-up" data-delay="200">
+        <h2 class="principle-title">Blast Radius Before Feature Velocity</h2>
+        <p class="principle-text">
+          Every change to production infrastructure — whether an Exchange migration,
+          BIOS update, or MFA rollout — goes through ring-based deployment: Canary,
+          Pilot, Broad. Not because it is slower, but because the cost of a failed
+          change across an entire fleet is orders of magnitude higher than the cost
+          of controlled validation.
+        </p>
+      </article>
+
+      <article class="principle" data-animate="slide-up" data-delay="300">
+        <h2 class="principle-title">Automate the Known, Architect the Complex</h2>
+        <p class="principle-text">
+          Automation is not a goal in itself. What I understand well and what repeats
+          belongs in a pipeline — configuration deployment, compliance checks,
+          onboarding workflows. What I do not yet fully understand deserves an
+          architecture decision first, not premature automation that does the wrong
+          thing faster.
+        </p>
+      </article>
+
+      <article class="principle" data-animate="slide-up" data-delay="400">
+        <h2 class="principle-title">Hybrid Is a Strategy, Not a Compromise</h2>
+        <p class="principle-text">
+          Hybrid architecture does not emerge from an inability to fully migrate to
+          the cloud. It is a deliberate choice when on-premises infrastructure meets
+          regulatory, performance, or cost requirements that a pure cloud solution
+          cannot address. The bridge architecture for Exchange migration and the
+          hybrid identity solution were intentional coexistence strategies — not
+          temporary stepping stones.
+        </p>
+      </article>
+
+      <article class="principle" data-animate="slide-up" data-delay="500">
+        <h2 class="principle-title">Observability Before Optimization</h2>
+        <p class="principle-text">
+          You cannot optimize what you cannot see. Before I fix performance issues
+          or change processes, I build visibility — centralized log aggregation,
+          compliance dashboards, real-time alerting. The SIEM deployment was not a
+          security project that happened to produce monitoring — it was the deliberate
+          foundation on which all subsequent operational decisions could be built.
+        </p>
+      </article>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .principles {
+    padding: var(--space-16) 0;
+    max-width: 50rem;
+    margin: 0 auto;
+  }
+
+  .principles-heading {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-6);
+  }
+
+  .principles-intro {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-12);
+  }
+
+  .principles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .principle {
+    padding: var(--space-8) 0;
+    border-top: none;
+    border-image: linear-gradient(to right, transparent, var(--color-accent-subtle), var(--color-accent), var(--color-accent-subtle), transparent) 1;
+    border-image-width: 1px 0 0 0;
+  }
+
+  .principle:first-child {
+    border-image: none;
+    padding-top: 0;
+  }
+
+  .principle-title {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .principle-text {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+</style>

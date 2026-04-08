@@ -1,0 +1,181 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+
+<PageLayout title="Privacy Policy">
+  <section class="legal">
+    <h1>Privacy Policy</h1>
+
+    <h2>1. Controller</h2>
+    <address>
+      Marc Borer<br />
+      Hirzengarten 2<br />
+      4226 Breitenbach<br />
+      Schweiz
+    </address>
+    <p>Email: <a href="mailto:mb@marc-borer.ch">mb@marc-borer.ch</a></p>
+
+    <h2>2. General</h2>
+    <p>
+      Protecting your personal data is important to us. This privacy policy informs you
+      about the collection and processing of personal data when using this website in
+      accordance with the Swiss Data Protection Act (nDSG) and, where applicable, the
+      European General Data Protection Regulation (GDPR).
+    </p>
+
+    <h2>3. Hosting and Server Logs</h2>
+    <p>
+      This website is hosted on <strong>GitHub Pages</strong>, a service provided by
+      GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA.
+    </p>
+    <p>
+      When you access this website, the following data is automatically collected in
+      server logs and processed by GitHub:
+    </p>
+    <ul>
+      <li>IP address</li>
+      <li>Date and time of the request</li>
+      <li>Requested page (URL)</li>
+      <li>Referrer URL</li>
+      <li>Browser type and version (User-Agent)</li>
+    </ul>
+    <p>
+      This data is processed by GitHub to ensure the operation and security of the service.
+      For more information, see the
+      <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement</a>.
+    </p>
+
+    <h2>4. Google Analytics</h2>
+    <p>
+      This website uses <strong>Google Analytics 4</strong> (Property ID: G-YDWCY6XBPN),
+      a web analytics service provided by Google Ireland Limited, Gordon House, Barrow Street,
+      Dublin 4, Ireland.
+    </p>
+    <p>
+      Google Analytics is <strong>only activated after your explicit consent</strong> via
+      our cookie banner. Without your consent, no analytics data is collected.
+    </p>
+    <p>The following data is processed upon consent:</p>
+    <ul>
+      <li>Page views and session duration</li>
+      <li>Approximate location (based on anonymized IP address)</li>
+      <li>Device and browser information</li>
+      <li>Referrer (where you came from)</li>
+    </ul>
+    <p>
+      Google Analytics 4 anonymizes IP addresses by default. It is not possible for us
+      to identify you personally.
+    </p>
+    <p><strong>Opt-out:</strong> You can withdraw your consent at any time by selecting
+      "Decline" in the cookie banner or by deleting the <code>cookie-consent</code>
+      entry in your browser's LocalStorage. Alternatively, you can use the
+      <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">Google Analytics Opt-out Browser Add-on</a>.
+    </p>
+
+    <h2>5. Cookies and Local Storage</h2>
+    <p>This website uses:</p>
+    <ul>
+      <li><strong>LocalStorage</strong> (not a cookie): <code>cookie-consent</code> — stores your cookie banner decision (accepted/declined)</li>
+      <li><strong>LocalStorage</strong> (not a cookie): <code>theme</code> — stores your preferred color scheme (light/dark)</li>
+      <li><strong>Google Analytics cookies</strong> — only set after your consent (e.g., <code>_ga</code>, <code>_ga_*</code>)</li>
+    </ul>
+
+    <h2>6. Data Transfer to the USA</h2>
+    <p>
+      By using GitHub Pages and Google Analytics, data is transferred to the USA. The USA
+      currently has an adequacy decision under the EU-U.S. Data Privacy Framework (DPF) and
+      the Swiss-U.S. Data Privacy Framework. Both providers are certified under the DPF.
+    </p>
+
+    <h2>7. Your Rights</h2>
+    <p>
+      Under the Swiss Data Protection Act (nDSG) and, where applicable, the GDPR, you
+      have the following rights:
+    </p>
+    <ul>
+      <li><strong>Right of access</strong> — You may request information about your stored personal data</li>
+      <li><strong>Right to rectification</strong> — You may request the correction of inaccurate data</li>
+      <li><strong>Right to erasure</strong> — You may request the deletion of your data</li>
+      <li><strong>Right to restriction</strong> — You may request the restriction of data processing</li>
+      <li><strong>Right to data portability</strong> — You may receive your data in a common format</li>
+      <li><strong>Right to object</strong> — You may object to the processing of your data</li>
+    </ul>
+    <p>
+      To exercise your rights, please contact:
+      <a href="mailto:mb@marc-borer.ch">mb@marc-borer.ch</a>
+    </p>
+    <p>
+      If you believe that the processing of your data violates data protection law, you
+      may file a complaint with the Swiss Federal Data Protection and Information Commissioner
+      (FDPIC): <a href="https://www.edoeb.admin.ch" target="_blank" rel="noopener noreferrer">www.edoeb.admin.ch</a>
+    </p>
+
+    <h2>8. Changes</h2>
+    <p>
+      This privacy policy may be updated at any time. The current version is available
+      on this page.
+    </p>
+    <p class="legal-date">Last updated: April 2026</p>
+  </section>
+</PageLayout>
+
+<style>
+  .legal {
+    padding: var(--space-16) 0;
+    max-width: 50rem;
+    margin: 0 auto;
+  }
+
+  .legal h1 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-8);
+  }
+
+  .legal h2 {
+    font-size: var(--text-xl);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+  }
+
+  .legal p,
+  .legal address {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+    font-style: normal;
+  }
+
+  .legal ul {
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .legal li {
+    margin-bottom: var(--space-2);
+  }
+
+  .legal a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .legal a:hover {
+    text-decoration: underline;
+  }
+
+  .legal code {
+    font-size: var(--text-sm);
+    background: var(--color-bg-secondary);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+  }
+
+  .legal-date {
+    margin-top: var(--space-8);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+</style>

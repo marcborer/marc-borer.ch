@@ -1,0 +1,287 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import TechBadge from '../../../../components/TechBadge.astro';
+import SmallCapTraderDiagram from '../../../../components/diagrams/SmallCapTraderDiagram.astro';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['smallcaptrader'];
+
+const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL', 'QuestDB', 'Redis', 'Docker'];
+---
+
+<DocLayout title="SmallCapTrader — Marc Borer" ogImage="/og/smallcaptrader.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <article class="case-study">
+    <a href="/en/projects/" class="back-link">
+      <span aria-hidden="true">&larr;</span> Back to Projects
+    </a>
+
+    <header class="case-header" data-animate="slide-up">
+      <h1 class="case-title">SmallCapTrader</h1>
+      <p class="case-subtitle">Algorithmic trading platform for small-cap stocks</p>
+      <div class="case-tech">
+        {tech.map((t) => <TechBadge name={t} />)}
+      </div>
+      <p class="case-private">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        Private Repository
+      </p>
+    </header>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Problem</h2>
+      <p>
+        Small-cap stock trading demands real-time detection of fast-moving stocks,
+        sophisticated multi-strategy signal arbitration, and reliable execution across brokers.
+        Existing retail platforms either offer only basic indicators with manual order entry,
+        or lock advanced features behind institutional pricing. There is no self-hosted,
+        full-featured platform that handles the entire pipeline — from market data streaming
+        through automated strategy discovery to live execution at scale.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Approach</h2>
+      <p>
+        Built a production-grade trading system with a Python 3.12+ async backend (FastAPI + Granian)
+        and a Next.js 16 frontend. The platform covers the full trading lifecycle: real-time market
+        data ingestion, multiple built-in trading strategies spanning momentum, pullback, breakout,
+        and volume-driven patterns, an automated rule-mining engine that discovers and promotes new
+        strategies to live trading, backtesting with parameter optimization, and multi-broker
+        execution across Alpaca and Interactive Brokers.
+      </p>
+    </section>
+
+    <SmallCapTraderDiagram />
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Architecture</h2>
+      <p>
+        Clean Architecture with Domain-Driven Design, supporting dual-mode deployment — monolithic
+        for development and sharded microservices for production. The same codebase switches between
+        modes via a configuration flag without code changes.
+      </p>
+
+      <h3>Monolithic Mode</h3>
+      <p>
+        All services run in a single Python process: market data parsing, trading strategies,
+        position monitoring, and Telegram notifications. Simple deployment, minimal latency
+        between components.
+      </p>
+
+      <h3>Sharded Mode</h3>
+      <p>
+        Horizontally scalable architecture. A stream router parses market data
+        and distributes it to shard workers via Redis pub/sub, partitioned by symbol range.
+        Each shard worker runs all strategies independently.
+        A dedicated tick recorder writes all market data to QuestDB for backtesting replay.
+        A central signal consumer receives validated signals from all shards and routes them to
+        broker execution.
+      </p>
+
+      <h3>Data Layer</h3>
+      <ul class="feature-list">
+        <li><strong>PostgreSQL + asyncpg</strong> — Relational domain data: trades, positions, orders, strategy configs, discovered rules</li>
+        <li><strong>QuestDB</strong> — High-throughput time-series: tick data, OHLCV bars (InfluxDB Line Protocol ingestion)</li>
+        <li><strong>Redis</strong> — Caching, pub/sub for shard communication, real-time state</li>
+      </ul>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Trading Strategies</h2>
+      <p>Multiple built-in strategies spanning different market conditions and detection types:</p>
+      <ul class="feature-list">
+        <li><strong>Momentum Detection</strong> — Real-time identification of fast-moving and slow-moving stocks using volume and price regime analysis</li>
+        <li><strong>Pullback Entries</strong> — Multiple pullback-based strategies for entering running stocks at favorable prices</li>
+        <li><strong>Breakout Patterns</strong> — Volume-confirmed breakout strategies across consolidation, range, and trend setups</li>
+        <li><strong>Mean-Reversion</strong> — Strategies targeting key technical levels for support/reclaim entries</li>
+        <li><strong>Discovered Rules</strong> — Auto-mined strategies from the rule-mining engine, promoted to live trading after validation</li>
+      </ul>
+      <p>
+        Each strategy includes configurable risk parameters, signal confidence scoring, and priority-based
+        arbitration when multiple strategies fire simultaneously on the same symbol.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Key Technical Decisions</h2>
+
+      <div class="decision">
+        <h3>Rule-Mining Engine (Beam Search)</h3>
+        <p>
+          Automated strategy discovery using a multi-phase beam search approach. The engine
+          evaluates indicator conditions individually, then progressively combines top performers
+          into multi-condition rules. Exit parameters are optimized via grid search, and
+          multi-phase temporal patterns (sequential condition sequences with configurable timing)
+          are explored for complex market behaviors. Walk-forward cross-validation ensures
+          discovered rules generalize beyond training data. Rules that pass validation can be
+          promoted directly to live trading. Campaign infrastructure supports multi-day
+          automated discovery runs.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Multi-Broker Execution</h3>
+        <p>
+          A BaseBroker interface enables seamless switching between Alpaca (paper + live trading,
+          SIP data feed, fractional shares) and Interactive Brokers (trailing stops, global market
+          access including futures, forex, and options). Configured via a single environment variable.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Auto-Backtest & Parameter Optimization</h3>
+        <p>
+          Distributed backtesting engine that sweeps parameter combinations across all strategies.
+          Results are stored and the best-performing configurations can be applied to live trading.
+          Real-time progress streaming via WebSocket to the frontend dashboard. Tick data replay
+          from QuestDB enables high-fidelity backtesting against historical market conditions.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Observability Stack</h3>
+        <p>
+          Structured JSON logging via structlog, distributed tracing with OpenTelemetry, and
+          Prometheus metrics collection. Production deployments include Grafana dashboards and
+          Jaeger for trace visualization. Telegram notifications for trade alerts and system events.
+        </p>
+      </div>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Frontend</h2>
+      <p>
+        Next.js 16 dashboard with React 19, Tailwind CSS v4, and shadcn/ui components. TanStack
+        Query for server state management. Key pages include real-time portfolio monitoring, order
+        entry, strategy configuration, backtest analytics with equity curves, and a strategy
+        discovery interface for visualizing and promoting mined rules.
+      </p>
+    </section>
+  </article>
+</DocLayout>
+
+<style>
+  .case-study {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-8);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .case-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-private {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .case-private svg {
+    display: inline-block;
+  }
+
+  .case-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .case-section h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-section h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .case-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: var(--space-4);
+  }
+
+  .feature-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-list li strong {
+    color: var(--color-text-heading);
+  }
+
+  .decision {
+    margin-bottom: var(--space-6);
+  }
+
+  .decision h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  .decision p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+</style>

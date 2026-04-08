@@ -1,0 +1,111 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+---
+
+<PageLayout title="Architektur-Grundsätze — Marc Borer" description="Vier Architektur-Grundsätze, die meine Entscheidungen leiten — von ringbasiertem Rollout bis zur bewussten Hybrid-Strategie." ogImage="/og/principles.png">
+  <section class="principles">
+    <h1 class="principles-heading" data-animate="slide-up">Architektur-Grundsätze</h1>
+    <p class="principles-intro" data-animate="slide-up" data-delay="100">
+      Vier Überzeugungen, die meine Architekturentscheidungen leiten — geformt durch
+      den Aufbau und Betrieb unternehmenskritischer Infrastruktur in komplexen
+      Unternehmensumgebungen.
+    </p>
+
+    <div class="principles-list">
+      <article class="principle" data-animate="slide-up" data-delay="200">
+        <h2 class="principle-title">Blast Radius vor Feature-Geschwindigkeit</h2>
+        <p class="principle-text">
+          Jede Änderung an Produktionsinfrastruktur — ob Exchange-Migration, BIOS-Update
+          oder MFA-Umstellung — durchläuft ringbasiertes Rollout: Canary, Pilot, Broad.
+          Nicht weil es langsamer ist, sondern weil der Schaden einer fehlgeschlagenen
+          Änderung an der ganzen Flotte um Grössenordnungen teurer ist als die Wartezeit
+          auf eine kontrollierte Validierung.
+        </p>
+      </article>
+
+      <article class="principle" data-animate="slide-up" data-delay="300">
+        <h2 class="principle-title">Automatisiere das Bekannte, entwerfe das Komplexe</h2>
+        <p class="principle-text">
+          Automatisierung ist kein Selbstzweck. Was ich gut verstehe und sich wiederholt,
+          gehört in eine Pipeline — Konfigurationsdeployment, Compliance-Checks,
+          Onboarding-Workflows. Was ich noch nicht vollständig verstehe, verdient
+          zuerst eine Architekturentscheidung, keine voreilige Automatisierung, die
+          das Falsche schneller macht.
+        </p>
+      </article>
+
+      <article class="principle" data-animate="slide-up" data-delay="400">
+        <h2 class="principle-title">Hybrid ist eine Strategie, kein Kompromiss</h2>
+        <p class="principle-text">
+          Hybrid-Architektur entsteht nicht aus der Unfähigkeit, vollständig in die
+          Cloud zu migrieren. Sie ist eine bewusste Entscheidung, wenn lokale
+          Infrastruktur regulatorische, performancebezogene oder kostenbezogene
+          Anforderungen erfüllt, die eine reine Cloud-Lösung nicht abdeckt.
+          Die Bridge-Architektur bei der Exchange-Migration und die hybride Identity-Lösung
+          waren bewusste Koexistenzstrategien — keine temporären Übergangslösungen.
+        </p>
+      </article>
+
+      <article class="principle" data-animate="slide-up" data-delay="500">
+        <h2 class="principle-title">Beobachtbarkeit vor Optimierung</h2>
+        <p class="principle-text">
+          Man kann nicht optimieren, was man nicht sieht. Bevor ich Leistungsprobleme
+          behebe oder Prozesse verändere, baue ich die Sichtbarkeit auf —
+          zentrale Log-Aggregation, Compliance-Dashboards, Echtzeit-Alarmierung.
+          Der SIEM-Aufbau war nicht ein Sicherheitsprojekt, das zufällig Monitoring
+          abwarf — er war die bewusste Grundlage, auf der alle weiteren operativen
+          Entscheidungen aufgebaut werden konnten.
+        </p>
+      </article>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .principles {
+    padding: var(--space-16) 0;
+    max-width: 50rem;
+    margin: 0 auto;
+  }
+
+  .principles-heading {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-6);
+  }
+
+  .principles-intro {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-12);
+  }
+
+  .principles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .principle {
+    padding: var(--space-8) 0;
+    border-top: none;
+    border-image: linear-gradient(to right, transparent, var(--color-accent-subtle), var(--color-accent), var(--color-accent-subtle), transparent) 1;
+    border-image-width: 1px 0 0 0;
+  }
+
+  .principle:first-child {
+    border-image: none;
+    padding-top: 0;
+  }
+
+  .principle-title {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .principle-text {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+</style>

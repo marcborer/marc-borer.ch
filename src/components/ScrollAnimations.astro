@@ -1,0 +1,44 @@
+---
+// ScrollAnimations.astro
+// Provides Intersection Observer-based scroll animations.
+// Add data-animate="fade-in|slide-up|slide-left|slide-right|scale-in" to any element.
+// Optionally add data-delay="200" (ms) for staggered animations.
+---
+
+<script>
+  function initScrollAnimations() {
+    const animatedElements = document.querySelectorAll<HTMLElement>('[data-animate]');
+    if (!animatedElements.length) return;
+
+    // Respect reduced-motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            const delay = el.dataset.delay;
+            if (delay) {
+              el.style.transitionDelay = `${delay}ms`;
+            }
+            el.classList.add('is-visible');
+            observer.unobserve(el);
+          }
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    for (const el of animatedElements) {
+      observer.observe(el);
+    }
+  }
+
+  // Run on initial load
+  initScrollAnimations();
+
+  // Re-run after Astro client-side navigation (View Transitions)
+  document.addEventListener('astro:page-load', initScrollAnimations);
+</script>

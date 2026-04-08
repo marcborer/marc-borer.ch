@@ -1,0 +1,10 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import { Content, frontmatter } from '../../../../content/projects/cicd-automation/architecture.md';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['cicd-automation'];
+---
+
+<DocLayout title={`${frontmatter.title} — SaaS Platform CI/CD`} description={frontmatter.description} sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <Content />
+</DocLayout>

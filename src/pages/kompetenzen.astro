@@ -1,0 +1,240 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+---
+
+<PageLayout title="Kompetenzen — Marc Borer" description="Architekturkompetenzen von Marc Borer — Identity & Access, Cloud & Messaging, Endpoint Management, Security und Automation." ogImage="/og/skills.png">
+  <section class="skills">
+    <h1 class="skills-heading" data-animate="slide-up">Kompetenzen</h1>
+    <p class="skills-intro" data-animate="slide-up" data-delay="100">
+      Architekturverantwortung über den gesamten Lebenszyklus unternehmenskritischer Infrastruktur —
+      von der Evaluierung und Technologieentscheidung über die Umsetzung bis zum stabilen Betrieb.
+    </p>
+
+    <div class="domains">
+      <!-- Identity & Access -->
+      <article class="domain" data-animate="slide-up" data-delay="200">
+        <div class="domain-header">
+          <h2 class="domain-title">Identity & Access</h2>
+          <span class="depth-badge depth--strategic">Strategische Verantwortung</span>
+        </div>
+        <p class="domain-description">
+          Hybride Identitätsarchitektur, Lifecycle-Automatisierung und unternehmensweite
+          Authentifizierungsstrategie — mit Fokus auf Governance, Compliance und nahtlose
+          Koexistenz zwischen On-Premises und Cloud.
+        </p>
+        <div class="domain-tech">
+          Entra ID · Active Directory · MFA · Graph API · Azure Automation
+        </div>
+        <a href={getRelativeLocaleUrl('de', '/projects/cloud-infrastructure/architecture')} class="domain-evidence">
+          Projekt ansehen: Identity & Access
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </article>
+
+      <!-- Cloud & Messaging -->
+      <article class="domain" data-animate="slide-up" data-delay="300">
+        <div class="domain-header">
+          <h2 class="domain-title">Cloud & Messaging</h2>
+          <span class="depth-badge depth--strategic">Strategische Verantwortung</span>
+        </div>
+        <p class="domain-description">
+          Migration und Betrieb einer unternehmensweiten Kommunikationsplattform —
+          Architekturentscheid, Migrationsstrategie, Anbieterbewertung und
+          Gewährleistung des unterbrechungsfreien Betriebs während der Umstellung.
+        </p>
+        <div class="domain-tech">
+          Exchange Online · Microsoft Teams · Direct Routing · SBC · PowerShell
+        </div>
+        <a href={getRelativeLocaleUrl('de', '/projects/cloud-infrastructure/architecture')} class="domain-evidence">
+          Projekt ansehen: Cloud & Messaging
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </article>
+
+      <!-- Endpoint Management -->
+      <article class="domain" data-animate="slide-up" data-delay="400">
+        <div class="domain-header">
+          <h2 class="domain-title">Endpoint Management</h2>
+          <span class="depth-badge depth--hands-on">Hands-on Umsetzung</span>
+        </div>
+        <p class="domain-description">
+          Entwurf und Umsetzung einer vollautomatisierten Endpoint-Compliance- und
+          BIOS-Lifecycle-Plattform — Configuration-as-Code, ringbasiertes Rollout
+          und unternehmensweite Compliance-Sichtbarkeit.
+        </p>
+        <div class="domain-tech">
+          Microsoft Intune · Win32 Packaging · BitLocker · BIOS Lifecycle · DCE/DCR
+        </div>
+        <a href={getRelativeLocaleUrl('de', '/projects/cloud-infrastructure/components')} class="domain-evidence">
+          Projekt ansehen: Endpoint Management
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </article>
+
+      <!-- Security & Observability -->
+      <article class="domain" data-animate="slide-up" data-delay="500">
+        <div class="domain-header">
+          <h2 class="domain-title">Security & Observability</h2>
+          <span class="depth-badge depth--hands-on">Hands-on Umsetzung</span>
+        </div>
+        <p class="domain-description">
+          Aufbau einer zentralen SIEM-Plattform für Echtzeit-Bedrohungserkennung
+          und standortübergreifende Korrelation — von verteilten, nicht korrelierbaren
+          Logs zu unternehmensweiter Sicherheitssichtbarkeit.
+        </p>
+        <div class="domain-tech">
+          Elastic Stack · Log Analytics · Azure Monitor · Kibana · Winlogbeat
+        </div>
+        <a href={getRelativeLocaleUrl('de', '/projects/cloud-infrastructure/architecture')} class="domain-evidence">
+          Projekt ansehen: Security & Observability
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </article>
+
+      <!-- Automation & CI/CD -->
+      <article class="domain" data-animate="slide-up" data-delay="600">
+        <div class="domain-header">
+          <h2 class="domain-title">Automation & CI/CD</h2>
+          <span class="depth-badge depth--strategic">Strategische Verantwortung</span>
+        </div>
+        <p class="domain-description">
+          Infrastructure-as-Code, Deployment-Automatisierung und Pipeline-Architektur
+          über verschiedene Plattformen hinweg — von Enterprise SaaS-Infrastruktur bis
+          zur Cloud-Automation und algorithmischen Handelsplattformen.
+        </p>
+        <div class="domain-tech">
+          Ansible · PowerShell · Bamboo · Azure Automation · Docker · Git · Python
+        </div>
+        <div class="domain-evidence-group">
+          <a href={getRelativeLocaleUrl('de', '/projects/cicd-automation/')} class="domain-evidence">
+            Projekt: SaaS CI/CD Pipeline
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href={getRelativeLocaleUrl('de', '/projects/smallcaptrader/')} class="domain-evidence">
+            Projekt: SmallCapTrader
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .skills {
+    padding: var(--space-16) 0;
+  }
+
+  .skills-heading {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-6);
+  }
+
+  .skills-intro {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 50rem;
+    margin-bottom: var(--space-12);
+  }
+
+  .domains {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .domain {
+    padding: var(--space-8);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: border-color 0.2s ease;
+  }
+
+  .domain:hover {
+    border-color: var(--color-accent);
+  }
+
+  .domain-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .domain-title {
+    font-size: var(--text-2xl);
+    margin: 0;
+  }
+
+  .depth-badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1.4;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+
+  .depth--strategic {
+    color: var(--color-accent);
+    background-color: var(--color-accent-subtle);
+  }
+
+  .depth--hands-on {
+    color: var(--amber-400);
+    background-color: rgba(251, 191, 36, 0.1);
+  }
+
+  .depth--advisory {
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-elevated);
+  }
+
+  .domain-description {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+  }
+
+  .domain-tech {
+    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.02em;
+    opacity: 0.7;
+    margin-bottom: var(--space-4);
+  }
+
+  .domain-evidence-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .domain-evidence {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: gap 0.2s ease;
+  }
+
+  .domain-evidence:hover {
+    gap: var(--space-3);
+  }
+
+  @media (max-width: 768px) {
+    .domain {
+      padding: var(--space-6);
+    }
+  }
+</style>
