@@ -31,6 +31,7 @@ Horizontal skalierbare Architektur. Symbol-Range-Partitionierung via Redis Pub/S
 | **sct-stream-router** | 1 | Parst Marktdaten-WebSocket, routet nach Symbol-Range an Redis-Kanäle |
 | **sct-shard-worker** | N | Führt alle Strategien für zugewiesenen Symbol-Range aus |
 | **sct-tick-recorder** | 1 | Schreibt alle Ticks nach QuestDB für Backtest-Replay |
+| **sct-backtest-worker** | N | Verteilte Backtest- und Rule-Mining-Ausführung |
 | **sct-worker** | 1 | Signal-Consumer + Trade-Ausführung + Positions-Monitoring |
 
 ### Datenfluss
@@ -78,6 +79,8 @@ Stream Router ─── parses trades/bars
 | **Validierung** | Pydantic v2 | Field Validators, Settings Management |
 | **Linting** | Ruff | Vereinheitlichtes Tool (black + flake8 + isort) |
 | **Logging** | structlog | Strukturiertes JSON, async-sicher |
+| **Datenverarbeitung** | Polars, Pandas, NumPy | Hochperformante Analytik |
+| **CLI** | Typer + Rich | Administrative Werkzeuge |
 | **Observability** | OpenTelemetry + Prometheus | Distributed Tracing, Metriken |
 
 ### Frontend-Stack

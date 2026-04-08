@@ -30,6 +30,7 @@ Wenn mehrere Strategien gleichzeitig für dasselbe Symbol auslösen:
 - Strategieübergreifende Korrelationsanalyse verhindert redundante überlappende Trades
 - Jedes Signal enthält einen Konfidenz-Score und Strategie-Metadaten
 - Per-Strategie-Risikoparameter steuern Positionsgrösse und Exposure
+- Erkennungstyp-Filterung stellt sicher, dass Strategien nur bei passendem Aktienverhalten feuern (schnell, langsam oder beides)
 
 ---
 
@@ -65,6 +66,19 @@ Entdeckte Regeln folgen einem definierten Beförderungspfad:
 
 ---
 
+## Exit Engine
+
+Zentralisierte Exit-Logik, die über alle Strategien und beförderte Regeln geteilt wird:
+
+- **Stop Loss** — Fester prozentualer Stop Loss
+- **Trailing Stop** — Dynamischer Stop, der der Preisbewegung folgt
+- **Skalierte Gewinnziele** — Mehrstufige Teilgewinnmitnahme auf konfigurierbaren Niveaus
+- **Zeitbasierte Exits** — Maximale Haltedauer-Durchsetzung
+
+Jede Strategie und beförderte Regel kann ihre eigene Exit-Konfiguration definieren, was feingranulares Risikomanagement ohne globales Fallback-Verhalten ermöglicht.
+
+---
+
 ## Broker-Schnittstelle
 
 Abstraktes `BaseBroker`-Interface ermöglicht nahtlosen Wechsel via Konfiguration.
@@ -97,11 +111,21 @@ Abstraktes `BaseBroker`-Interface ermöglicht nahtlosen Wechsel via Konfiguratio
 Verteiltes Backtesting mit Parameteroptimierung:
 
 - Durchläuft Parameterkombinationen über alle Strategien parallel
+- Dedizierte Backtest-Worker im Sharded-Modus für verteilte Ausführung via Redis Work Queues
 - Tick-Daten-Replay aus QuestDB ermöglicht High-Fidelity-Backtesting gegen historische Marktbedingungen
 - Ergebnisse mit Per-Strategie-Analysen gespeichert
 - Bestperformende Konfigurationen können auf Live-Trading angewandt werden
 - Echtzeit-Fortschrittsstreaming via WebSocket zum Frontend-Dashboard
-- Kampagnen-Infrastruktur unterstützt automatisierte mehrtägige Entdeckungs- und Optimierungsläufe
+
+### Kampagnen-Backtesting
+
+Mehrtägige Strategievergleichs-Infrastruktur:
+
+- Aggregiert Performance über beliebige Datumsbereiche in einem einzelnen Vorgang
+- Per-Datum-Daten-Precaching für Worker-Effizienz
+- Tagesübergreifende Aggregation zeigt Strategiekonsistenz und Parameterstabilität
+- Teilfehler-Behandlung — Kampagnen laufen weiter, wenn einzelne Tage fehlschlagen
+- Unterstützt mehrere Discovery-Modi für verschiedene Marktverhaltentypen
 
 ---
 
@@ -117,7 +141,8 @@ Verteiltes Backtesting mit Parameteroptimierung:
 | **Analytics** | Performance-Charts, Equity-Kurven, Aufschlüsselung nach Regel und Strategie |
 | **Backtest** | Backtests durchführen, Echtzeit-Fortschritt, Per-Strategie-Analysen |
 | **Auto-Backtest** | Parameteroptimierungs-Iterationen, Best-Params-Speicherung |
-| **Strategy Discovery** | Rule Mining UI, temporale Mustervisualisierung, Regeln live schalten |
+| **Campaign Backtest** | Mehrtägiger Strategievergleich, Per-Tag-Drill-Down, tagesübergreifende Aggregation |
+| **Strategy Discovery** | Rule Mining UI, temporale Mustervisualisierung, Regelbeförderung mit Erkennungstyp-Tagging |
 | **Settings** | Risikomanagement, Benachrichtigungen, Broker-Konfiguration, Scheduler |
 
 ---
@@ -144,3 +169,18 @@ Verteiltes Backtesting mit Parameteroptimierung:
 | Tabelle | Zweck |
 |---------|-------|
 | `discovered_rules` | Gefundene Regeln mit Bedingungen, Exit-Konfiguration, Score, Live-Status |
+
+---
+
+## Authentifizierung & Sicherheit
+
+- JWT-basierte Authentifizierung mit Access- und Refresh-Tokens
+- Erweiterte Sitzungsunterstützung für persistenten Dashboard-Zugang
+- Geschützte API-Routen mit Bearer-Token-Anforderung
+- PDT (Pattern Day Trader) Compliance-Tracking
+
+---
+
+## CLI-Werkzeuge
+
+Administrative Kommandozeilen-Schnittstelle auf Basis von Typer und Rich für Datenbankverwaltung, Service-Steuerung und operationelle Aufgaben.

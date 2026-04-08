@@ -1,5 +1,5 @@
 ---
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, useTranslations, getLocalePath } from '../i18n/utils';
 
 interface TimelineEntry {
   date: string;
@@ -32,7 +32,7 @@ const t = useTranslations(lang);
           {entry.description.map((bullet) => <li>{bullet}</li>)}
         </ul>
         {entry.projectLink && (
-          <a href={entry.projectLink} class="timeline-link">
+          <a href={getLocalePath(entry.projectLink, lang)} class="timeline-link">
             {entry.projectLink === '/projects/' ? t('experience.viewProjects') : t('experience.viewProject')}
             <span aria-hidden="true">&rarr;</span>
           </a>

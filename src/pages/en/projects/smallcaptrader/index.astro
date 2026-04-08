@@ -99,8 +99,9 @@ const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL
         <li><strong>Discovered Rules</strong> — Auto-mined strategies from the rule-mining engine, promoted to live trading after validation</li>
       </ul>
       <p>
-        Each strategy includes configurable risk parameters, signal confidence scoring, and priority-based
-        arbitration when multiple strategies fire simultaneously on the same symbol.
+        Each strategy includes configurable risk parameters, signal confidence scoring, priority-based
+        arbitration when multiple strategies fire simultaneously on the same symbol, and detection-type
+        filtering so strategies only activate on matching stock behavior (fast-moving, slow-moving, or both).
       </p>
     </section>
 
@@ -141,6 +142,33 @@ const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL
       </div>
 
       <div class="decision">
+        <h3>Unified Exit Engine</h3>
+        <p>
+          Centralized exit logic handling stop loss, trailing stops, scaled profit targets, and
+          time-based exits. Each strategy and promoted rule can define its own exit configuration,
+          enabling fine-grained risk management without global fallback behavior.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Campaign Backtesting</h3>
+        <p>
+          Multi-day strategy comparison infrastructure that aggregates performance across arbitrary
+          date ranges. Distributed execution via Redis work queues with per-date data pre-caching.
+          Cross-day aggregation surfaces strategy consistency, win-day counts, and parameter stability
+          over extended periods.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Authentication & Security</h3>
+        <p>
+          JWT-based authentication with access and refresh tokens. Protected API routes require
+          bearer tokens. Extended session support for persistent dashboard access.
+        </p>
+      </div>
+
+      <div class="decision">
         <h3>Observability Stack</h3>
         <p>
           Structured JSON logging via structlog, distributed tracing with OpenTelemetry, and
@@ -155,8 +183,11 @@ const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL
       <p>
         Next.js 16 dashboard with React 19, Tailwind CSS v4, and shadcn/ui components. TanStack
         Query for server state management. Key pages include real-time portfolio monitoring, order
-        entry, strategy configuration, backtest analytics with equity curves, and a strategy
-        discovery interface for visualizing and promoting mined rules.
+        entry, strategy configuration with independent fast/slow detection toggles, backtest analytics
+        with equity curves, campaign backtesting for multi-day comparison, and a strategy discovery
+        interface for visualizing and promoting mined rules with detection-type tagging. The backend
+        also includes a CLI built with Typer and Rich for administrative operations and PDT
+        (Pattern Day Trader) compliance tracking.
       </p>
     </section>
   </article>
