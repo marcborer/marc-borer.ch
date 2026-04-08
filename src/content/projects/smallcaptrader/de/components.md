@@ -184,3 +184,13 @@ Mehrtägige Strategievergleichs-Infrastruktur:
 ## CLI-Werkzeuge
 
 Administrative Kommandozeilen-Schnittstelle auf Basis von Typer und Rich für Datenbankverwaltung, Service-Steuerung und operationelle Aufgaben.
+
+---
+
+## Codequalität & CI/CD
+
+- **Linting** — Ruff für vereinheitlichte Formatierung und Lint-Prüfungen
+- **Type Checking** — MyPy im strikten Modus über das gesamte Backend
+- **Testing** — pytest mit Async-Unterstützung, Property-basiertes Testing (hypothesis), Zeit-Mocking und HTTP-Mocking
+- **CI-Pipeline** — GitHub Actions führt Lint, Typecheck und vollständige Test-Suite bei jedem Push und Pull Request aus
+- **Dependency Management** — Renovate für automatisierte Abhängigkeitsaktualisierungen mit CI-Gating
