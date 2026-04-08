@@ -12,9 +12,26 @@ const t = useTranslations(lang);
 const nav = docNavs['smallcaptrader'];
 
 const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL', 'QuestDB', 'Redis', 'Docker'];
+
+const projectSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "SmallCapTrader",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Linux, Docker",
+  "description": "Full-Stack algorithmische Handelsplattform für Small-Cap-Aktien mit automatisierter Strategieentdeckung, Multi-Broker-Ausführung und Echtzeit-Marktanalyse.",
+  "author": {
+    "@type": "Person",
+    "name": "Marc Borer",
+    "url": "https://marc-borer.ch"
+  },
+  "programmingLanguage": ["Python", "TypeScript"],
+  "runtimePlatform": ["FastAPI", "Next.js"],
+  "keywords": "algorithmischer Handel, Small-Cap-Aktien, automatisierter Handel, Strategieentdeckung, Rule Mining, Backtesting, Multi-Broker"
+});
 ---
 
-<DocLayout title="SmallCapTrader — Marc Borer" ogImage="/og/smallcaptrader.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="SmallCapTrader — Algorithmische Handelsplattform für Small-Cap-Aktien" description="Full-Stack algorithmische Handelsplattform mit automatisierter Strategieentdeckung, Multi-Broker-Ausführung und Echtzeit-Marktanalyse für Small-Cap-Aktien." ogImage="/og/smallcaptrader.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
       <span aria-hidden="true">&larr;</span> {t('projects.backToProjects')}
@@ -165,6 +182,7 @@ const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL
       </p>
     </section>
   </article>
+  <script type="application/ld+json" set:html={projectSchema} />
 </DocLayout>
 
 <style>
