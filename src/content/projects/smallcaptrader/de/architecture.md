@@ -81,6 +81,10 @@ Stream Router ─── parses trades/bars
 | **Logging** | structlog | Strukturiertes JSON, async-sicher |
 | **Datenverarbeitung** | Polars, Pandas, NumPy | Hochperformante Analytik |
 | **CLI** | Typer + Rich | Administrative Werkzeuge |
+| **Type Checking** | MyPy (strikt) | Statische Typsicherheit |
+| **Testing** | pytest + hypothesis | Unit-, Integrations-, Property-basierte Tests |
+| **Dependency Management** | Renovate | Automatisierte Abhängigkeitsaktualisierungen |
+| **CI/CD** | GitHub Actions | Lint, Typecheck, Tests bei jedem Push/PR |
 | **Observability** | OpenTelemetry + Prometheus | Distributed Tracing, Metriken |
 
 ### Frontend-Stack

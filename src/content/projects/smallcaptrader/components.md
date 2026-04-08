@@ -184,3 +184,13 @@ Multi-day strategy comparison infrastructure:
 ## CLI Tooling
 
 Administrative command-line interface built with Typer and Rich for database management, service control, and operational tasks.
+
+---
+
+## Code Quality & CI/CD
+
+- **Linting** — Ruff for unified formatting and lint checks
+- **Type Checking** — MyPy in strict mode across the entire backend
+- **Testing** — pytest with async support, property-based testing (hypothesis), time mocking, and HTTP mocking
+- **CI Pipeline** — GitHub Actions runs lint, typecheck, and full test suite on every push and pull request
+- **Dependency Management** — Renovate for automated dependency updates with CI gating
