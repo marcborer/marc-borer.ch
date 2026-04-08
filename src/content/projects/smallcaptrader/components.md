@@ -30,6 +30,7 @@ When multiple strategies fire on the same symbol simultaneously:
 - Cross-strategy correlation analytics prevent redundant overlapping trades
 - Each signal includes confidence score and strategy metadata
 - Per-strategy risk parameters control position sizing and exposure
+- Detection-type filtering ensures strategies only fire on matching stock behavior (fast, slow, or both)
 
 ---
 
@@ -65,6 +66,19 @@ Discovered rules follow a defined promotion path:
 
 ---
 
+## Exit Engine
+
+Centralized exit logic shared across all strategies and promoted rules:
+
+- **Stop Loss** — Fixed percentage-based stop loss
+- **Trailing Stop** — Dynamic stop that follows price movement
+- **Scaled Profit Targets** — Multi-tier partial profit taking at configurable levels
+- **Time-Based Exits** — Maximum hold duration enforcement
+
+Each strategy and promoted rule can define its own exit configuration, enabling fine-grained risk management without global fallback behavior.
+
+---
+
 ## Broker Interface
 
 Abstract `BaseBroker` interface enables seamless switching via configuration.
@@ -97,11 +111,21 @@ Abstract `BaseBroker` interface enables seamless switching via configuration.
 Distributed backtesting with parameter optimization:
 
 - Sweeps parameter combinations across all strategies in parallel
+- Dedicated backtest workers in sharded mode for distributed execution via Redis work queues
 - Tick data replay from QuestDB enables high-fidelity backtesting against historical market conditions
 - Results stored with per-strategy analytics
 - Best-performing configurations can be applied to live trading
 - Real-time progress streaming via WebSocket to the frontend dashboard
-- Campaign infrastructure supports automated multi-day discovery and optimization runs
+
+### Campaign Backtesting
+
+Multi-day strategy comparison infrastructure:
+
+- Aggregates performance across arbitrary date ranges in a single operation
+- Per-date data pre-caching for worker efficiency
+- Cross-day aggregation surfaces strategy consistency and parameter stability
+- Partial failure handling — campaigns continue if individual dates fail
+- Supports multiple discovery modes for different market behavior types
 
 ---
 
@@ -117,7 +141,8 @@ Distributed backtesting with parameter optimization:
 | **Analytics** | Performance charts, equity curves, breakdown by rule and strategy |
 | **Backtest** | Run backtests, real-time progress, per-strategy analytics |
 | **Auto-Backtest** | Parameter optimization iterations, best-params storage |
-| **Strategy Discovery** | Rule mining UI, temporal pattern visualization, promote rules to live |
+| **Campaign Backtest** | Multi-day strategy comparison, per-day drill-down, cross-day aggregation |
+| **Strategy Discovery** | Rule mining UI, temporal pattern visualization, promote rules with detection-type tagging |
 | **Settings** | Risk management, notifications, broker config, scheduler |
 
 ---
@@ -144,3 +169,18 @@ Distributed backtesting with parameter optimization:
 | Table | Purpose |
 |-------|---------|
 | `discovered_rules` | Mined rules with conditions, exit config, score, live status |
+
+---
+
+## Authentication & Security
+
+- JWT-based authentication with access and refresh tokens
+- Extended session support for persistent dashboard access
+- Protected API routes requiring bearer tokens
+- PDT (Pattern Day Trader) compliance tracking
+
+---
+
+## CLI Tooling
+
+Administrative command-line interface built with Typer and Rich for database management, service control, and operational tasks.

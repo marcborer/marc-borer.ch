@@ -1,4 +1,6 @@
 ---
+import { getLangFromUrl, getLocalePath } from '../i18n/utils';
+
 interface NavChild {
   label: string;
   href: string;
@@ -16,10 +18,15 @@ interface Props {
 }
 
 const { title, items } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
 const currentPath = Astro.url.pathname.replace(/\/$/, '');
 
+function localize(href: string): string {
+  return getLocalePath(href, lang);
+}
+
 function isActive(href: string): boolean {
-  return currentPath === href;
+  return currentPath === localize(href);
 }
 ---
 
@@ -35,7 +42,7 @@ function isActive(href: string): boolean {
               {item.children.map((child) => (
                 <li>
                   <a
-                    href={`${child.href}/`}
+                    href={`${localize(child.href)}/`}
                     class:list={['doc-nav-link', 'doc-nav-sublink', { active: isActive(child.href) }]}
                     aria-current={isActive(child.href) ? 'page' : undefined}
                   >
@@ -48,7 +55,7 @@ function isActive(href: string): boolean {
         ) : (
           <li>
             <a
-              href={`${item.href}/`}
+              href={`${localize(item.href!)}/`}
               class:list={['doc-nav-link', { active: isActive(item.href!) }]}
               aria-current={isActive(item.href!) ? 'page' : undefined}
             >

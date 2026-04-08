@@ -104,8 +104,10 @@ const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL
         <li><strong>Discovered Rules</strong> — Automatisch geschürfte Strategien aus der Rule-Mining-Engine, nach Validierung zum Live-Trading befördert</li>
       </ul>
       <p>
-        Jede Strategie enthält konfigurierbare Risikoparameter, Signal-Konfidenz-Scoring und prioritätsbasierte
-        Arbitrierung, wenn mehrere Strategien gleichzeitig für dasselbe Symbol auslösen.
+        Jede Strategie enthält konfigurierbare Risikoparameter, Signal-Konfidenz-Scoring, prioritätsbasierte
+        Arbitrierung wenn mehrere Strategien gleichzeitig für dasselbe Symbol auslösen, und
+        Erkennungstyp-Filterung, sodass Strategien nur bei passendem Aktienverhalten aktiviert werden
+        (schnelllaufend, langsamlaufend oder beides).
       </p>
     </section>
 
@@ -146,6 +148,33 @@ const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL
       </div>
 
       <div class="decision">
+        <h3>Unified Exit Engine</h3>
+        <p>
+          Zentralisierte Exit-Logik für Stop Loss, Trailing Stops, skalierte Gewinnziele und
+          zeitbasierte Exits. Jede Strategie und beförderte Regel kann ihre eigene Exit-Konfiguration
+          definieren, was feingranulares Risikomanagement ohne globales Fallback-Verhalten ermöglicht.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Kampagnen-Backtesting</h3>
+        <p>
+          Mehrtägige Strategievergleichs-Infrastruktur, die Performance über beliebige Datumsbereiche
+          aggregiert. Verteilte Ausführung via Redis Work Queues mit Per-Datum-Daten-Precaching.
+          Tagesübergreifende Aggregation zeigt Strategiekonsistenz, Gewinntage-Anzahl und
+          Parameterstabilität über längere Zeiträume.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Authentifizierung & Sicherheit</h3>
+        <p>
+          JWT-basierte Authentifizierung mit Access- und Refresh-Tokens. Geschützte API-Routen
+          erfordern Bearer-Tokens. Erweiterte Sitzungsunterstützung für persistenten Dashboard-Zugang.
+        </p>
+      </div>
+
+      <div class="decision">
         <h3>Observability Stack</h3>
         <p>
           Strukturiertes JSON-Logging via structlog, verteiltes Tracing mit OpenTelemetry und
@@ -160,8 +189,11 @@ const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL
       <p>
         Next.js 16-Dashboard mit React 19, Tailwind CSS v4 und shadcn/ui-Komponenten. TanStack
         Query für Server-State-Management. Zentrale Seiten umfassen Echtzeit-Portfolioüberwachung,
-        Orderaufgabe, Strategiekonfiguration, Backtest-Analytik mit Equity-Kurven und ein
-        Strategy-Discovery-Interface zur Visualisierung und Beförderung geschürfter Regeln.
+        Orderaufgabe, Strategiekonfiguration mit unabhängigen Fast/Slow-Erkennungs-Toggles,
+        Backtest-Analytik mit Equity-Kurven, Kampagnen-Backtesting für Mehrtagesvergleiche und ein
+        Strategy-Discovery-Interface zur Visualisierung und Beförderung geschürfter Regeln mit
+        Erkennungstyp-Tagging. Das Backend enthält zudem eine CLI auf Basis von Typer und Rich
+        für administrative Operationen sowie PDT (Pattern Day Trader) Compliance-Tracking.
       </p>
     </section>
   </article>

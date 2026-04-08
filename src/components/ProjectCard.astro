@@ -1,6 +1,6 @@
 ---
 import TechBadge from './TechBadge.astro';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, useTranslations, getLocalePath } from '../i18n/utils';
 
 interface Props {
   title: string;
@@ -22,7 +22,7 @@ const t = useTranslations(lang);
     {tech.map((t) => <TechBadge name={t} />)}
   </div>
   <div class="card-links">
-    <a href={link} class="card-link">
+    <a href={getLocalePath(link, lang)} class="card-link">
       {t('projects.viewProject')}
       <span aria-hidden="true">&rarr;</span>
     </a>
