@@ -6,9 +6,26 @@ import docNavs from '../../../../data/doc-navs.en.json';
 const nav = docNavs['smallcaptrader'];
 
 const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL', 'QuestDB', 'Redis', 'Docker'];
+
+const projectSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "SmallCapTrader",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Linux, Docker",
+  "description": "Full-stack algorithmic trading platform for small-cap stocks with automated strategy discovery, multi-broker execution, and real-time market analysis.",
+  "author": {
+    "@type": "Person",
+    "name": "Marc Borer",
+    "url": "https://marc-borer.ch"
+  },
+  "programmingLanguage": ["Python", "TypeScript"],
+  "runtimePlatform": ["FastAPI", "Next.js"],
+  "keywords": "algorithmic trading, small-cap stocks, automated trading, strategy discovery, rule mining, backtesting, multi-broker"
+});
 ---
 
-<DocLayout title="SmallCapTrader — Marc Borer" ogImage="/og/smallcaptrader.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="SmallCapTrader — Algorithmic Trading Platform for Small-Cap Stocks" description="Full-stack algorithmic trading platform with automated strategy discovery, multi-broker execution, and real-time market analysis for small-cap stocks." ogImage="/og/smallcaptrader.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href="/en/projects/" class="back-link">
       <span aria-hidden="true">&larr;</span> Back to Projects
@@ -191,6 +208,7 @@ const tech = ['Python', 'FastAPI', 'Next.js', 'React', 'TypeScript', 'PostgreSQL
       </p>
     </section>
   </article>
+  <script type="application/ld+json" set:html={projectSchema} />
 </DocLayout>
 
 <style>
