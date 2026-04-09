@@ -196,15 +196,32 @@ const projectSchema = JSON.stringify({
     </section>
 
     <section class="case-section" data-animate="slide-up">
+      <h2>Real-Time Infrastructure</h2>
+      <p>
+        The platform uses a domain event architecture where backend services publish events through
+        Redis pub/sub, which are forwarded to frontend clients via WebSocket connections. This enables
+        sub-second UI updates across all dashboard pages without polling. When the WebSocket connection
+        is unavailable, the system falls back to automatic polling to maintain data freshness.
+      </p>
+      <ul class="feature-list">
+        <li><strong>WebSocket-Driven Cache Invalidation</strong> — Domain events trigger targeted query invalidation for sub-second dashboard updates</li>
+        <li><strong>Redis Pub/Sub Event Bridge</strong> — Cross-process event delivery from background workers to API server to frontend clients</li>
+        <li><strong>Stale Price Guards</strong> — Prevents exit decisions and order submissions when market data exceeds freshness thresholds</li>
+        <li><strong>Atomic Order Repricing</strong> — Background monitoring adjusts pending orders using broker-native replace operations</li>
+      </ul>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
       <h2>Frontend</h2>
       <p>
         Next.js 16 dashboard with React 19, Tailwind CSS v4, and shadcn/ui components. TanStack
         Query for server state management. Key pages include real-time portfolio monitoring, order
         entry, strategy configuration with independent fast/slow detection toggles, backtest analytics
-        with equity curves, campaign backtesting for multi-day comparison, and a strategy discovery
-        interface for visualizing and promoting mined rules with detection-type tagging. The backend
-        also includes a CLI built with Typer and Rich for administrative operations and PDT
-        (Pattern Day Trader) compliance tracking.
+        with equity curves, campaign backtesting for multi-day comparison, a strategy discovery
+        interface for visualizing and promoting mined rules with detection-type tagging, a live
+        position monitor with exit state tracking, and a rule lifecycle dashboard with health
+        scoring and degradation detection. The backend also includes a CLI built with Typer and
+        Rich for administrative operations and PDT (Pattern Day Trader) compliance tracking.
       </p>
     </section>
   </article>

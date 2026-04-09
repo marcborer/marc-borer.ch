@@ -63,6 +63,7 @@ Entdeckte Regeln folgen einem definierten Beförderungspfad:
 3. **Kampagnen-Integration** — Mehrtägige automatisierte Entdeckungsläufe erkunden kontinuierlich neue Muster
 4. **Live-Promotion** — Validierte Regeln mit Per-Regel-Exit-Konfigurationen werden zum Live-Trading befördert
 5. **Performance-Tracking** — Live-Ergebnisse werden mit Analytik-Aufschlüsselung nach Regel verfolgt
+6. **Degradationserkennung & Herabstufung** — Health Scoring vergleicht Backtest- mit Live-Metriken pro Regel; Degradation löst Toast-Benachrichtigungen über alle Dashboard-Seiten aus; unterperformende Regeln können vom Live-Trading herabgestuft werden
 
 ---
 
@@ -74,6 +75,7 @@ Zentralisierte Exit-Logik, die über alle Strategien und beförderte Regeln gete
 - **Trailing Stop** — Dynamischer Stop, der der Preisbewegung folgt
 - **Skalierte Gewinnziele** — Mehrstufige Teilgewinnmitnahme auf konfigurierbaren Niveaus
 - **Zeitbasierte Exits** — Maximale Haltedauer-Durchsetzung
+- **Preisaktualitäts-Validierung** — Stale-Price-Guards verhindern Exit-Entscheidungen auf Basis veralteter Marktdaten; Kauforders verwenden frische Redis-Tick-Preise mit automatischem Fallback
 
 Jede Strategie und beförderte Regel kann ihre eigene Exit-Konfiguration definieren, was feingranulares Risikomanagement ohne globales Fallback-Verhalten ermöglicht.
 
@@ -143,6 +145,8 @@ Mehrtägige Strategievergleichs-Infrastruktur:
 | **Auto-Backtest** | Parameteroptimierungs-Iterationen, Best-Params-Speicherung |
 | **Campaign Backtest** | Mehrtägiger Strategievergleich, Per-Tag-Drill-Down, tagesübergreifende Aggregation |
 | **Strategy Discovery** | Rule Mining UI, temporale Mustervisualisierung, Regelbeförderung mit Erkennungstyp-Tagging |
+| **Position Monitor** | Live-Exit-State-Tracking, Stop-Distanzen, Gewinnziel-Fortschritt, WebSocket-Updates |
+| **Rule Lifecycle** | Health Scoring, Degradationserkennung, Überlebensanalyse, Regel-Herabstufung |
 | **Settings** | Risikomanagement, Benachrichtigungen, Broker-Konfiguration, Scheduler |
 
 ---
@@ -194,3 +198,4 @@ Administrative Kommandozeilen-Schnittstelle auf Basis von Typer und Rich für Da
 - **Testing** — pytest mit Async-Unterstützung, Property-basiertes Testing (hypothesis), Zeit-Mocking und HTTP-Mocking
 - **CI-Pipeline** — GitHub Actions führt Lint, Typecheck und vollständige Test-Suite bei jedem Push und Pull Request aus
 - **Dependency Management** — Renovate für automatisierte Abhängigkeitsaktualisierungen mit CI-Gating
+- **Type Generation** — OpenAPI-gesteuerte TypeScript-Typgenerierung mit CI-Drift-Erkennung

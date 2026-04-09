@@ -202,15 +202,34 @@ const projectSchema = JSON.stringify({
     </section>
 
     <section class="case-section" data-animate="slide-up">
+      <h2>Echtzeit-Infrastruktur</h2>
+      <p>
+        Die Plattform nutzt eine Domain-Event-Architektur, bei der Backend-Services Ereignisse über
+        Redis Pub/Sub veröffentlichen, die via WebSocket-Verbindungen an Frontend-Clients weitergeleitet
+        werden. Dies ermöglicht UI-Updates in Sekundenbruchteilen über alle Dashboard-Seiten ohne Polling.
+        Bei nicht verfügbarer WebSocket-Verbindung fällt das System automatisch auf Polling zurück,
+        um die Datenaktualität aufrechtzuerhalten.
+      </p>
+      <ul class="feature-list">
+        <li><strong>WebSocket-gesteuerte Cache-Invalidierung</strong> — Domain-Events lösen gezielte Query-Invalidierung für Dashboard-Updates in Sekundenbruchteilen aus</li>
+        <li><strong>Redis Pub/Sub Event Bridge</strong> — Prozessübergreifende Event-Zustellung von Background-Workern über API-Server zu Frontend-Clients</li>
+        <li><strong>Stale Price Guards</strong> — Verhindert Exit-Entscheidungen und Orderübermittlungen bei veralteten Marktdaten</li>
+        <li><strong>Atomares Order-Repricing</strong> — Hintergrundüberwachung passt ausstehende Orders mittels broker-nativer Replace-Operationen an</li>
+      </ul>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
       <h2>Frontend</h2>
       <p>
         Next.js 16-Dashboard mit React 19, Tailwind CSS v4 und shadcn/ui-Komponenten. TanStack
         Query für Server-State-Management. Zentrale Seiten umfassen Echtzeit-Portfolioüberwachung,
         Orderaufgabe, Strategiekonfiguration mit unabhängigen Fast/Slow-Erkennungs-Toggles,
-        Backtest-Analytik mit Equity-Kurven, Kampagnen-Backtesting für Mehrtagesvergleiche und ein
+        Backtest-Analytik mit Equity-Kurven, Kampagnen-Backtesting für Mehrtagesvergleiche, ein
         Strategy-Discovery-Interface zur Visualisierung und Beförderung geschürfter Regeln mit
-        Erkennungstyp-Tagging. Das Backend enthält zudem eine CLI auf Basis von Typer und Rich
-        für administrative Operationen sowie PDT (Pattern Day Trader) Compliance-Tracking.
+        Erkennungstyp-Tagging, ein Live-Positionsmonitor mit Exit-State-Tracking sowie ein
+        Rule-Lifecycle-Dashboard mit Health Scoring und Degradationserkennung. Das Backend enthält
+        zudem eine CLI auf Basis von Typer und Rich für administrative Operationen sowie PDT
+        (Pattern Day Trader) Compliance-Tracking.
       </p>
     </section>
   </article>

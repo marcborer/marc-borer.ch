@@ -86,6 +86,7 @@ Stream Router ─── parses trades/bars
 | **Dependency Management** | Renovate | Automated dependency updates |
 | **CI/CD** | GitHub Actions | Lint, typecheck, test on every push/PR |
 | **Observability** | OpenTelemetry + Prometheus | Distributed tracing, metrics |
+| **API Contract** | openapi-typescript | Pydantic response models, generated TypeScript types, CI drift check |
 
 ### Frontend Stack
 

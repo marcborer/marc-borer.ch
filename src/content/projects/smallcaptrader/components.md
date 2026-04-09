@@ -63,6 +63,7 @@ Discovered rules follow a defined promotion path:
 3. **Campaign Integration** — Multi-day automated discovery runs continuously explore new patterns
 4. **Live Promotion** — Validated rules with per-rule exit configurations are promoted to live trading
 5. **Performance Tracking** — Live results are tracked with analytics breakdown by rule
+6. **Degradation Detection & Demotion** — Health scoring compares backtest vs live metrics per rule; degradation triggers toast notifications across all dashboard pages; underperforming rules can be demoted from live trading
 
 ---
 
@@ -74,6 +75,7 @@ Centralized exit logic shared across all strategies and promoted rules:
 - **Trailing Stop** — Dynamic stop that follows price movement
 - **Scaled Profit Targets** — Multi-tier partial profit taking at configurable levels
 - **Time-Based Exits** — Maximum hold duration enforcement
+- **Price Freshness Validation** — Stale price guards prevent exit decisions on outdated market data; buy orders use fresh Redis tick prices with automatic fallback
 
 Each strategy and promoted rule can define its own exit configuration, enabling fine-grained risk management without global fallback behavior.
 
@@ -143,6 +145,8 @@ Multi-day strategy comparison infrastructure:
 | **Auto-Backtest** | Parameter optimization iterations, best-params storage |
 | **Campaign Backtest** | Multi-day strategy comparison, per-day drill-down, cross-day aggregation |
 | **Strategy Discovery** | Rule mining UI, temporal pattern visualization, promote rules with detection-type tagging |
+| **Position Monitor** | Live exit state tracking, stop distances, profit target progress, WebSocket updates |
+| **Rule Lifecycle** | Health scoring, degradation detection, survival analysis, rule demotion |
 | **Settings** | Risk management, notifications, broker config, scheduler |
 
 ---
@@ -194,3 +198,4 @@ Administrative command-line interface built with Typer and Rich for database man
 - **Testing** — pytest with async support, property-based testing (hypothesis), time mocking, and HTTP mocking
 - **CI Pipeline** — GitHub Actions runs lint, typecheck, and full test suite on every push and pull request
 - **Dependency Management** — Renovate for automated dependency updates with CI gating
+- **Type Generation** — OpenAPI-driven TypeScript type generation with CI drift detection
