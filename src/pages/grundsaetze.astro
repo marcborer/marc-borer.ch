@@ -4,7 +4,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 
 <PageLayout title="Architektur-Grundsätze — Marc Borer" description="Vier Architektur-Grundsätze, die meine Entscheidungen leiten — von ringbasiertem Rollout bis zur bewussten Hybrid-Strategie." ogImage="/og/principles.png">
   <section class="principles">
-    <h1 class="principles-heading" data-animate="slide-up">Architektur-Grundsätze</h1>
+    <h1 class="principles-heading page-heading-accent" data-animate="slide-up">Architektur-Grundsätze</h1>
     <p class="principles-intro" data-animate="slide-up" data-delay="100">
       Vier Überzeugungen, die meine Architekturentscheidungen leiten — geformt durch
       den Aufbau und Betrieb unternehmenskritischer Infrastruktur in komplexen
@@ -84,18 +84,39 @@ import PageLayout from '../layouts/PageLayout.astro';
     display: flex;
     flex-direction: column;
     gap: 0;
+    counter-reset: principle;
   }
 
   .principle {
-    padding: var(--space-8) 0;
+    position: relative;
+    padding: var(--space-10) 0;
+    padding-left: 4.5rem;
     border-top: none;
     border-image: linear-gradient(to right, transparent, var(--color-accent-subtle), var(--color-accent), var(--color-accent-subtle), transparent) 1;
     border-image-width: 1px 0 0 0;
+    counter-increment: principle;
+  }
+
+  .principle::before {
+    content: "0" counter(principle);
+    position: absolute;
+    left: 0;
+    top: var(--space-10);
+    font-family: 'Syne', ui-sans-serif, system-ui, sans-serif;
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: var(--color-accent);
+    opacity: 0.25;
+    line-height: 1;
   }
 
   .principle:first-child {
     border-image: none;
     padding-top: 0;
+  }
+
+  .principle:first-child::before {
+    top: 0;
   }
 
   .principle-title {
@@ -107,5 +128,15 @@ import PageLayout from '../layouts/PageLayout.astro';
     font-size: var(--text-base);
     color: var(--color-text-secondary);
     line-height: 1.8;
+  }
+
+  @media (max-width: 768px) {
+    .principle {
+      padding-left: 3.5rem;
+    }
+
+    .principle::before {
+      font-size: var(--text-2xl);
+    }
   }
 </style>

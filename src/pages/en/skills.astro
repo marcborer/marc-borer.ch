@@ -5,7 +5,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 
 <PageLayout title="Skills & Competencies — Marc Borer" description="Architecture competencies of Marc Borer — Identity & Access, Cloud & Messaging, Endpoint Management, Security, and Automation." ogImage="/og/skills.png">
   <section class="skills">
-    <h1 class="skills-heading" data-animate="slide-up">Skills & Competencies</h1>
+    <h1 class="skills-heading page-heading-accent" data-animate="slide-up">Skills & Competencies</h1>
     <p class="skills-intro" data-animate="slide-up" data-delay="100">
       End-to-end architectural ownership across enterprise infrastructure —
       from technology evaluation and design decisions through implementation
@@ -147,15 +147,21 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
   }
 
   .domain {
+    position: relative;
     padding: var(--space-8);
+    padding-left: calc(var(--space-8) + 3px);
     background-color: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
     border-radius: var(--radius-lg);
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.3s ease, transform 0.3s ease;
   }
 
   .domain:hover {
     border-color: var(--color-accent);
+    border-left-color: var(--color-accent);
+    box-shadow: 0 4px 24px rgba(34, 211, 238, 0.06);
+    transform: translateY(-2px);
   }
 
   .domain-header {

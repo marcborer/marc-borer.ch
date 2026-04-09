@@ -39,6 +39,7 @@ const t = useTranslations(lang);
 
 <style>
   .card {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: var(--space-8);
@@ -48,6 +49,19 @@ const t = useTranslations(lang);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
   :global([data-theme="light"]) .card {
@@ -63,8 +77,12 @@ const t = useTranslations(lang);
   @media (hover: hover) {
     .card:hover {
       transform: translateY(-4px) scale(1.01);
-      box-shadow: 0 0 30px var(--color-accent-subtle);
+      box-shadow: 0 8px 32px rgba(34, 211, 238, 0.08), 0 0 0 1px var(--color-accent);
       border-color: var(--color-accent);
+    }
+
+    .card:hover::before {
+      opacity: 1;
     }
   }
 

@@ -41,8 +41,11 @@ const isDE = lang === 'de';
 
 <style>
   .footer {
-    border-top: 1px solid var(--color-border);
-    padding: var(--space-8) var(--space-6);
+    border-top: none;
+    border-image: linear-gradient(to right, transparent, var(--color-accent-subtle), var(--color-accent), var(--color-accent-subtle), transparent) 1;
+    border-image-width: 1px 0 0 0;
+    border-style: solid;
+    padding: var(--space-10) var(--space-6);
     margin-top: auto;
   }
 
