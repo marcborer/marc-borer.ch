@@ -151,6 +151,23 @@ Mehrtägige Strategievergleichs-Infrastruktur:
 
 ---
 
+## Benachrichtigungssystem
+
+Live-Benachrichtigungsglocke, die an Backend-WebSocket-Events angebunden ist, mit schweregrad-gestufter Zustellung:
+
+| Schweregrad | Zustellung | Event-Typen |
+|-------------|------------|-------------|
+| **Kritisch** | Toast + Glocke | Order-Fills, Stop-Loss-Auslösungen, Kill-Switch-Aktivierungen |
+| **Warnung** | Nur Glocke | Alert-Auslösungen, Regel-Gesundheitsänderungen |
+| **Info** | Nur Glocke | Order-Einreichungen, Mover-Erkennungen, Muster-Entdeckungen |
+
+- Hybrides Lesen/Verwerfen-Modell — Öffnen des Dropdowns markiert Benachrichtigungen als gelesen; einzelne Einträge können verworfen werden
+- Redis-gestützte Persistenz mit automatischem TTL-Ablauf für transiente Event-Daten
+- Backfill bei Wiederverbindung stellt sicher, dass keine Events während Verbindungsunterbrechungen verloren gehen
+- WebSocket-Verbindungsstatus-Anzeige am Glockensymbol (verbunden/wiederverbindend)
+
+---
+
 ## Datenbankschema (Schlüsseltabellen)
 
 ### Trading
