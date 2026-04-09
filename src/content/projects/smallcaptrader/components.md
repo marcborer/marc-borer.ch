@@ -151,6 +151,23 @@ Multi-day strategy comparison infrastructure:
 
 ---
 
+## Notification System
+
+Live notification bell wired to backend WebSocket events with severity-tiered delivery:
+
+| Severity | Delivery | Event Types |
+|----------|----------|-------------|
+| **Critical** | Toast + bell | Order fills, stop-loss triggers, kill switch activations |
+| **Warning** | Bell only | Alert triggers, rule health changes |
+| **Info** | Bell only | Order submissions, mover detections, pattern discoveries |
+
+- Hybrid read/dismiss model — opening the dropdown marks notifications as read; individual items can be dismissed
+- Redis-backed persistence with automatic TTL expiration for transient event data
+- Backfill on reconnect ensures no events are missed during connection interruptions
+- WebSocket connection status indicator on the bell icon (connected/reconnecting)
+
+---
+
 ## Database Schema (Key Tables)
 
 ### Trading
