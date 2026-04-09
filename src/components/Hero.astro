@@ -279,14 +279,50 @@ const t = useTranslations(lang);
     color: var(--color-accent);
   }
 
-  /* Light mode terminal adjustments */
-  [data-theme="light"] .hero-terminal {
-    background: rgba(248, 250, 252, 0.8);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  /* Light mode terminal — keep dark shell look */
+  :global([data-theme="light"]) .hero-terminal {
+    background: rgba(15, 23, 42, 0.85);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-color: rgba(51, 65, 85, 0.4);
   }
 
-  [data-theme="light"] .terminal-chrome {
-    background: rgba(226, 232, 240, 0.8);
+  :global([data-theme="light"]) .terminal-chrome {
+    background: rgba(30, 41, 59, 0.8);
+    border-bottom-color: rgba(51, 65, 85, 0.4);
+  }
+
+  :global([data-theme="light"]) .t-cmd {
+    color: #FFFFFF;
+  }
+
+  :global([data-theme="light"]) .t-output {
+    color: #E2E8F0;
+  }
+
+  :global([data-theme="light"]) .t-prompt,
+  :global([data-theme="light"]) .t-cursor {
+    color: #22D3EE;
+  }
+
+  :global([data-theme="light"]) .terminal-title {
+    color: #94A3B8;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-theme])) .hero-terminal {
+      background: rgba(15, 23, 42, 0.85);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      border-color: rgba(51, 65, 85, 0.4);
+    }
+    :global(:root:not([data-theme])) .terminal-chrome {
+      background: rgba(30, 41, 59, 0.8);
+      border-bottom-color: rgba(51, 65, 85, 0.4);
+    }
+    :global(:root:not([data-theme])) .t-cmd { color: #FFFFFF; }
+    :global(:root:not([data-theme])) .t-output { color: #E2E8F0; }
+    :global(:root:not([data-theme])) .t-prompt,
+    :global(:root:not([data-theme])) .t-cursor { color: #22D3EE; }
+    :global(:root:not([data-theme])) .terminal-title { color: #94A3B8; }
   }
 
   /* ---- Animations ---- */
