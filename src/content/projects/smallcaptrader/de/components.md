@@ -34,6 +34,17 @@ Wenn mehrere Strategien gleichzeitig für dasselbe Symbol auslösen:
 
 ---
 
+## Indicator Engine
+
+Gemeinsame Indikator-Berechnungsinfrastruktur, die sowohl von Live-Trading-Strategien als auch von der Rule-Mining-Engine genutzt wird:
+
+- **Deklarative Registry** — Jedes Indikatorfeld wird mit seinen Abhängigkeiten registriert, was automatische topologische Ordnung und korrekte Berechnungsreihenfolge ermöglicht
+- **Inkrementelle Append-Engine** — Neue Marktdaten-Bars werden in konstanter Zeit pro Bar verarbeitet, Echtzeit-Indikatorstatus ohne vollständige Neuberechnung
+- **Bedarfsbasierte Auswertung** — Nur tatsächlich von der aktiven Strategie oder dem Mining-Lauf benötigte Indikatoren werden berechnet, unnötige Arbeit wird vermieden
+- **Shared Cache** — Berechneter Indikatorstatus wird gecacht und über Strategien und Rule-Mining-Läufe innerhalb derselben Sitzung wiederverwendet
+
+---
+
 ## Rule Mining Engine
 
 Automatisierte Strategieentdeckung mittels mehrstufiger Beam-Suche:
@@ -42,6 +53,7 @@ Automatisierte Strategieentdeckung mittels mehrstufiger Beam-Suche:
 
 Die Engine baut schrittweise Handelsregeln durch einen phasenweisen Suchprozess auf:
 
+0. **ML Seeding (Optional)** — Ein LightGBM-Modell trainiert auf historischen Trade-Daten, extrahiert Decision Paths als Seed-Kandidaten und selektiert vielversprechende Bedingungskombinationen für die Beam-Suche vor
 1. **Bedingungsscreening** — Bewertet einzelne Indikatorbedingungen über mehrere Kategorien (preisbasiert, temporale Indikatoren, Event-Flags)
 2. **Bedingungskombination** — Kombiniert progressiv die Top-Performer zu Multi-Bedingungsregeln, Pruning in jeder Stufe
 3. **Exit-Optimierung** — Grid Search über Risikoparameter (Stop Loss, Trailing Stop, Gewinnziele, maximale Haltedauer) zur Findung optimaler Exit-Konfigurationen pro Regel
@@ -53,6 +65,10 @@ Die Engine baut schrittweise Handelsregeln durch einen phasenweisen Suchprozess 
 - **Walk-Forward-Kreuzvalidierung** zur Sicherstellung, dass Regeln über Trainingsdaten hinaus generalisieren
 - **Trade-Set-Deduplizierung** zur Entfernung redundanter Regeln, die bei denselben Gelegenheiten auslösen
 - **Verdachts-Scoring** zur Bestrafung von Regeln, die zu gut erscheinen, um wahr zu sein
+
+### Exit Quality Scoring
+
+Ein alternativer Scoring-Modus, der Regeln nach Exit-Verhalten statt ausschliesslich nach aggregiertem PnL bewertet. Ein zusammengesetzter Score gewichtet mehrere Dimensionen — PnL, Drawdown, Halteeffizienz, Exit-Typ-Qualität und Peak-to-Exit-Rückgabe — um Regeln zu identifizieren, die gut aussteigen, nicht nur Regeln, die profitieren. Ein Scoring-Modus-Selektor ermöglicht die Wahl zwischen PnL-zentrierter und Exit-Quality-zentrierter Auswertung während Discovery-Läufen.
 
 ### Regellebenszyklus
 
@@ -113,7 +129,7 @@ Abstraktes `BaseBroker`-Interface ermöglicht nahtlosen Wechsel via Konfiguratio
 Verteiltes Backtesting mit Parameteroptimierung:
 
 - Durchläuft Parameterkombinationen über alle Strategien parallel
-- Dedizierte Backtest-Worker im Sharded-Modus für verteilte Ausführung via Redis Work Queues
+- Backtest- und Rule-Mining-Workloads werden vollständig an dedizierte Worker via Redis Work Queues ausgelagert, mit einer Finalize Queue für asynchrone Ergebnisaggregation getrennt vom API-Prozess
 - Tick-Daten-Replay aus QuestDB ermöglicht High-Fidelity-Backtesting gegen historische Marktbedingungen
 - Ergebnisse mit Per-Strategie-Analysen gespeichert
 - Bestperformende Konfigurationen können auf Live-Trading angewandt werden
@@ -147,6 +163,7 @@ Mehrtägige Strategievergleichs-Infrastruktur:
 | **Strategy Discovery** | Rule Mining UI, temporale Mustervisualisierung, Regelbeförderung mit Erkennungstyp-Tagging |
 | **Position Monitor** | Live-Exit-State-Tracking, Stop-Distanzen, Gewinnziel-Fortschritt, WebSocket-Updates |
 | **Rule Lifecycle** | Health Scoring, Degradationserkennung, Überlebensanalyse, Regel-Herabstufung |
+| **Trade Detail** | Entscheidungs-Audit-Trail mit Ein-/Ausstiegsbedingungen, Indikator-Snapshots, Candlestick-Visualisierung |
 | **Settings** | Risikomanagement, Benachrichtigungen, Broker-Konfiguration, Scheduler |
 
 ---

@@ -34,6 +34,17 @@ When multiple strategies fire on the same symbol simultaneously:
 
 ---
 
+## Indicator Engine
+
+Shared indicator computation infrastructure used by both live trading strategies and the rule-mining engine:
+
+- **Declarative Registry** — Each indicator field is registered with its dependencies, enabling automatic topological ordering and correct computation sequencing
+- **Incremental Append Engine** — New market data bars are processed in constant time per bar, maintaining real-time indicator state without full recomputation
+- **Demand-Based Evaluation** — Only indicators actually needed by the active strategy or mining run are computed, avoiding unnecessary work
+- **Shared Cache** — Computed indicator state is cached and reused across strategies and rule-mining runs within the same session
+
+---
+
 ## Rule Mining Engine
 
 Automated strategy discovery using a multi-phase beam search:
@@ -42,6 +53,7 @@ Automated strategy discovery using a multi-phase beam search:
 
 The engine progressively builds trading rules through a phased search process:
 
+0. **ML Seeding (Optional)** — A LightGBM model trains on historical trade data, extracts decision paths as seed candidates, and pre-selects promising condition combinations for the beam search to refine
 1. **Condition Screening** — Evaluates individual indicator conditions across multiple categories (price-based, temporal indicators, event flags)
 2. **Condition Combination** — Progressively combines top-performing conditions into multi-condition rules, pruning at each stage
 3. **Exit Optimization** — Grid search across risk parameters (stop loss, trailing stop, profit targets, max hold time) to find optimal exit configurations per rule
@@ -53,6 +65,10 @@ The engine progressively builds trading rules through a phased search process:
 - **Walk-forward cross-validation** to ensure rules generalize beyond training data
 - **Trade-set deduplication** to remove redundant rules that trigger on the same opportunities
 - **Suspicion scoring** to penalize rules that appear too good to be true
+
+### Exit Quality Scoring
+
+An alternative scoring mode that evaluates rules by exit behavior rather than aggregate P&L alone. A composite score weighs multiple dimensions — P&L, drawdown, hold efficiency, exit type quality, and peak-to-exit giveback — to surface rules that exit well, not just rules that profit. A scoring mode selector lets users choose between P&L-centric and exit quality-centric evaluation during discovery runs.
 
 ### Rule Lifecycle
 
@@ -113,7 +129,7 @@ Abstract `BaseBroker` interface enables seamless switching via configuration.
 Distributed backtesting with parameter optimization:
 
 - Sweeps parameter combinations across all strategies in parallel
-- Dedicated backtest workers in sharded mode for distributed execution via Redis work queues
+- Backtest and rule-mining workloads are fully offloaded to dedicated workers via Redis work queues, with a finalize queue handling asynchronous result aggregation separately from the API process
 - Tick data replay from QuestDB enables high-fidelity backtesting against historical market conditions
 - Results stored with per-strategy analytics
 - Best-performing configurations can be applied to live trading
@@ -147,6 +163,7 @@ Multi-day strategy comparison infrastructure:
 | **Strategy Discovery** | Rule mining UI, temporal pattern visualization, promote rules with detection-type tagging |
 | **Position Monitor** | Live exit state tracking, stop distances, profit target progress, WebSocket updates |
 | **Rule Lifecycle** | Health scoring, degradation detection, survival analysis, rule demotion |
+| **Trade Detail** | Decision audit trail with entry/exit conditions, indicator snapshots, candlestick visualization |
 | **Settings** | Risk management, notifications, broker config, scheduler |
 
 ---
