@@ -36,39 +36,64 @@ When multiple strategies fire on the same symbol simultaneously:
 
 ## Indicator Engine
 
-Shared indicator computation infrastructure used by both live trading strategies and the rule-mining engine:
+A declarative indicator subsystem shared across strategies and rule mining — indicators are computed once and reused, not recomputed per caller.
 
-- **Declarative Registry** — Each indicator field is registered with its dependencies, enabling automatic topological ordering and correct computation sequencing
-- **Incremental Append Engine** — New market data bars are processed in constant time per bar, maintaining real-time indicator state without full recomputation
-- **Demand-Based Evaluation** — Only indicators actually needed by the active strategy or mining run are computed, avoiding unnecessary work
-- **Shared Cache** — Computed indicator state is cached and reused across strategies and rule-mining runs within the same session
+- **Declarative registry** — Indicators are registered with explicit dependencies; a topological dependency graph resolves compute order automatically
+- **Incremental append engine** — New bars update indicator state in constant time per bar (O(1)), without full recomputation of historical series
+- **Demand-based lazy evaluation** — Only indicators actually needed by the active strategy or mining run are materialized, keeping memory and CPU footprint lean
+- **Shared cache** — Live-trading strategies and rule-mining searches read from the same indicator cache, preventing duplicate computation across paths
+
+---
+
+## Strategy Fingerprinting
+
+Before the rule-mining engine proposes new rules, the system first profiles what each existing strategy catches across historical data, identifies where coverage is thin, and generates curated seed candidates targeting those gaps.
+
+- **Historical replay profiling** — Each strategy is replayed across historical data to capture what it catches and where
+- **Per-strategy coverage** — Measures which market conditions each strategy detects, making its footprint explicit
+- **Cross-strategy overlap analysis** — Surfaces where strategies redundantly cover the same opportunities versus where genuine gaps remain
+- **Seed-candidate generation** — Turns coverage gaps into curated seed candidates that feed the rule-mining engine, directing discovery toward under-covered market conditions
+- **Dashboard integration** — Fingerprinting runs appear in a dedicated dashboard with a multi-tab run-detail view (overview, coverage, cross-strategy, seeds)
+
+The architecture diagram shows the live runtime data path; fingerprinting operates on historical replay and sits outside that path, so its absence from the diagram is by design.
 
 ---
 
 ## Rule Mining Engine
 
-Automated strategy discovery using a multi-phase beam search:
+Automated strategy discovery combining ML-seeded candidate generation, multi-phase beam search, and exit-quality scoring:
 
 ### Approach
 
-The engine progressively builds trading rules through a phased search process:
+The engine builds trading rules through a phased search process, with an optional ML pre-seeding phase upstream:
 
-0. **ML Seeding (Optional)** — A LightGBM model trains on historical trade data, extracts decision paths as seed candidates, and pre-selects promising condition combinations for the beam search to refine
-1. **Condition Screening** — Evaluates individual indicator conditions across multiple categories (price-based, temporal indicators, event flags)
+0. **ML Seeding (Optional)** — A LightGBM model trains on historical trade data, extracts decision paths as seed candidates, and pre-selects promising condition combinations for the beam search to refine. Seed candidates can also arrive from Strategy Fingerprinting, targeting coverage gaps the existing strategies leave behind
+1. **Condition Screening** — Evaluates individual indicator conditions across multiple categories — price-based, temporal indicators, event flags, and derivative / trajectory indicators that capture how indicator values change over time rather than only instantaneous levels
 2. **Condition Combination** — Progressively combines top-performing conditions into multi-condition rules, pruning at each stage
 3. **Exit Optimization** — Grid search across risk parameters (stop loss, trailing stop, profit targets, max hold time) to find optimal exit configurations per rule
 4. **Temporal Pattern Discovery** — Explores multi-phase sequential patterns where conditions must fire in a specific order with configurable timing gaps
 
+**Carry-mode simulation** — Outside the numbered pipeline, rules can optionally be evaluated with multi-day carry-over of open positions, enabling discovery of patterns whose entry is intraday but whose exit spans session boundaries.
+
 ### Validation
 
-- **Train/test split** with time-series integrity
+- **Time-series train/test split** with chronological integrity — preserves temporal ordering for walk-forward evaluation
+- **Random train/test split** with reproducible seeding — enables i.i.d. validation for rules where temporal structure is less load-bearing; the seed makes results deterministically replayable
 - **Walk-forward cross-validation** to ensure rules generalize beyond training data
 - **Trade-set deduplication** to remove redundant rules that trigger on the same opportunities
 - **Suspicion scoring** to penalize rules that appear too good to be true
 
 ### Exit Quality Scoring
 
-An alternative scoring mode that evaluates rules by exit behavior rather than aggregate P&L alone. A composite score weighs multiple dimensions — P&L, drawdown, hold efficiency, exit type quality, and peak-to-exit giveback — to surface rules that exit well, not just rules that profit. A scoring mode selector lets users choose between P&L-centric and exit quality-centric evaluation during discovery runs.
+A composite scoring mode evaluates rules by exit behavior rather than aggregate P&L alone, weighing multiple dimensions simultaneously:
+
+- **P&L** — Net profit and loss
+- **Drawdown** — Worst intra-trade drawdown
+- **Hold efficiency** — P&L relative to time in the trade
+- **Exit type quality** — Whether the exit hit a favorable target versus a defensive stop
+- **Peak-to-exit giveback** — How much of the best intra-trade price was surrendered before exit
+
+A scoring-mode selector lets users choose between P&L-centric and exit-quality-centric evaluation during discovery.
 
 ### Rule Lifecycle
 
@@ -80,6 +105,15 @@ Discovered rules follow a defined promotion path:
 4. **Live Promotion** — Validated rules with per-rule exit configurations are promoted to live trading
 5. **Performance Tracking** — Live results are tracked with analytics breakdown by rule
 6. **Degradation Detection & Demotion** — Health scoring compares backtest vs live metrics per rule; degradation triggers toast notifications across all dashboard pages; underperforming rules can be demoted from live trading
+
+### Dashboard Surfaces
+
+The Strategy Discovery dashboard exposes mining configuration and results in-place:
+
+- **Split-mode selector** with a ratio slider lets users choose between time-series and random train/test split and tune the train/test ratio per run
+- **Carry-mode toggle** controls whether simulations carry positions across sessions
+- **Capital-utilization statistics** surface how much simulated capital a rule deploys and how concurrently its trades overlap
+- **Worst-trade analytics** highlight the bottom-quantile outcomes so users see downside shape alongside headline performance
 
 ---
 
@@ -129,7 +163,7 @@ Abstract `BaseBroker` interface enables seamless switching via configuration.
 Distributed backtesting with parameter optimization:
 
 - Sweeps parameter combinations across all strategies in parallel
-- Backtest and rule-mining workloads are fully offloaded to dedicated workers via Redis work queues, with a finalize queue handling asynchronous result aggregation separately from the API process
+- Dedicated backtest workers in sharded mode for distributed execution via Redis work queues, with a finalize queue handling asynchronous result aggregation separately from the API process
 - Tick data replay from QuestDB enables high-fidelity backtesting against historical market conditions
 - Results stored with per-strategy analytics
 - Best-performing configurations can be applied to live trading
@@ -147,6 +181,17 @@ Multi-day strategy comparison infrastructure:
 
 ---
 
+## Production Correctness
+
+Production-grade operation depends on handling real-world failure modes that simple code paths and backtests alone hide:
+
+- **WebSocket Auto-Reconnect** — The market-data stream reconnects with exponential backoff on transient failure, preserving subscription state across disconnects so live strategies resume without manual intervention
+- **Redis Connection Manager** — Auto-reconnect, keepalive heartbeats, and periodic health pings keep the pub/sub and cache layer available under network wobble; payload compression reduces bandwidth on high-throughput channels
+- **Structural Buy-Sell Linking** — Trade accounting follows the actual order relationship between buys and sells rather than FIFO-by-timestamp, so P&L attribution matches the order-book truth even when exits fill out of submission order
+- **Split-Adjusted Historical Bars** — Backtests and live price references use split-adjusted bars from the broker, preventing spurious signals and pricing errors around corporate actions
+
+---
+
 ## Frontend Pages
 
 | Page | Purpose |
@@ -157,13 +202,14 @@ Multi-day strategy comparison infrastructure:
 | **Trading** | Order entry, order book, trade history |
 | **Strategies** | Enable/disable, parameter configuration |
 | **Analytics** | Performance charts, equity curves, breakdown by rule and strategy |
+| **Trade Detail** | Decision audit trail — entry/exit conditions that fired, indicator snapshots at decision time, candlestick visualization |
 | **Backtest** | Run backtests, real-time progress, per-strategy analytics |
 | **Auto-Backtest** | Parameter optimization iterations, best-params storage |
 | **Campaign Backtest** | Multi-day strategy comparison, per-day drill-down, cross-day aggregation |
 | **Strategy Discovery** | Rule mining UI, temporal pattern visualization, promote rules with detection-type tagging |
+| **Fingerprinting** | Run list plus multi-tab run-detail view — overview, coverage, cross-strategy overlap, and seed candidates |
 | **Position Monitor** | Live exit state tracking, stop distances, profit target progress, WebSocket updates |
 | **Rule Lifecycle** | Health scoring, degradation detection, survival analysis, rule demotion |
-| **Trade Detail** | Decision audit trail with entry/exit conditions, indicator snapshots, candlestick visualization |
 | **Settings** | Risk management, notifications, broker config, scheduler |
 
 ---
@@ -221,7 +267,7 @@ Live notification bell wired to backend WebSocket events with severity-tiered de
 
 ## CLI Tooling
 
-Administrative command-line interface built with Typer and Rich for database management, service control, and operational tasks.
+Administrative command-line interface built with Typer and Rich for database management, service control, operational tasks, and strategy fingerprinting — analyzing historical runs and generating seed candidates that feed the rule-mining engine.
 
 ---
 

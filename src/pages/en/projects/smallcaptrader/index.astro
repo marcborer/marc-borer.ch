@@ -64,9 +64,11 @@ const projectSchema = JSON.stringify({
         Built a production-grade trading system with a Python 3.12+ async backend (FastAPI + Granian)
         and a Next.js 16 frontend. The platform covers the full trading lifecycle: real-time market
         data ingestion, multiple built-in trading strategies spanning momentum, pullback, breakout,
-        and volume-driven patterns, an automated rule-mining engine that discovers and promotes new
-        strategies to live trading, backtesting with parameter optimization, and multi-broker
-        execution across Alpaca and Interactive Brokers.
+        and volume-driven patterns, a strategy fingerprinting subsystem that profiles what existing
+        strategies catch and directs rule mining toward the gaps, an automated rule-mining engine
+        that discovers and promotes new strategies to live trading, backtesting with parameter
+        optimization, multi-broker execution across Alpaca and Interactive Brokers, and a production
+        correctness layer covering reconnect behavior, trade-accounting, and historical pricing fidelity.
       </p>
     </section>
 
@@ -126,33 +128,33 @@ const projectSchema = JSON.stringify({
       <h2>Key Technical Decisions</h2>
 
       <div class="decision">
-        <h3>Indicator Engine</h3>
+        <h3>Strategy Fingerprinting</h3>
         <p>
-          The platform computes indicators once via a declarative registry with automatic
-          dependency resolution rather than each strategy computing its own. An incremental
-          append engine processes new market data in constant time per bar, enabling real-time
-          indicator state without full recomputation. Demand-based evaluation ensures only the
-          indicators needed by the active strategy or mining run are computed. The shared
-          indicator cache serves both live trading strategies and the rule-mining engine.
+          Before the rule-mining engine proposes new rules, the platform first profiles what each
+          existing strategy already catches across historical data, measures coverage and
+          cross-strategy overlap, and generates curated seed candidates that target the gaps rather
+          than searching blindly. The fingerprinting dashboard surfaces runs with a multi-tab
+          detail view covering overview, coverage, cross-strategy overlap, and seed candidates.
         </p>
       </div>
 
       <div class="decision">
-        <h3>Rule-Mining Engine (Beam Search)</h3>
+        <h3>Rule Mining</h3>
         <p>
-          Automated strategy discovery using a multi-phase beam search. An optional ML seeding
-          phase trains a LightGBM model on historical trade data and extracts decision paths
-          as seed candidates, giving the beam search a head start on promising condition
-          combinations. The core engine then screens individual indicator conditions, progressively
-          combines top performers into multi-condition rules, and optimizes exit parameters via
-          grid search. Multi-phase temporal patterns explore sequential condition sequences with
-          configurable timing for complex market behaviors. Beyond traditional aggregate scoring,
-          an exit quality scoring mode evaluates rules by how well they exit — weighing P&L,
-          drawdown, hold efficiency, exit type quality, and peak-to-exit giveback — with a
-          scoring mode selector for P&L-centric or exit-quality-centric evaluation.
-          Walk-forward cross-validation ensures discovered rules generalize beyond training data.
-          Rules that pass validation can be promoted directly to live trading, with campaign
-          infrastructure supporting multi-day automated discovery runs.
+          Automated strategy discovery layered on top of fingerprinting. An optional Phase 0 trains
+          a LightGBM model on historical trade data and extracts decision paths as seed candidates
+          that the beam search then refines. Condition screening covers price-based indicators,
+          temporal flags, and trajectory-aware derivative conditions that capture how indicator
+          values change over time. The engine combines top performers into multi-condition rules,
+          optimizes exit parameters via grid search, and explores multi-phase temporal patterns.
+          Fast-mover replay gating during mining ensures the discovery universe reflects what live
+          detection would surface, and carry-mode simulation evaluates multi-day holding behavior
+          end-to-end. Dual validation modes — time-series split with walk-forward cross-validation
+          and reproducible random split — cover temporal and i.i.d. integrity. Beyond aggregate P&L,
+          an exit-quality scoring mode weighs P&L, drawdown, hold efficiency, exit type quality, and
+          peak-to-exit giveback, with a scoring-mode selector for P&L-centric or exit-quality-centric
+          evaluation. Rules that pass validation are promoted to live trading with per-rule exit
+          configurations.
         </p>
       </div>
 
@@ -166,14 +168,16 @@ const projectSchema = JSON.stringify({
       </div>
 
       <div class="decision">
-        <h3>Auto-Backtest & Parameter Optimization</h3>
+        <h3>Backtesting Infrastructure</h3>
         <p>
-          Distributed backtesting engine that sweeps parameter combinations across all strategies.
-          Backtest and rule-mining workloads are fully offloaded to dedicated workers, with
-          asynchronous result aggregation via a finalize queue keeping the API process lightweight.
-          Results are stored and the best-performing configurations can be applied to live trading.
-          Real-time progress streaming via WebSocket to the frontend dashboard. Tick data replay
-          from QuestDB enables high-fidelity backtesting against historical market conditions.
+          A distributed backtesting layer that sweeps parameter combinations across all strategies and
+          compares results across arbitrary multi-day date ranges in a single operation. Backtest and
+          rule-mining workloads are fully offloaded to dedicated workers via Redis work queues, with
+          per-date data pre-caching and a finalize queue that aggregates results asynchronously so the
+          API process stays lightweight. Tick data replay from QuestDB enables high-fidelity simulation
+          against historical market conditions, cross-day aggregation surfaces strategy consistency and
+          parameter stability, and best-performing configurations can be promoted to live trading in one
+          click. Progress streams to the dashboard over WebSocket throughout.
         </p>
       </div>
 
@@ -187,12 +191,16 @@ const projectSchema = JSON.stringify({
       </div>
 
       <div class="decision">
-        <h3>Campaign Backtesting</h3>
+        <h3>Production Correctness</h3>
         <p>
-          Multi-day strategy comparison infrastructure that aggregates performance across arbitrary
-          date ranges. Distributed execution via Redis work queues with per-date data pre-caching.
-          Cross-day aggregation surfaces strategy consistency, win-day counts, and parameter stability
-          over extended periods.
+          Live-system failure modes that simple code paths and backtests hide. The market-data
+          WebSocket reconnects with exponential backoff on transient failure and preserves
+          subscription state across disconnects. A Redis connection manager with auto-reconnect,
+          keepalive heartbeats, periodic health pings, and payload compression keeps the pub/sub
+          and cache layer available under network wobble. Structural buy-sell linking replaces
+          FIFO trade matching so P&L attribution follows the actual order relationship even when
+          exits fill out of submission order. Historical bars are split-adjusted at the broker so
+          backtests and live price references don't misfire around corporate actions.
         </p>
       </div>
 
@@ -207,9 +215,12 @@ const projectSchema = JSON.stringify({
       <div class="decision">
         <h3>Observability Stack</h3>
         <p>
-          Structured JSON logging via structlog, distributed tracing with OpenTelemetry, and
-          Prometheus metrics collection. Production deployments include Grafana dashboards and
-          Jaeger for trace visualization. Telegram notifications for trade alerts and system events.
+          Ephemeral workers — shards, backtest workers, rule-mining workers — expose the same
+          metrics surface as long-running services, pushed via Prometheus Pushgateway, and
+          Grafana dashboards are provisioned as code through grafanalib so observability config
+          ships with the repo rather than living in a clicked-together UI. Structured JSON logging
+          via structlog, distributed tracing with OpenTelemetry, and Jaeger for trace visualization
+          round out the stack. Telegram notifications cover trade alerts and system events.
         </p>
       </div>
     </section>
@@ -234,16 +245,18 @@ const projectSchema = JSON.stringify({
     <section class="case-section" data-animate="slide-up">
       <h2>Frontend</h2>
       <p>
-        Next.js 16 dashboard with React 19, Tailwind CSS v4, and shadcn/ui components styled
-        with a Bloomberg Terminal-inspired dark theme for a professional trading aesthetic. TanStack
-        Query for server state management. Key pages include real-time portfolio monitoring, order
-        entry, strategy configuration with independent fast/slow detection toggles, backtest analytics
-        with equity curves, campaign backtesting for multi-day comparison, a strategy discovery
-        interface for visualizing and promoting mined rules with detection-type tagging, a live
-        position monitor with exit state tracking, a rule lifecycle dashboard with health
-        scoring and degradation detection, and trade detail pages showing which conditions
-        triggered entry and exit decisions. The backend also includes a CLI built with Typer and
-        Rich for administrative operations and PDT (Pattern Day Trader) compliance tracking.
+        Next.js 16 dashboard with React 19, Tailwind CSS v4, and shadcn/ui components, styled with
+        a Bloomberg Terminal-inspired dark theme for a professional trading aesthetic. TanStack Query
+        handles server state. Key pages include real-time portfolio monitoring, order entry, strategy
+        configuration with independent fast/slow detection toggles, backtest analytics with equity
+        curves, campaign backtesting for multi-day comparison, a strategy discovery interface for
+        visualizing and promoting mined rules with detection-type tagging, a fingerprinting dashboard
+        with multi-tab run details, a trade detail view that shows the decision audit trail (signal,
+        filters, arbiter result, risk gate, conditions that fired) alongside entry/exit markers on
+        candlestick charts, a live position monitor with exit state tracking, and a rule lifecycle
+        dashboard with health scoring and degradation detection. The backend also includes a CLI
+        built with Typer and Rich for administrative operations and PDT (Pattern Day Trader)
+        compliance tracking.
       </p>
     </section>
   </article>
