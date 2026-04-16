@@ -70,8 +70,11 @@ const projectSchema = JSON.stringify({
         Entwicklung eines produktionsreifen Handelssystems mit einem Python 3.12+ Async-Backend (FastAPI + Granian)
         und einem Next.js 16-Frontend. Die Plattform deckt den vollständigen Handelslebenszyklus ab: Echtzeit-Marktdatenaufnahme,
         mehrere integrierte Handelsstrategien für Momentum-, Pullback-, Breakout- und Volumenmuster,
-        eine automatisierte Rule-Mining-Engine zur Entdeckung und Live-Promotion neuer Strategien,
-        Backtesting mit Parameteroptimierung und Multi-Broker-Ausführung über Alpaca und Interactive Brokers.
+        ein Strategy-Fingerprinting-Subsystem, das profiliert, was bestehende Strategien erfassen, und das
+        Rule Mining auf die verbleibenden Lücken lenkt, eine automatisierte Rule-Mining-Engine zur
+        Entdeckung und Live-Promotion neuer Strategien, Backtesting mit Parameteroptimierung,
+        Multi-Broker-Ausführung über Alpaca und Interactive Brokers sowie eine Production-Correctness-Schicht,
+        die Reconnect-Verhalten, Trade-Buchhaltung und historische Preis-Fidelity abdeckt.
       </p>
     </section>
 
@@ -132,35 +135,34 @@ const projectSchema = JSON.stringify({
       <h2>Technische Schlüsselentscheidungen</h2>
 
       <div class="decision">
-        <h3>Indicator Engine</h3>
+        <h3>Strategy Fingerprinting</h3>
         <p>
-          Die Plattform berechnet Indikatoren einmalig über eine deklarative Registry mit
-          automatischer Dependency Resolution, anstatt dass jede Strategie ihre eigenen berechnet.
-          Eine inkrementelle Append-Engine verarbeitet neue Marktdaten in konstanter Zeit pro Bar
-          und ermöglicht Echtzeit-Indikatorstatus ohne vollständige Neuberechnung. Bedarfsbasierte
-          Auswertung stellt sicher, dass nur die von der aktiven Strategie oder dem Mining-Lauf
-          benötigten Indikatoren berechnet werden. Der gemeinsame Indicator Cache dient sowohl
-          Live-Trading-Strategien als auch der Rule-Mining-Engine.
+          Bevor die Rule-Mining-Engine neue Regeln vorschlägt, profiliert die Plattform zunächst, was
+          jede bestehende Strategie über historische Daten hinweg bereits erfasst, misst Abdeckung und
+          strategieübergreifende Überlappung und generiert kuratierte Seed-Kandidaten, die gezielt auf
+          die Lücken abzielen, statt blind zu suchen. Das Fingerprinting-Dashboard zeigt Läufe mit einer
+          mehrstufigen Detailansicht — Overview, Coverage, Cross-Strategy-Overlap und Seed-Kandidaten.
         </p>
       </div>
 
       <div class="decision">
-        <h3>Rule-Mining-Engine (Beam Search)</h3>
+        <h3>Rule Mining</h3>
         <p>
-          Automatisierte Strategieentdeckung mittels mehrstufiger Beam-Suche. Eine optionale
-          ML-Seeding-Phase trainiert ein LightGBM-Modell auf historischen Trade-Daten und
-          extrahiert Decision Paths als Seed-Kandidaten, wodurch die Beam-Suche einen Vorsprung
-          bei vielversprechenden Bedingungskombinationen erhält. Die Kern-Engine screent dann
-          einzelne Indikatorbedingungen, kombiniert progressiv Top-Performer zu Multi-Bedingungsregeln
-          und optimiert Exit-Parameter via Grid Search. Mehrstufige Temporalmuster erkunden
-          sequenzielle Bedingungsfolgen mit konfigurierbarem Timing für komplexe Marktverhalten.
-          Über das traditionelle aggregierte Scoring hinaus bewertet ein Exit-Quality-Scoring-Modus
-          Regeln danach, wie gut sie aussteigen — unter Gewichtung von PnL, Drawdown, Halteeffizienz,
-          Exit-Typ-Qualität und Peak-to-Exit-Rückgabe — mit einem Scoring-Modus-Selektor für
-          PnL-zentrierte oder Exit-Quality-zentrierte Auswertung. Walk-Forward-Kreuzvalidierung
-          stellt sicher, dass entdeckte Regeln über die Trainingsdaten hinaus generalisieren.
-          Regeln, die die Validierung bestehen, können direkt zum Live-Trading befördert werden,
-          mit Kampagnen-Infrastruktur für mehrtägige automatisierte Entdeckungsläufe.
+          Automatisierte Strategieentdeckung, aufgesetzt auf Fingerprinting. Eine optionale Phase 0
+          trainiert ein LightGBM-Modell auf historischen Trade-Daten und extrahiert Decision Paths
+          als Seed-Kandidaten, die die Beam-Suche anschliessend verfeinert. Bedingungsscreening deckt
+          preisbasierte Indikatoren, temporale Flags und trajektorien-bewusste Ableitungs-Bedingungen
+          ab, die erfassen, wie sich Indikatorwerte über die Zeit verändern. Die Engine kombiniert
+          Top-Performer zu Multi-Bedingungsregeln, optimiert Exit-Parameter via Grid Search und
+          erkundet mehrstufige Temporalmuster. Fast-Mover-Replay-Gating während des Mining stellt
+          sicher, dass das Discovery-Universum widerspiegelt, was Live-Erkennung auffangen würde, und
+          Carry-Mode-Simulation evaluiert Mehrtages-Halteverhalten Ende-zu-Ende. Duale Validierungsmodi
+          — Zeitreihen-Split mit Walk-Forward-Kreuzvalidierung und reproduzierbarer Random Split —
+          decken zeitliche und i.i.d.-Integrität ab. Jenseits aggregierter P&L gewichtet ein
+          Exit-Quality-Scoring-Modus P&L, Drawdown, Hold Efficiency, Exit Type Quality und
+          Peak-to-Exit Giveback, mit einem Scoring-Mode-Selector für P&L-zentrische oder
+          Exit-Quality-zentrische Evaluation. Regeln, die die Validierung bestehen, werden mit
+          Per-Regel-Exit-Konfigurationen zum Live-Trading befördert.
         </p>
       </div>
 
@@ -174,15 +176,17 @@ const projectSchema = JSON.stringify({
       </div>
 
       <div class="decision">
-        <h3>Auto-Backtest & Parameteroptimierung</h3>
+        <h3>Backtesting-Infrastruktur</h3>
         <p>
-          Verteilte Backtesting-Engine, die Parameterkombinationen über alle Strategien durchläuft.
-          Backtest- und Rule-Mining-Workloads werden vollständig an dedizierte Worker ausgelagert,
-          mit asynchroner Ergebnisaggregation über eine Finalize Queue, die den API-Prozess
-          schlank hält. Ergebnisse werden gespeichert und die leistungsstärksten Konfigurationen
-          können auf Live-Trading angewendet werden. Echtzeit-Fortschrittsstreaming via WebSocket
-          zum Frontend-Dashboard. Tick-Daten-Replay aus QuestDB ermöglicht High-Fidelity-Backtesting
-          gegen historische Marktbedingungen.
+          Eine verteilte Backtesting-Schicht, die Parameterkombinationen über alle Strategien durchläuft
+          und Ergebnisse über beliebige mehrtägige Datumsbereiche in einem einzigen Vorgang vergleicht.
+          Backtest- und Rule-Mining-Workloads werden vollständig an dedizierte Worker via Redis Work
+          Queues ausgelagert, mit Per-Datum-Daten-Precaching und einer Finalize-Queue, die Ergebnisse
+          asynchron aggregiert, sodass der API-Prozess leichtgewichtig bleibt. Tick-Daten-Replay aus
+          QuestDB ermöglicht High-Fidelity-Simulation gegen historische Marktbedingungen,
+          tagesübergreifende Aggregation zeigt Strategiekonsistenz und Parameterstabilität, und
+          bestperformende Konfigurationen können per Klick auf Live-Trading befördert werden.
+          Fortschritt wird durchgehend via WebSocket an das Dashboard gestreamt.
         </p>
       </div>
 
@@ -196,12 +200,17 @@ const projectSchema = JSON.stringify({
       </div>
 
       <div class="decision">
-        <h3>Kampagnen-Backtesting</h3>
+        <h3>Production Correctness</h3>
         <p>
-          Mehrtägige Strategievergleichs-Infrastruktur, die Performance über beliebige Datumsbereiche
-          aggregiert. Verteilte Ausführung via Redis Work Queues mit Per-Datum-Daten-Precaching.
-          Tagesübergreifende Aggregation zeigt Strategiekonsistenz, Gewinntage-Anzahl und
-          Parameterstabilität über längere Zeiträume.
+          Reale Fehlermodi, die einfache Codepfade und Backtests verdecken. Der Market-Data-WebSocket
+          reconnectet bei transienten Fehlern mit exponential backoff und bewahrt den
+          Subscription-State über Disconnects hinweg. Ein Redis Connection Manager mit Auto-Reconnect,
+          Keepalive-Heartbeats, periodischen Health Pings und Payload-Kompression hält Pub/Sub- und
+          Cache-Schicht unter Netzwerkschwankungen verfügbar. Strukturelles Buy-Sell-Linking ersetzt
+          FIFO-Trade-Matching, sodass die P&L-Attribution der tatsächlichen Order-Beziehung folgt,
+          auch wenn Exits ausserhalb der Einreichungsreihenfolge ausführen. Historische Bars werden
+          beim Broker split-adjustiert, damit Backtests und Live-Preisreferenzen rund um Corporate
+          Actions keine Fehlsignale erzeugen.
         </p>
       </div>
 
@@ -216,9 +225,13 @@ const projectSchema = JSON.stringify({
       <div class="decision">
         <h3>Observability Stack</h3>
         <p>
-          Strukturiertes JSON-Logging via structlog, verteiltes Tracing mit OpenTelemetry und
-          Prometheus-Metrikerfassung. Produktions-Deployments umfassen Grafana-Dashboards und
-          Jaeger für Trace-Visualisierung. Telegram-Benachrichtigungen für Trade-Alerts und Systemereignisse.
+          Ephemere Worker — Shards, Backtest-Worker, Rule-Mining-Worker — exponieren dieselbe
+          Metrik-Oberfläche wie langlebige Services, via Prometheus Pushgateway gepusht, und
+          Grafana-Dashboards werden durch grafanalib als Code bereitgestellt, sodass
+          Observability-Konfiguration mit dem Repo mitreist statt in einer zusammengeklickten UI zu
+          leben. Strukturiertes JSON-Logging via structlog, verteiltes Tracing mit OpenTelemetry und
+          Jaeger für Trace-Visualisierung runden den Stack ab. Telegram-Benachrichtigungen decken
+          Trade-Alerts und Systemereignisse ab.
         </p>
       </div>
     </section>
@@ -245,15 +258,17 @@ const projectSchema = JSON.stringify({
       <h2>Frontend</h2>
       <p>
         Next.js 16-Dashboard mit React 19, Tailwind CSS v4 und shadcn/ui-Komponenten, gestaltet
-        mit einem Bloomberg Terminal-inspirierten Dark Theme für eine professionelle Trading-Ästhetik.
-        TanStack Query für Server-State-Management. Zentrale Seiten umfassen Echtzeit-Portfolioüberwachung,
-        Orderaufgabe, Strategiekonfiguration mit unabhängigen Fast/Slow-Erkennungs-Toggles,
-        Backtest-Analytik mit Equity-Kurven, Kampagnen-Backtesting für Mehrtagesvergleiche, ein
-        Strategy-Discovery-Interface zur Visualisierung und Beförderung geschürfter Regeln mit
-        Erkennungstyp-Tagging, ein Live-Positionsmonitor mit Exit-State-Tracking, ein
-        Rule-Lifecycle-Dashboard mit Health Scoring und Degradationserkennung sowie Trade-Detail-Seiten,
-        die zeigen, welche Bedingungen Ein- und Ausstiegsentscheidungen ausgelöst haben. Das Backend
-        enthält zudem eine CLI auf Basis von Typer und Rich für administrative Operationen sowie PDT
+        mit einem Bloomberg-Terminal-inspirierten Dark Theme für eine professionelle Trading-Ästhetik.
+        TanStack Query übernimmt das Server-State-Management. Zentrale Seiten umfassen
+        Echtzeit-Portfolioüberwachung, Orderaufgabe, Strategiekonfiguration mit unabhängigen
+        Fast/Slow-Erkennungs-Toggles, Backtest-Analytik mit Equity-Kurven, Kampagnen-Backtesting für
+        Mehrtagesvergleiche, ein Strategy-Discovery-Interface zur Visualisierung und Beförderung
+        geschürfter Regeln mit Erkennungstyp-Tagging, ein Fingerprinting-Dashboard mit mehrstufiger
+        Run-Detailansicht, eine Trade-Detail-Ansicht, die den Entscheidungs-Audit-Trail (Signal,
+        Filter, Arbiter-Ergebnis, Risk Gate, ausgelöste Bedingungen) neben Ein-/Ausstiegsmarkern auf
+        Candlestick-Charts zeigt, einen Live-Positionsmonitor mit Exit-State-Tracking sowie ein
+        Rule-Lifecycle-Dashboard mit Health Scoring und Degradationserkennung. Das Backend enthält
+        zudem eine CLI auf Basis von Typer und Rich für administrative Operationen sowie PDT
         (Pattern Day Trader) Compliance-Tracking.
       </p>
     </section>

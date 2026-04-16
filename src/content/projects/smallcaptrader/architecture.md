@@ -85,7 +85,7 @@ Stream Router ─── parses trades/bars
 | **Testing** | pytest + hypothesis | Unit, integration, property-based |
 | **Dependency Management** | Renovate | Automated dependency updates |
 | **CI/CD** | GitHub Actions | Lint, typecheck, test on every push/PR |
-| **Observability** | OpenTelemetry + Prometheus | Distributed tracing, metrics |
+| **Observability** | OpenTelemetry + Prometheus + grafanalib + Pushgateway | Distributed tracing, metrics, dashboards as code, ephemeral-worker metrics push |
 | **API Contract** | openapi-typescript | Pydantic response models, generated TypeScript types, CI drift check |
 
 ### Frontend Stack
