@@ -1,0 +1,291 @@
+---
+import DocLayout from '../../../layouts/DocLayout.astro';
+import TechBadge from '../../../components/TechBadge.astro';
+import AttestreeDiagram from '../../../components/diagrams/AttestreeDiagram.astro';
+import docNavs from '../../../data/doc-navs.de.json';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const t = useTranslations(lang);
+const nav = docNavs['attestree'];
+
+const tech = ['.NET', 'winget', 'SBOM / CycloneDX', 'Sigstore', 'SLSA', 'WDAC', 'Docker', 'Astro'];
+
+const projectSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Attestree",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Windows",
+  "description": "Software-Supply-Chain-Plattform für Windows-Flotten, die Paketquellen beim Ingest prüft — Provenance, SBOM, SLSA-Level und Lizenzrichtlinie — mit ring-basiertem Deployment und signierten Attestierungen.",
+  "author": {
+    "@type": "Person",
+    "name": "Marc Borer",
+    "url": "https://marc-borer.ch"
+  },
+  "programmingLanguage": ["C#", "TypeScript"],
+  "keywords": "Software Supply Chain, SBOM, SLSA, Provenance, Attestierung, winget, Windows-Flotte, Ring-Deployment, Sigstore"
+});
+---
+
+<DocLayout title="Attestree — Software-Supply-Chain-Plattform für Windows-Flotten" description="Software-Supply-Chain-Plattform, die winget und weitere Paketquellen beim Ingest prüft — Provenance, SBOM, SLSA-Level und Lizenz — mit ring-basiertem Deployment und signierten Attestierungen." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <article class="case-study">
+    <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
+      <span aria-hidden="true">&larr;</span> {t('projects.backToProjects')}
+    </a>
+
+    <header class="case-header" data-animate="slide-up">
+      <h1 class="case-title">Attestree</h1>
+      <p class="case-subtitle">Supply-Chain-Provenance für Windows-Flotten — SBOM beim Ingest</p>
+      <div class="case-tech">
+        {tech.map((t) => <TechBadge name={t} />)}
+      </div>
+      <p class="case-private">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        Privates Repository
+      </p>
+    </header>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Problem</h2>
+      <p>
+        Die meisten Windows-Umgebungen installieren Pakete direkt aus der öffentlichen Quelle und
+        entdecken Probleme erst, wenn Tage später ein Scanner über einen Endpunkt läuft. Bis dahin
+        ist das Artefakt auf tausenden Maschinen, SBOMs sind ein nachträglicher Gedanke,
+        Attestierungen fehlen, und die Supply-Chain-Story lautet „wir vertrauen dem CDN von
+        Microsoft". Tanium, Defender for Cloud, Snyk und vergleichbare Werkzeuge scannen
+        ausgerollte Binaries im Nachhinein — niemand prüft die Katalog- und Distributionsschicht,
+        bevor deployt wird.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Ansatz</h2>
+      <p>
+        Attestree dreht die Reihenfolge um: Provenance wird beim <strong>Ingest</strong> geprüft,
+        nicht nach der Installation. Jedes aus einer Quelle geladene Paket wird gegen die Richtlinie
+        verifiziert — Provenance, SBOM, SLSA-Level, CVE-Schweregrad, Lizenz — bevor es einen
+        Flottenknoten erreicht. Abgelehnte Artefakte schaffen es nie bis Canary; aufgenommene
+        Artefakte tragen signierte Receipts, die ein Auditor mit einem öffentlichen Schlüssel
+        verifizieren kann. Aufgesetzt darauf: ring-basiertes Deployment mit Auto-Rollback und ein
+        einheitliches attestiertes Inventar über alle Paketmanager hinweg.
+      </p>
+    </section>
+
+    <AttestreeDiagram />
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Architektur</h2>
+      <p>
+        Das System hat zwei Oberflächen — eine Control Plane mit Agent für Ingest Gate,
+        Attestierung und Deployment, und eine öffentliche Eingangstür aus Marketing-Website und
+        Open-Core Community Edition.
+      </p>
+
+      <h3>Ingest Gate</h3>
+      <p>
+        Pakete durchlaufen ein Policy Gate: Fetch, Provenance-Prüfung gegen vertrauenswürdige
+        Roots, SBOM-Verifikation (CycloneDX), Policy-Evaluierung (Mindest-SLSA-Level,
+        CVE-Obergrenze, Lizenz-Allow-List) und schliesslich die Aufnahme-/Ablehnungsentscheidung.
+      </p>
+
+      <h3>Ring-basiertes Deployment</h3>
+      <p>
+        Aufgenommene Artefakte rollen über Promotion-Rings aus — Canary, Pilot, Broad, All — statt
+        flottenweit auf einmal, mit operator-editierbaren Soak-Floors und Auto-Rollback bei
+        Fehlersignal. Der Blast-Radius eines fehlerhaften Pakets bleibt klein.
+      </p>
+
+      <h3>Control-Plane-Stack</h3>
+      <ul class="feature-list">
+        <li><strong>.NET / Windows</strong> — AOT-kompilierter Agent und Installer-Shim; Server auf Windows Server 2025</li>
+        <li><strong>PostgreSQL</strong> — operativer Store mit Per-Tenant-Scope als erstklassiger Invariante</li>
+        <li><strong>OCI-Registries</strong> — Distributionsschicht für Artefakte</li>
+      </ul>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Technische Schlüsselentscheidungen</h2>
+
+      <div class="decision">
+        <h3>SBOM beim Ingest statt Post-Install-Scan</h3>
+        <p>
+          Der strukturelle Wedge: Attestree besitzt die Katalog-/Distributionsschicht und prüft vor
+          dem Deploy. Ohne Pre-Deploy-Attestierung ist „wir inventarisieren es" nur ein schöneres
+          <code>winget list</code>.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Signierte, verifizierbare Receipts</h3>
+        <p>
+          Jede Aufnahme erzeugt Evidenz: ein Receipt mit verifizierter Provenance, angehängter SBOM
+          und SLSA-Level, das gegen einen öffentlichen Schlüssel verifiziert. So lässt sich Monate
+          später beantworten, wer ein Artefakt auf welcher Grundlage freigegeben hat. Heute
+          verwaltete Signaturschlüssel, Sigstore-verankerte Verifikation auf der Roadmap.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Paketmanager-übergreifendes Inventar</h3>
+        <p>
+          Ein einheitliches, attestiertes Inventar statt der Abstimmung einzelner Tool-Ausgaben,
+          gekeyt nach kanonischer Artefakt-Identität, mit einer CVE-Matrix gegen NVD / OSV / MSRC und
+          einem signierten Export, den der Auditor unabhängig liest.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Open-Core mit erzwungener Lizenzgrenze</h3>
+        <p>
+          Der Installer-Shim und sein IPC-Vertrag sind Apache-2.0; die Plattform ist Closed-Source.
+          Die Lizenzgrenze wird mechanisch im Build durchgesetzt — Closed-Source-Code kann nicht
+          versehentlich umlizenziert werden. Eine cosign-signierte Community-Edition als
+          Docker-Image dient dem Self-Hosting.
+        </p>
+      </div>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Öffentliche Website</h2>
+      <p>
+        Die Marketing-Website unter attestree.com ist eine separate, vollständig öffentliche
+        Oberfläche: statischer Astro-Build mit Tailwind + MDX, deployt auf Cloudflare Pages mit
+        Preview-Deploy pro PR. Die Warteliste läuft als Same-Origin Cloudflare Pages Function mit
+        D1 in einer EU-Jurisdiktion und Turnstile-Bot-Abwehr. Die Build-Security-Baseline umfasst
+        SHA-gepinnte Actions, least-privilege Token, committetes Lockfile, Dependabot und ein
+        <code>npm audit</code> CI-Gate.
+      </p>
+    </section>
+  </article>
+  <script type="application/ld+json" set:html={projectSchema} />
+</DocLayout>
+
+<style>
+  .case-study {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-8);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .case-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-private {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .case-private svg {
+    display: inline-block;
+  }
+
+  .case-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .case-section h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-section h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .case-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: var(--space-4);
+  }
+
+  .feature-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-list li strong {
+    color: var(--color-text-heading);
+  }
+
+  .decision {
+    margin-bottom: var(--space-6);
+  }
+
+  .decision h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  .decision p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+</style>

@@ -1,0 +1,10 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import { Content, frontmatter } from '../../../../content/projects/options-gex/architecture.md';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['options-gex'];
+---
+
+<DocLayout title={`${frontmatter.title} — options-gex Research Engine`} description="System architecture of options-gex: phased design with a hard go-live gate, the research pipeline, storage, and credential safety." sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <Content />
+</DocLayout>

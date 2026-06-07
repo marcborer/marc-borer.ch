@@ -1,0 +1,283 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import TechBadge from '../../../../components/TechBadge.astro';
+import AttestreeDiagram from '../../../../components/diagrams/AttestreeDiagram.astro';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['attestree'];
+
+const tech = ['.NET', 'winget', 'SBOM / CycloneDX', 'Sigstore', 'SLSA', 'WDAC', 'Docker', 'Astro'];
+
+const projectSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Attestree",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Windows",
+  "description": "Software supply-chain platform for Windows fleets that verifies package sources at ingest — provenance, SBOM, SLSA level, and license policy — with ring-promoted deployment and signed attestations.",
+  "author": {
+    "@type": "Person",
+    "name": "Marc Borer",
+    "url": "https://marc-borer.ch"
+  },
+  "programmingLanguage": ["C#", "TypeScript"],
+  "keywords": "software supply chain, SBOM, SLSA, provenance, attestation, winget, Windows fleet, ring deployment, Sigstore"
+});
+---
+
+<DocLayout title="Attestree — Software Supply-Chain Platform for Windows Fleets" description="Software supply-chain platform that verifies winget and other package sources at ingest — provenance, SBOM, SLSA level, and license — with ring-promoted deployment and signed attestations." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <article class="case-study">
+    <a href="/en/projects/" class="back-link">
+      <span aria-hidden="true">&larr;</span> Back to Projects
+    </a>
+
+    <header class="case-header" data-animate="slide-up">
+      <h1 class="case-title">Attestree</h1>
+      <p class="case-subtitle">Supply-chain provenance for Windows fleets — SBOM at ingest</p>
+      <div class="case-tech">
+        {tech.map((t) => <TechBadge name={t} />)}
+      </div>
+      <p class="case-private">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        Private Repository
+      </p>
+    </header>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Problem</h2>
+      <p>
+        Most Windows shops install packages straight from the public source and discover problems
+        only after a scanner runs against an endpoint days later. By then the artifact is on a
+        thousand machines, SBOMs are an afterthought, attestations are missing, and the
+        supply-chain story is "we trust Microsoft's CDN." Tanium, Defender for Cloud, Snyk, and
+        their peers scan deployed binaries after the fact — nobody inspects the catalog and
+        distribution layer before deploy.
+      </p>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Approach</h2>
+      <p>
+        Attestree inverts the order: provenance is verified at <strong>ingest</strong>, not after
+        install. Every package fetched from a source is checked against policy — provenance, SBOM,
+        SLSA level, CVE severity, license — before it reaches a fleet node. Rejected artifacts
+        never make it to canary; admitted artifacts carry signed receipts an auditor can verify
+        with a public key. Layered on top: ring-promoted deployment with auto-rollback, and a
+        unified attested inventory across every package manager.
+      </p>
+    </section>
+
+    <AttestreeDiagram />
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Architecture</h2>
+      <p>
+        The system has two surfaces — a control plane with an agent for the ingest gate,
+        attestation, and deployment, and a public front door of marketing site plus an open-core
+        community edition.
+      </p>
+
+      <h3>Ingest Gate</h3>
+      <p>
+        Packages pass through a policy gate: fetch, provenance check against trusted roots, SBOM
+        verification (CycloneDX), policy evaluation (minimum SLSA level, CVE ceiling, license
+        allow-list), and finally the admit/reject decision.
+      </p>
+
+      <h3>Ring-Promoted Deployment</h3>
+      <p>
+        Admitted artifacts roll out through promotion rings — canary, pilot, broad, all — rather
+        than fleet-wide at once, with operator-editable soak floors and auto-rollback on a failure
+        signal. A bad package's blast radius stays small.
+      </p>
+
+      <h3>Control Plane Stack</h3>
+      <ul class="feature-list">
+        <li><strong>.NET / Windows</strong> — AOT-compiled agent and installer shim; server on Windows Server 2025</li>
+        <li><strong>PostgreSQL</strong> — operational store with per-tenant scope as a first-class invariant</li>
+        <li><strong>OCI registries</strong> — distribution layer for artifacts</li>
+      </ul>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Key Technical Decisions</h2>
+
+      <div class="decision">
+        <h3>SBOM at ingest, not post-install scan</h3>
+        <p>
+          The structural wedge: Attestree owns the catalog/distribution layer and verifies before
+          deploy. Without pre-deploy attestation, "we inventory it" is just a fancier
+          <code>winget list</code>.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Signed, verifiable receipts</h3>
+        <p>
+          Every admission produces evidence: a receipt recording verified provenance, the attached
+          SBOM, and the SLSA level, verifiable against a public key. That makes it possible to
+          answer, months later, who approved an artifact and on what basis. Managed signing keys
+          today, Sigstore-rooted verification on the roadmap.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Cross-package-manager inventory</h3>
+        <p>
+          A unified, attested inventory instead of reconciling per-tool outputs, keyed by canonical
+          artifact identity, with a CVE matrix against NVD / OSV / MSRC and a signed export the
+          auditor reads independently.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Open-core with an enforced license boundary</h3>
+        <p>
+          The installer shim and its IPC contract are Apache-2.0; the platform is closed-source. The
+          license boundary is enforced mechanically in the build — closed-source code cannot be
+          relicensed by accident. A cosign-signed community edition ships as a Docker image for
+          self-hosting.
+        </p>
+      </div>
+    </section>
+
+    <section class="case-section" data-animate="slide-up">
+      <h2>Public Site</h2>
+      <p>
+        The marketing site at attestree.com is a separate, fully public surface: a static Astro
+        build with Tailwind + MDX, deployed to Cloudflare Pages with a preview deploy per PR. The
+        waitlist runs as a same-origin Cloudflare Pages Function backed by D1 in an EU jurisdiction
+        with Turnstile bot defense. The build-security baseline covers SHA-pinned actions,
+        least-privilege tokens, a committed lockfile, Dependabot, and an <code>npm audit</code> CI
+        gate.
+      </p>
+    </section>
+  </article>
+  <script type="application/ld+json" set:html={projectSchema} />
+</DocLayout>
+
+<style>
+  .case-study {
+    max-width: 65rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-8);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .case-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .case-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .case-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-private {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .case-private svg {
+    display: inline-block;
+  }
+
+  .case-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .case-section h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .case-section h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .case-section p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: var(--space-4);
+  }
+
+  .feature-list li {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-list li strong {
+    color: var(--color-text-heading);
+  }
+
+  .decision {
+    margin-bottom: var(--space-6);
+  }
+
+  .decision h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  .decision p {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+</style>

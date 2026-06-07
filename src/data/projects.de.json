@@ -16,5 +16,17 @@
     "description": "Full-Stack algorithmische Handelsplattform mit mehreren integrierten Strategien, einer Beam Search Rule-Mining-Engine zur automatisierten Strategieentdeckung und Live-Promotion, und Dual-Mode-Architektur (monolithisch/sharded) mit Multi-Broker-Ausführung.",
     "tech": ["Python", "FastAPI", "Next.js", "React", "TypeScript", "PostgreSQL", "QuestDB", "Redis", "Docker"],
     "link": "/projects/smallcaptrader/"
+  },
+  {
+    "title": "Attestree",
+    "description": "Software-Supply-Chain-Plattform für Windows-Flotten: prüft winget und weitere Paketquellen bereits beim Ingest — Provenance, SBOM, SLSA-Level und Lizenzrichtlinie werden verifiziert, bevor ein Artefakt einen einzigen Endpunkt erreicht — mit ring-basiertem Deployment, signierten Attestierungen und einer Open-Core Community Edition.",
+    "tech": [".NET", "winget", "SBOM / CycloneDX", "Sigstore", "SLSA", "WDAC", "Docker", "Astro"],
+    "link": "/projects/attestree/"
+  },
+  {
+    "title": "options-gex",
+    "description": "Gamma-Exposure-Research-Engine für den Optionshandel: lädt historische Optionsketten, berechnet GEX lokal, evaluiert level-basierte Handelsregeln und backtestet sie gegen Baseline-Kontrollen hinter einem mehrstufigen statistischen Gate, das bestehen muss, bevor Live-Ausführung freigeschaltet wird.",
+    "tech": ["Python", "Alpaca API", "PostgreSQL", "SQLite", "SOPS / age", "Fernet", "Docker", "Jupyter"],
+    "link": "/projects/options-gex/"
   }
 ]

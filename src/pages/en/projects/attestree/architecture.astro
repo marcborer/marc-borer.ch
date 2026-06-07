@@ -1,0 +1,10 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import { Content, frontmatter } from '../../../../content/projects/attestree/architecture.md';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['attestree'];
+---
+
+<DocLayout title={`${frontmatter.title} — Attestree Supply-Chain Platform`} description="System architecture of Attestree: ingest gate with policy evaluation, ring-promoted deployment, attested inventory, and open-core distribution." sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <Content />
+</DocLayout>
