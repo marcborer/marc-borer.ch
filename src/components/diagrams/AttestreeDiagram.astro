@@ -1,0 +1,102 @@
+---
+// Attestree: Vertical supply-chain flow showing the ingest gate
+// Package Sources → Ingest Gate (policy) → Admit/Reject → Signed Attestation
+// → Ring Promotion → Fleet. Attested inventory as a shared side surface.
+---
+
+<div class="diagram-container" data-animate="slide-up">
+  <svg viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Attestree Supply-Chain Architecture Diagram">
+    <!-- Package Sources -->
+    <rect x="250" y="20" width="300" height="44" rx="8" fill="none" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="400" y="40" text-anchor="middle" fill="var(--color-text-secondary)" font-size="12">Package Sources</text>
+    <text x="400" y="56" text-anchor="middle" fill="var(--color-text-secondary)" font-size="10">winget · MSI/MST · npm · pip · drivers · firmware</text>
+
+    <!-- Arrow -->
+    <line x1="400" y1="64" x2="400" y2="85" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="395,85 400,95 405,85" fill="var(--color-accent)" opacity="0.5"/>
+
+    <!-- Ingest Gate -->
+    <rect x="230" y="95" width="340" height="68" rx="8" fill="var(--color-bg-elevated)" stroke="var(--color-accent)" stroke-width="1.5"/>
+    <text x="400" y="117" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-weight="600">INGEST GATE — POLICY EVALUATION</text>
+    <text x="400" y="136" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">Provenance · SBOM · SLSA level</text>
+    <text x="400" y="152" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">CVE severity · License allow-list</text>
+
+    <!-- Reject branch -->
+    <line x1="570" y1="129" x2="690" y2="129" stroke="var(--color-border)" stroke-width="1.5" opacity="0.4"/>
+    <rect x="690" y="110" width="90" height="38" rx="6" fill="var(--color-bg-secondary)" stroke="var(--color-border)" stroke-width="1"/>
+    <text x="735" y="133" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">Rejected</text>
+
+    <!-- Arrow down: admit -->
+    <line x1="400" y1="163" x2="400" y2="188" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="395,188 400,198 405,188" fill="var(--color-accent)" opacity="0.5"/>
+    <text x="430" y="182" text-anchor="start" fill="var(--color-text-secondary)" font-size="10">admit</text>
+
+    <!-- Signed Attestation -->
+    <rect x="260" y="198" width="280" height="50" rx="8" fill="var(--color-bg-elevated)" stroke="var(--color-accent)" stroke-width="1.5"/>
+    <text x="400" y="220" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-weight="600">SIGNED ATTESTATION</text>
+    <text x="400" y="238" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">Verifiable receipt · provenance record</text>
+
+    <!-- Arrow -->
+    <line x1="400" y1="248" x2="400" y2="273" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="395,273 400,283 405,273" fill="var(--color-accent)" opacity="0.5"/>
+
+    <!-- Ring Promotion -->
+    <rect x="240" y="283" width="320" height="55" rx="8" fill="var(--color-bg-elevated)" stroke="var(--color-accent)" stroke-width="1.5"/>
+    <text x="400" y="306" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-weight="600">RING PROMOTION</text>
+    <text x="400" y="325" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">Canary → Pilot → Broad → All · auto-rollback</text>
+
+    <!-- Arrow -->
+    <line x1="400" y1="338" x2="400" y2="378" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="395,378 400,388 405,378" fill="var(--color-accent)" opacity="0.5"/>
+
+    <!-- Fleet -->
+    <rect x="260" y="388" width="280" height="50" rx="8" fill="var(--color-bg-elevated)" stroke="var(--color-accent)" stroke-width="1.5"/>
+    <text x="400" y="410" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-weight="600">WINDOWS FLEET ENDPOINTS</text>
+    <text x="400" y="428" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">Agent + installer shim (OSS, Apache-2.0)</text>
+
+    <!-- Attested Inventory (side, spans the pipeline) -->
+    <rect x="40" y="198" width="160" height="240" rx="8" fill="none" stroke="var(--color-accent)" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"/>
+    <text x="120" y="222" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-weight="600" opacity="0.7">ATTESTED</text>
+    <text x="120" y="236" text-anchor="middle" fill="var(--color-accent)" font-size="10" font-weight="600" opacity="0.7">INVENTORY</text>
+    <text x="120" y="262" text-anchor="middle" fill="var(--color-text-secondary)" font-size="10">Cross-package-</text>
+    <text x="120" y="276" text-anchor="middle" fill="var(--color-text-secondary)" font-size="10">manager rollup</text>
+    <text x="120" y="302" text-anchor="middle" fill="var(--color-text-secondary)" font-size="10">CVE matrix vs</text>
+    <text x="120" y="316" text-anchor="middle" fill="var(--color-text-secondary)" font-size="10">NVD / OSV / MSRC</text>
+    <text x="120" y="342" text-anchor="middle" fill="var(--color-text-secondary)" font-size="10">Signed export</text>
+    <text x="120" y="356" text-anchor="middle" fill="var(--color-text-secondary)" font-size="10">for auditors</text>
+    <line x1="200" y1="413" x2="260" y2="413" stroke="var(--color-border)" stroke-width="1" opacity="0.3"/>
+
+    <!-- Data / control layer -->
+    <text x="400" y="478" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11" font-weight="600" letter-spacing="0.1em">CONTROL PLANE</text>
+
+    <rect x="120" y="493" width="150" height="40" rx="6" fill="var(--color-bg-secondary)" stroke="var(--color-border)" stroke-width="1"/>
+    <text x="195" y="518" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">.NET · PostgreSQL</text>
+
+    <rect x="290" y="493" width="170" height="40" rx="6" fill="var(--color-bg-secondary)" stroke="var(--color-border)" stroke-width="1"/>
+    <text x="375" y="518" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">Community Edition (Docker)</text>
+
+    <rect x="480" y="493" width="200" height="40" rx="6" fill="var(--color-bg-secondary)" stroke="var(--color-border)" stroke-width="1"/>
+    <text x="580" y="518" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">Marketing site (Astro · CF Pages)</text>
+  </svg>
+</div>
+
+<style>
+  .diagram-container {
+    max-width: 50rem;
+    margin: var(--space-8) auto;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-primary);
+  }
+
+  .diagram-container svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .diagram-container svg text {
+    font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+</style>

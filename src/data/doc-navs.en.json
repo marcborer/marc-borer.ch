@@ -22,5 +22,21 @@
       { "label": "Architecture", "href": "/projects/smallcaptrader/architecture" },
       { "label": "Component Reference", "href": "/projects/smallcaptrader/components" }
     ]
+  },
+  "attestree": {
+    "title": "Attestree",
+    "items": [
+      { "label": "Overview", "href": "/projects/attestree" },
+      { "label": "Architecture", "href": "/projects/attestree/architecture" },
+      { "label": "Component Reference", "href": "/projects/attestree/components" }
+    ]
+  },
+  "options-gex": {
+    "title": "options-gex",
+    "items": [
+      { "label": "Overview", "href": "/projects/options-gex" },
+      { "label": "Architecture", "href": "/projects/options-gex/architecture" },
+      { "label": "Component Reference", "href": "/projects/options-gex/components" }
+    ]
   }
 }

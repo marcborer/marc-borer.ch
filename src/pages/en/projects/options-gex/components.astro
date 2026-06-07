@@ -1,0 +1,10 @@
+---
+import DocLayout from '../../../../layouts/DocLayout.astro';
+import { Content, frontmatter } from '../../../../content/projects/options-gex/components.md';
+import docNavs from '../../../../data/doc-navs.en.json';
+const nav = docNavs['options-gex'];
+---
+
+<DocLayout title={`${frontmatter.title} — options-gex Research Engine`} description="Key components of options-gex: GEX computation, signal rules, the backtest engine, the six-condition go-live gate, and the notebooks." sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <Content />
+</DocLayout>
