@@ -25,8 +25,8 @@ const targets = [
   {
     file: 'attestree.png',
     title: 'Attestree',
-    subtitle: 'Supply-chain provenance for Windows fleets — SBOM at ingest',
-    tags: ['.NET', 'winget', 'SBOM', 'Sigstore', 'SLSA'],
+    subtitle: 'Attested winget for Windows fleets — signed provenance at ingest',
+    tags: ['.NET', 'winget', 'in-toto', 'SBOM', 'SLSA'],
   },
   {
     file: 'options-gex.png',

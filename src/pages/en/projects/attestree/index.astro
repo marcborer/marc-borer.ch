@@ -5,7 +5,7 @@ import AttestreeDiagram from '../../../../components/diagrams/AttestreeDiagram.a
 import docNavs from '../../../../data/doc-navs.en.json';
 const nav = docNavs['attestree'];
 
-const tech = ['.NET', 'winget', 'SBOM / CycloneDX', 'Sigstore', 'SLSA', 'WDAC', 'Docker', 'Astro'];
+const tech = ['.NET', 'winget', 'in-toto / SLSA', 'SBOM / CycloneDX', 'Sigstore', 'PostgreSQL', 'Docker', 'Astro'];
 
 const projectSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -13,18 +13,18 @@ const projectSchema = JSON.stringify({
   "name": "Attestree",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Windows",
-  "description": "Software supply-chain platform for Windows fleets that verifies package sources at ingest — provenance, SBOM, SLSA level, and license policy — with ring-promoted deployment and signed attestations.",
+  "description": "Fleet deployment control plane for Windows that attests every winget package at ingest — sandboxed detonation, observed SBOM, and signed in-toto / SLSA provenance — then serves it from a fenced feed through ring-based rollout.",
   "author": {
     "@type": "Person",
     "name": "Marc Borer",
     "url": "https://marc-borer.ch"
   },
   "programmingLanguage": ["C#", "TypeScript"],
-  "keywords": "software supply chain, SBOM, SLSA, provenance, attestation, winget, Windows fleet, ring deployment, Sigstore"
+  "keywords": "software supply chain, winget, attestation, SBOM, in-toto, SLSA, provenance, Windows fleet, ring deployment, private winget source"
 });
 ---
 
-<DocLayout title="Attestree — Software Supply-Chain Platform for Windows Fleets" description="Software supply-chain platform that verifies winget and other package sources at ingest — provenance, SBOM, SLSA level, and license — with ring-promoted deployment and signed attestations." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="Attestree — Attested winget for Windows Fleets" description="Fleet deployment control plane that attests every winget package at ingest — sandboxed detonation, observed SBOM, signed in-toto / SLSA provenance — and serves it from a fenced feed through ring-based rollout." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href="/en/projects/" class="back-link">
       <span aria-hidden="true">&larr;</span> Back to Projects
@@ -32,7 +32,7 @@ const projectSchema = JSON.stringify({
 
     <header class="case-header" data-animate="slide-up">
       <h1 class="case-title">Attestree</h1>
-      <p class="case-subtitle">Supply-chain provenance for Windows fleets — SBOM at ingest</p>
+      <p class="case-subtitle">Attested winget for Windows fleets — signed provenance at ingest</p>
       <div class="case-tech">
         {tech.map((t) => <TechBadge name={t} />)}
       </div>
@@ -49,10 +49,10 @@ const projectSchema = JSON.stringify({
       <h2>Problem</h2>
       <p>
         Most Windows shops install packages straight from the public source and discover problems
-        only after a scanner runs against an endpoint days later. By then the artifact is on a
-        thousand machines, SBOMs are an afterthought, attestations are missing, and the
+        only after a scanner runs against an endpoint days later. By then the artifact is already
+        running across the fleet, SBOMs are an afterthought, attestations are missing, and the
         supply-chain story is "we trust Microsoft's CDN." Tanium, Defender for Cloud, Snyk, and
-        their peers scan deployed binaries after the fact — nobody inspects the catalog and
+        their peers scan deployed binaries after the fact. Nobody inspects the catalog and
         distribution layer before deploy.
       </p>
     </section>
@@ -60,12 +60,14 @@ const projectSchema = JSON.stringify({
     <section class="case-section" data-animate="slide-up">
       <h2>Approach</h2>
       <p>
-        Attestree inverts the order: provenance is verified at <strong>ingest</strong>, not after
-        install. Every package fetched from a source is checked against policy — provenance, SBOM,
-        SLSA level, CVE severity, license — before it reaches a fleet node. Rejected artifacts
-        never make it to canary; admitted artifacts carry signed receipts an auditor can verify
-        with a public key. Layered on top: ring-promoted deployment with auto-rollback, and a
-        unified attested inventory across every package manager.
+        Attestree inverts the order: <em>winget install, but with a receipt.</em> Every package is
+        attested at <strong>ingest</strong>, not after install. The installer's signature and
+        publisher continuity are checked, the package is detonated in a sandbox, a CycloneDX SBOM
+        is generated from what the install actually did, and policy-as-code decides. Admitted
+        artifacts carry a signed in-toto statement with SLSA v1 provenance that an auditor verifies
+        with a public key. Endpoints are then fenced to the operator's own attested winget feed and
+        receive packages through groups and rings, with the agent re-verifying the exact approved
+        hash at install.
       </p>
     </section>
 
@@ -74,30 +76,42 @@ const projectSchema = JSON.stringify({
     <section class="case-section" data-animate="slide-up">
       <h2>Architecture</h2>
       <p>
-        The system has two surfaces — a control plane with an agent for the ingest gate,
-        attestation, and deployment, and a public front door of marketing site plus an open-core
+        The system has two surfaces. A control plane with an endpoint agent runs the ingest gate,
+        attestation, and deployment. The public front door is the marketing site plus an open-core
         community edition.
       </p>
 
       <h3>Ingest Gate</h3>
       <p>
-        Packages pass through a policy gate: fetch, provenance check against trusted roots, SBOM
-        verification (CycloneDX), policy evaluation (minimum SLSA level, CVE ceiling, license
-        allow-list), and finally the admit/reject decision.
+        Each package passes through fetch, installer-signature and publisher-certificate checks,
+        sandboxed detonation, an observed CycloneDX 1.6 SBOM, and a policy-as-code decision. The
+        result is signed as an in-toto statement (ECDSA P-256). winget is live, and Chocolatey is
+        managed under the same control plane. MSI/MST transforms, driver rings, and further
+        package managers are on the roadmap.
       </p>
 
-      <h3>Ring-Promoted Deployment</h3>
+      <h3>Fenced Feed, Groups × Rings</h3>
       <p>
-        Admitted artifacts roll out through promotion rings — canary, pilot, broad, all — rather
-        than fleet-wide at once, with operator-editable soak floors and auto-rollback on a failure
-        signal. A bad package's blast radius stays small.
+        Endpoints install from the operator's own spec-compliant winget REST source, pinned to the
+        approved SHA-256; a normal <code>winget install</code> never reaches the public repository.
+        PC Groups decide <em>what</em> a device runs; rings (canary → pilot → broad → all) decide
+        <em>which version</em>. Rollback goes to any prior version. A failing rollout produces a
+        rollback proposal for the operator to confirm rather than acting on its own.
+      </p>
+
+      <h3>Unattended Updates with a Halt Queue</h3>
+      <p>
+        An opt-in pipeline ingests, detonates, and promotes new winget versions ring by ring. It
+        halts for review when a publisher's signing certificate changes or an installer arrives
+        unsigned, which is exactly the signal a hijacked release produces.
       </p>
 
       <h3>Control Plane Stack</h3>
       <ul class="feature-list">
-        <li><strong>.NET / Windows</strong> — AOT-compiled agent and installer shim; server on Windows Server 2025</li>
-        <li><strong>PostgreSQL</strong> — operational store with per-tenant scope as a first-class invariant</li>
-        <li><strong>OCI registries</strong> — distribution layer for artifacts</li>
+        <li><strong>.NET</strong>: Native AOT installer shim and a self-updating endpoint agent rolled out through the same rings</li>
+        <li><strong>Docker + PostgreSQL</strong>: server image with a Postgres sidecar; per-tenant scope as a first-class invariant</li>
+        <li><strong>Open formats</strong>: in-toto, SLSA v1, CycloneDX 1.6 (Syft), with Sigstore supported but not required</li>
+        <li><strong>Fleet CVE index</strong>: self-hosted, matching observed inventory against cvelistV5 and CISA KEV, with an offline bundle for air-gapped hosts</li>
       </ul>
     </section>
 
@@ -105,7 +119,7 @@ const projectSchema = JSON.stringify({
       <h2>Key Technical Decisions</h2>
 
       <div class="decision">
-        <h3>SBOM at ingest, not post-install scan</h3>
+        <h3>Attest at ingest, not scan after install</h3>
         <p>
           The structural wedge: Attestree owns the catalog/distribution layer and verifies before
           deploy. Without pre-deploy attestation, "we inventory it" is just a fancier
@@ -114,21 +128,30 @@ const projectSchema = JSON.stringify({
       </div>
 
       <div class="decision">
-        <h3>Signed, verifiable receipts</h3>
+        <h3>An observed SBOM, not a declared one</h3>
         <p>
-          Every admission produces evidence: a receipt recording verified provenance, the attached
-          SBOM, and the SLSA level, verifiable against a public key. That makes it possible to
-          answer, months later, who approved an artifact and on what basis. Managed signing keys
-          today, Sigstore-rooted verification on the roadmap.
+          The SBOM is generated from what the installer actually did in the sandbox, not taken
+          from the publisher's manifest. An ingest-time SBOM is an observation, and that is what
+          makes it worth signing.
         </p>
       </div>
 
       <div class="decision">
-        <h3>Cross-package-manager inventory</h3>
+        <h3>Three enforcement points</h3>
         <p>
-          A unified, attested inventory instead of reconciling per-tool outputs, keyed by canonical
-          artifact identity, with a CVE matrix against NVD / OSV / MSRC and a signed export the
-          auditor reads independently.
+          For a Windows fleet the endpoint is the load-bearing enforcement point, so policy is not
+          a single pipeline check. The ingest gate blocks before the catalog, reconciliation
+          catches drift against declared state, and the agent re-verifies signature, hash, and
+          policy at install.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Humans confirm the destructive step</h3>
+        <p>
+          Automation proposes and people approve. Rollback proposals are confirm-gated and off by
+          default, and the update pipeline halts into a review queue instead of guessing when a
+          publisher's signing identity changes.
         </p>
       </div>
 
@@ -136,9 +159,10 @@ const projectSchema = JSON.stringify({
         <h3>Open-core with an enforced license boundary</h3>
         <p>
           The installer shim and its IPC contract are Apache-2.0; the platform is closed-source. The
-          license boundary is enforced mechanically in the build — closed-source code cannot be
-          relicensed by accident. A cosign-signed community edition ships as a Docker image for
-          self-hosting.
+          license boundary is enforced mechanically in the build, so closed-source code cannot be
+          relicensed by accident. The free community edition runs self-hosted on Docker Compose
+          with no cloud dependency, ships as Sigstore-cosign signed images, and includes roles,
+          TOTP two-factor, and operational runbooks.
         </p>
       </div>
     </section>
@@ -149,9 +173,11 @@ const projectSchema = JSON.stringify({
         The marketing site at attestree.com is a separate, fully public surface: a static Astro
         build with Tailwind + MDX, deployed to Cloudflare Pages with a preview deploy per PR. The
         waitlist runs as a same-origin Cloudflare Pages Function backed by D1 in an EU jurisdiction
-        with Turnstile bot defense. The build-security baseline covers SHA-pinned actions,
-        least-privilege tokens, a committed lockfile, Dependabot, and an <code>npm audit</code> CI
-        gate.
+        with hardened Turnstile verification. Site copy is re-synced against every platform
+        release, with an explicit shipped-vs-roadmap split, and unbacked claims are removed rather
+        than hedged. The build-security baseline covers SHA-pinned actions, least-privilege tokens,
+        a committed lockfile, Dependabot, an <code>npm audit</code> CI gate, and
+        <code>security.txt</code>.
       </p>
     </section>
   </article>
