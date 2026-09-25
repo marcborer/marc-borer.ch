@@ -19,8 +19,8 @@
   },
   {
     "title": "Attestree",
-    "description": "Software supply-chain platform for Windows fleets: gates winget and other package sources at ingest — verifying provenance, SBOM, SLSA level, and license policy before an artifact reaches a single endpoint — with ring-promoted deployment, signed attestations, and an open-core community edition.",
-    "tech": [".NET", "winget", "SBOM / CycloneDX", "Sigstore", "SLSA", "WDAC", "Docker", "Astro"],
+    "description": "Fleet deployment control plane for Windows that attests every winget package at ingest — sandboxed detonation, an observed SBOM, and signed in-toto / SLSA provenance before an artifact reaches a single endpoint — then serves it from a fenced winget feed through groups and rings, with an open-core community edition.",
+    "tech": [".NET", "winget", "in-toto / SLSA", "SBOM / CycloneDX", "Sigstore", "PostgreSQL", "Docker", "Astro"],
     "link": "/projects/attestree/"
   },
   {

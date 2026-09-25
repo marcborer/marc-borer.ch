@@ -1,61 +1,78 @@
 ---
 title: Component Reference
-description: Attestree key components — policy gate, attestation, rings, inventory, and the open-core edition
+description: Attestree key components — ingest evidence, attestation, fenced feed, groups × rings, update pipeline, CVE index, and the open-core edition
 ---
 
-## Policy Dimensions
+## Ingest Evidence
 
-The ingest gate evaluates every artifact across independent policy dimensions. An artifact is admitted only when it satisfies all of them; any failure routes it to rejection with a reason, never to a fleet ring.
+The ingest gate does not trust what a package *claims*; it records what the installer *does*. Each admission decision rests on evidence gathered before any endpoint sees the artifact.
 
-| Dimension | What it enforces |
-|-----------|------------------|
-| **Provenance** | Build provenance and signatures chain to a trusted root |
-| **SBOM** | A CycloneDX bill of materials is present and verified |
-| **SLSA level** | Artifact meets a configured minimum SLSA build level |
-| **CVE severity** | No component exceeds the configured maximum severity |
-| **License** | Every component license is on the allow-list |
+| Evidence | What it establishes |
+|----------|---------------------|
+| **Installer signature** | PE, MSI, and MSIX/APPX signatures are checked; a signature that appears or disappears between versions halts the release |
+| **Publisher continuity** | A changed signing certificate for the same publisher is surfaced, not silently accepted |
+| **Sandboxed detonation** | The package is really installed in an isolated environment and its behaviour recorded |
+| **Observed SBOM** | A CycloneDX 1.6 SBOM generated from the observed install (Syft), not taken from the publisher's word |
+| **Policy decision** | Policy-as-code evaluates the evidence; the same policy is re-applied by the endpoint agent at install |
 
-A typical policy reads as configuration — a managed-key trust root, a minimum SLSA level, a CVE ceiling, and an explicit license allow-list — so the admit/reject decision is reproducible and reviewable.
+The admit/reject decision is reproducible and reviewable: every verdict links back to the evidence it was made on.
 
 ---
 
-## Attestation & Receipts
+## Attestation & Evidence Bundles
 
 Admission is not a side effect; it produces evidence.
 
-- **Signed receipt** — Each admitted artifact carries a receipt recording the verified provenance, the attached SBOM, and the SLSA level.
-- **Independently verifiable** — Receipts verify against a public key, so an auditor can confirm "who approved this artifact, and on what basis" without trusting the deploying party.
-- **Roadmap to Sigstore** — Managed signing keys today; Sigstore-rooted verification with TUF metadata is on the roadmap.
+- **Signed in-toto statement**: every admitted artifact gets an in-toto Statement v1 carrying SLSA v1 provenance and the SBOM digest, signed with ECDSA P-256 against the operator's root of trust.
+- **Native, not wrapped**: signing, SBOM generation, and policy are built in. No external cosign wrapper, separate SBOM tool, or admission controller is needed. Sigstore (keyless signing, Rekor transparency log) is supported as an open format, not a dependency.
+- **Independently verifiable**: an auditor verifies a receipt with one CLI call or a short script, without trusting the deploying party.
+- **Evidence-bundle export**: the full evidence set exports as a signed bundle and verifies offline. The export works in the free edition; hardware-attested key custody (HSM / vTPM-bound roots) is on the commercial roadmap.
 
 This closes the gap the status quo leaves open: when an artifact ships because "the CDN said so," nobody can answer the auditor's question months later. With Attestree, the answer is a signed record.
 
 ---
 
-## Promotion Rings
+## Fenced winget Feed
 
-Deployment is staged, not all-at-once.
+- **Your own source**: a spec-compliant winget REST source serving only admitted packages.
+- **Fenced endpoints**: the agent locks endpoints to that source; a normal `winget install` resolves against the approved catalog, not the public repository.
+- **Hash-pinned**: endpoints install only the exact SHA-256 that was approved.
+
+---
+
+## Groups × Rings
+
+Groups decide *what*; rings decide *which version*.
 
 | Ring | Role |
 |------|------|
-| **Canary** | First, smallest exposure — catches breakage early |
+| **Canary** | First, smallest exposure; catches breakage early |
 | **Pilot** | Wider validation cohort |
 | **Broad** | Majority of the fleet |
 | **All** | Full rollout |
 
-- **Bulk and per-row promotion** — operators promote, clear soak, or roll back at the ring or individual-package level.
-- **Operator-editable soak floors** — minimum dwell time per ring before promotion is allowed, configurable per tenant.
-- **Auto-rollback** — a failure signal pauses or reverses promotion via a single signed policy change.
+- **PC Groups**: version-free base sets of packages; an endpoint converges to the union of its groups.
+- **Bulk promotion**: operators review approved artifacts and bulk-promote them into a ring in one action. Every promotion is a signed event.
+- **Rollback to any prior version**: the agent uninstalls the current version and installs the previous one.
+- **Confirm-gated rollback proposals**: a rollout that starts failing produces a rollback *proposal* for the operator to confirm. This ships disabled by default, and auto-execution stays fenced.
 
 ---
 
-## Attested Inventory
+## Unattended Update Pipeline
 
-A unified inventory across every package manager a device runs, replacing per-tool reconciliation.
+An opt-in pipeline keeps winget packages current without giving up the gate:
 
-- **Cross-package-manager rollup** — one normalized view keyed by canonical artifact identity.
-- **Server-side classification** — packages are classified (managed, attested, MSI-installed, and so on) so the long tail is visible, not just the winget-managed slice.
-- **CVE matrix** — reported inventory reconciled against NVD / OSV / MSRC.
-- **Signed export** — the auditor reads the same signed bundle the operator does.
+- New upstream versions are ingested, detonated, and promoted ring by ring.
+- The pipeline **halts into a review queue** when a publisher's signing certificate changes or an installer arrives unsigned.
+- The endpoint agent updates itself through the same rings, with pause, resume, abort, and a local rollback floor.
+
+---
+
+## Fleet Inventory & CVE Index
+
+- **Observed inventory**: winget and Chocolatey are managed end to end (inventory and deploy); Scoop inventory is collected but not counted as a managed manager.
+- **Self-hosted CVE index**: observed inventory matched against the public CVE list (cvelistV5) and the CISA KEV catalogue, pulled download-only.
+- **Air-gap friendly**: an offline index bundle serves hosts without outbound access.
 
 ---
 
@@ -67,23 +84,30 @@ Attestree is open-core, with a deliberate license boundary.
 |-----------|------------------------|
 | **Installer shim + IPC contract** | Apache-2.0 (open source) |
 | **Platform control plane** | Closed-source, commercial |
-| **Community edition** | Cosign-signed Docker image, free for small fleets, self-hosted |
-| **Commercial topology** | Multi-tenant SaaS or self-hosted appliance from the same bundle |
+| **Community edition** | Free, self-hosted Docker Compose stack with no cloud dependency; Sigstore-cosign signed images; early access |
+| **Commercial topology** | Self-hosted appliance or a dedicated instance in the customer's own Azure subscription; no shared multi-tenant SaaS |
 
-The license boundary is enforced mechanically in the build, so closed-source code cannot be relicensed by accident — a `git mv` of a project between the open and closed trees fails the build rather than quietly changing its license.
+The license boundary is enforced mechanically in the build, so closed-source code cannot be relicensed by accident. A `git mv` of a project between the open and closed trees fails the build rather than quietly changing its license.
+
+The community edition is built to be operated, not just demoed:
+
+- **Accounts**: four policy-enforced roles, TOTP two-factor, and a break-glass recovery CLI. SSO is included in every commercial tier rather than sold as an upsell.
+- **Enrollment**: first-run setup token and enrollment tokens minted from the URL agents will actually use.
+- **Runbooks**: backup/restore, downgrade/rollback with a rollback ledger, and a Caddy TLS overlay for a trusted HTTPS front end.
 
 ---
 
 ## Marketing Site
 
-The public site at attestree.com presents buyer segments, product pages, pricing, research, and a waitlist.
+The public site at attestree.com presents product pages, buyer segments, compliance mappings (for example NIS2), research essays, practical guides such as locking a fleet to a private winget source, and a waitlist.
 
-- **Static Astro** build with Tailwind + MDX, deployed to Cloudflare Pages (preview deploy per PR).
-- **Waitlist** runs as a same-origin Cloudflare Pages Function backed by D1 in an EU jurisdiction, with Turnstile bot defense and documented data-handling.
-- **Build-security baseline** — SHA-pinned actions, least-privilege token, committed lockfile, Dependabot, and an `npm audit` CI gate.
+- **Static Astro** build with Tailwind + MDX, deployed to Cloudflare Pages (preview deploy per PR), with build-time OG images, structured data, and `llms.txt`.
+- **Waitlist** runs as a same-origin Cloudflare Pages Function backed by D1 in an EU jurisdiction, with hardened Turnstile verification and documented data-handling.
+- **Source-of-truth discipline**: site copy is re-synced against each platform release, with an explicit shipped-vs-roadmap split. Claims the product does not yet back, such as WDAC enforcement, are removed rather than hedged.
+- **Build-security baseline**: SHA-pinned actions, least-privilege token, committed lockfile, Dependabot, an `npm audit` CI gate, and `security.txt`.
 
 ---
 
 ## Role
 
-End-to-end architecture and implementation: the ingest-gate and attestation model, the ring-promotion lifecycle, the cross-package-manager inventory primitive, the open-core license-segregation strategy, and the public marketing site and community-edition distribution. The platform is engineered to a compliance-grade bar so the architecture stays open to larger regulated deployments as scope grows.
+End-to-end architecture and implementation: the ingest-evidence and attestation model, the fenced feed, the groups × rings deployment lifecycle, the unattended update pipeline, the fleet inventory and CVE index, the open-core license-segregation strategy, and the public marketing site and community-edition distribution. The platform is engineered to a compliance-grade bar so the architecture stays open to larger regulated deployments as scope grows.

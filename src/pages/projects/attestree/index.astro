@@ -11,7 +11,7 @@ const lang = (Astro.currentLocale || 'de') as Lang;
 const t = useTranslations(lang);
 const nav = docNavs['attestree'];
 
-const tech = ['.NET', 'winget', 'SBOM / CycloneDX', 'Sigstore', 'SLSA', 'WDAC', 'Docker', 'Astro'];
+const tech = ['.NET', 'winget', 'in-toto / SLSA', 'SBOM / CycloneDX', 'Sigstore', 'PostgreSQL', 'Docker', 'Astro'];
 
 const projectSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -19,18 +19,18 @@ const projectSchema = JSON.stringify({
   "name": "Attestree",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Windows",
-  "description": "Software-Supply-Chain-Plattform für Windows-Flotten, die Paketquellen beim Ingest prüft — Provenance, SBOM, SLSA-Level und Lizenzrichtlinie — mit ring-basiertem Deployment und signierten Attestierungen.",
+  "description": "Deployment-Control-Plane für Windows-Flotten, die jedes winget-Paket beim Ingest attestiert — Sandbox-Detonation, beobachtete SBOM und signierte in-toto-/SLSA-Provenance — und es über einen eingezäunten Feed ring-basiert ausrollt.",
   "author": {
     "@type": "Person",
     "name": "Marc Borer",
     "url": "https://marc-borer.ch"
   },
   "programmingLanguage": ["C#", "TypeScript"],
-  "keywords": "Software Supply Chain, SBOM, SLSA, Provenance, Attestierung, winget, Windows-Flotte, Ring-Deployment, Sigstore"
+  "keywords": "Software Supply Chain, winget, Attestierung, SBOM, in-toto, SLSA, Provenance, Windows-Flotte, Ring-Deployment, private winget-Quelle"
 });
 ---
 
-<DocLayout title="Attestree — Software-Supply-Chain-Plattform für Windows-Flotten" description="Software-Supply-Chain-Plattform, die winget und weitere Paketquellen beim Ingest prüft — Provenance, SBOM, SLSA-Level und Lizenz — mit ring-basiertem Deployment und signierten Attestierungen." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="Attestree — Attestiertes winget für Windows-Flotten" description="Deployment-Control-Plane, die jedes winget-Paket beim Ingest attestiert — Sandbox-Detonation, beobachtete SBOM, signierte in-toto-/SLSA-Provenance — und es über einen eingezäunten Feed ring-basiert ausrollt." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
       <span aria-hidden="true">&larr;</span> {t('projects.backToProjects')}
@@ -38,7 +38,7 @@ const projectSchema = JSON.stringify({
 
     <header class="case-header" data-animate="slide-up">
       <h1 class="case-title">Attestree</h1>
-      <p class="case-subtitle">Supply-Chain-Provenance für Windows-Flotten — SBOM beim Ingest</p>
+      <p class="case-subtitle">Attestiertes winget für Windows-Flotten — signierte Provenance beim Ingest</p>
       <div class="case-tech">
         {tech.map((t) => <TechBadge name={t} />)}
       </div>
@@ -56,10 +56,10 @@ const projectSchema = JSON.stringify({
       <p>
         Die meisten Windows-Umgebungen installieren Pakete direkt aus der öffentlichen Quelle und
         entdecken Probleme erst, wenn Tage später ein Scanner über einen Endpunkt läuft. Bis dahin
-        ist das Artefakt auf tausenden Maschinen, SBOMs sind ein nachträglicher Gedanke,
+        läuft das Artefakt bereits flottenweit, SBOMs sind ein nachträglicher Gedanke,
         Attestierungen fehlen, und die Supply-Chain-Story lautet „wir vertrauen dem CDN von
         Microsoft". Tanium, Defender for Cloud, Snyk und vergleichbare Werkzeuge scannen
-        ausgerollte Binaries im Nachhinein — niemand prüft die Katalog- und Distributionsschicht,
+        ausgerollte Binaries im Nachhinein. Niemand prüft die Katalog- und Distributionsschicht,
         bevor deployt wird.
       </p>
     </section>
@@ -67,13 +67,15 @@ const projectSchema = JSON.stringify({
     <section class="case-section" data-animate="slide-up">
       <h2>Ansatz</h2>
       <p>
-        Attestree dreht die Reihenfolge um: Provenance wird beim <strong>Ingest</strong> geprüft,
-        nicht nach der Installation. Jedes aus einer Quelle geladene Paket wird gegen die Richtlinie
-        verifiziert — Provenance, SBOM, SLSA-Level, CVE-Schweregrad, Lizenz — bevor es einen
-        Flottenknoten erreicht. Abgelehnte Artefakte schaffen es nie bis Canary; aufgenommene
-        Artefakte tragen signierte Receipts, die ein Auditor mit einem öffentlichen Schlüssel
-        verifizieren kann. Aufgesetzt darauf: ring-basiertes Deployment mit Auto-Rollback und ein
-        einheitliches attestiertes Inventar über alle Paketmanager hinweg.
+        Attestree dreht die Reihenfolge um: <em>winget install, aber mit Beleg.</em> Jedes Paket
+        wird beim <strong>Ingest</strong> attestiert, nicht nach der Installation. Die Signatur des
+        Installers und die Kontinuität des Publishers werden geprüft, das Paket wird in einer
+        Sandbox detoniert, aus dem tatsächlichen Installationsverhalten entsteht eine
+        CycloneDX-SBOM, und Policy-as-Code entscheidet. Aufgenommene Artefakte tragen ein
+        signiertes in-toto-Statement mit SLSA-v1-Provenance, das ein Auditor mit einem öffentlichen
+        Schlüssel verifiziert. Endpunkte sind anschliessend auf den eigenen, attestierten
+        winget-Feed des Betreibers eingezäunt und erhalten Pakete über Groups und Rings. Bei der
+        Installation prüft der Agent erneut den exakt freigegebenen Hash.
       </p>
     </section>
 
@@ -82,30 +84,44 @@ const projectSchema = JSON.stringify({
     <section class="case-section" data-animate="slide-up">
       <h2>Architektur</h2>
       <p>
-        Das System hat zwei Oberflächen — eine Control Plane mit Agent für Ingest Gate,
-        Attestierung und Deployment, und eine öffentliche Eingangstür aus Marketing-Website und
+        Das System hat zwei Oberflächen. Eine Control Plane mit Endpoint-Agent betreibt Ingest Gate,
+        Attestierung und Deployment. Die öffentliche Eingangstür bilden Marketing-Website und
         Open-Core Community Edition.
       </p>
 
       <h3>Ingest Gate</h3>
       <p>
-        Pakete durchlaufen ein Policy Gate: Fetch, Provenance-Prüfung gegen vertrauenswürdige
-        Roots, SBOM-Verifikation (CycloneDX), Policy-Evaluierung (Mindest-SLSA-Level,
-        CVE-Obergrenze, Lizenz-Allow-List) und schliesslich die Aufnahme-/Ablehnungsentscheidung.
+        Jedes Paket durchläuft Fetch, Prüfung von Installer-Signatur und Publisher-Zertifikat,
+        Sandbox-Detonation, eine beobachtete CycloneDX-1.6-SBOM und eine Policy-as-Code-Entscheidung.
+        Das Ergebnis wird als in-toto-Statement signiert (ECDSA P-256). winget ist live, und
+        Chocolatey wird unter derselben Control Plane verwaltet. MSI/MST-Transforms, Treiber-Rings
+        und weitere Paketmanager stehen auf der Roadmap.
       </p>
 
-      <h3>Ring-basiertes Deployment</h3>
+      <h3>Eingezäunter Feed, Groups × Rings</h3>
       <p>
-        Aufgenommene Artefakte rollen über Promotion-Rings aus — Canary, Pilot, Broad, All — statt
-        flottenweit auf einmal, mit operator-editierbaren Soak-Floors und Auto-Rollback bei
-        Fehlersignal. Der Blast-Radius eines fehlerhaften Pakets bleibt klein.
+        Endpunkte installieren aus der eigenen, spezifikationskonformen winget-REST-Quelle des
+        Betreibers, gepinnt auf den freigegebenen SHA-256; ein normales <code>winget install</code>
+        erreicht nie das öffentliche Repository. PC-Groups bestimmen, <em>was</em> ein Gerät
+        betreibt; Rings (canary → pilot → broad → all) bestimmen, <em>welche Version</em>. Ein
+        Rollback führt auf jede frühere Version zurück. Ein scheiternder Rollout erzeugt einen
+        Rollback-Vorschlag, den der Operator bestätigt, statt eigenmächtig zu handeln.
+      </p>
+
+      <h3>Unbeaufsichtigte Updates mit Halt-Queue</h3>
+      <p>
+        Eine optionale Pipeline nimmt neue winget-Versionen auf, detoniert sie und befördert sie
+        Ring für Ring. Sie stoppt zur Prüfung, wenn sich das Signaturzertifikat eines Publishers
+        ändert oder ein Installer unsigniert eintrifft. Genau dieses Signal erzeugt ein gekapertes
+        Release.
       </p>
 
       <h3>Control-Plane-Stack</h3>
       <ul class="feature-list">
-        <li><strong>.NET / Windows</strong> — AOT-kompilierter Agent und Installer-Shim; Server auf Windows Server 2025</li>
-        <li><strong>PostgreSQL</strong> — operativer Store mit Per-Tenant-Scope als erstklassiger Invariante</li>
-        <li><strong>OCI-Registries</strong> — Distributionsschicht für Artefakte</li>
+        <li><strong>.NET</strong>: Native-AOT-Installer-Shim und ein selbstaktualisierender Endpoint-Agent, ausgerollt über dieselben Rings</li>
+        <li><strong>Docker + PostgreSQL</strong>: Server-Image mit Postgres-Sidecar; Per-Tenant-Scope als erstklassige Invariante</li>
+        <li><strong>Offene Formate</strong>: in-toto, SLSA v1, CycloneDX 1.6 (Syft); Sigstore wird unterstützt, ist aber nicht erforderlich</li>
+        <li><strong>Flotten-CVE-Index</strong>: selbst gehostet, gleicht beobachtetes Inventar mit cvelistV5 und CISA KEV ab, mit Offline-Bundle für Air-Gapped-Hosts</li>
       </ul>
     </section>
 
@@ -113,7 +129,7 @@ const projectSchema = JSON.stringify({
       <h2>Technische Schlüsselentscheidungen</h2>
 
       <div class="decision">
-        <h3>SBOM beim Ingest statt Post-Install-Scan</h3>
+        <h3>Beim Ingest attestieren statt nach der Installation scannen</h3>
         <p>
           Der strukturelle Wedge: Attestree besitzt die Katalog-/Distributionsschicht und prüft vor
           dem Deploy. Ohne Pre-Deploy-Attestierung ist „wir inventarisieren es" nur ein schöneres
@@ -122,21 +138,30 @@ const projectSchema = JSON.stringify({
       </div>
 
       <div class="decision">
-        <h3>Signierte, verifizierbare Receipts</h3>
+        <h3>Eine beobachtete SBOM, keine deklarierte</h3>
         <p>
-          Jede Aufnahme erzeugt Evidenz: ein Receipt mit verifizierter Provenance, angehängter SBOM
-          und SLSA-Level, das gegen einen öffentlichen Schlüssel verifiziert. So lässt sich Monate
-          später beantworten, wer ein Artefakt auf welcher Grundlage freigegeben hat. Heute
-          verwaltete Signaturschlüssel, Sigstore-verankerte Verifikation auf der Roadmap.
+          Die SBOM entsteht aus dem, was der Installer in der Sandbox tatsächlich getan hat, nicht
+          aus dem Manifest des Publishers. Eine Ingest-SBOM ist eine Beobachtung, und genau das
+          macht sie signierwürdig.
         </p>
       </div>
 
       <div class="decision">
-        <h3>Paketmanager-übergreifendes Inventar</h3>
+        <h3>Drei Durchsetzungspunkte</h3>
         <p>
-          Ein einheitliches, attestiertes Inventar statt der Abstimmung einzelner Tool-Ausgaben,
-          gekeyt nach kanonischer Artefakt-Identität, mit einer CVE-Matrix gegen NVD / OSV / MSRC und
-          einem signierten Export, den der Auditor unabhängig liest.
+          In einer Windows-Flotte ist der Endpunkt der tragende Durchsetzungspunkt. Die Richtlinie
+          ist deshalb keine einzelne Pipeline-Prüfung: Das Ingest Gate blockiert vor dem Katalog,
+          die Reconciliation erkennt Drift gegenüber dem deklarierten Zustand, und der Agent prüft
+          Signatur, Hash und Richtlinie bei der Installation erneut.
+        </p>
+      </div>
+
+      <div class="decision">
+        <h3>Den destruktiven Schritt bestätigt ein Mensch</h3>
+        <p>
+          Die Automatisierung schlägt vor, Menschen genehmigen. Rollback-Vorschläge sind
+          bestätigungspflichtig und standardmässig deaktiviert. Die Update-Pipeline stoppt in einer
+          Review-Queue, statt zu raten, wenn sich die Signaturidentität eines Publishers ändert.
         </p>
       </div>
 
@@ -144,9 +169,10 @@ const projectSchema = JSON.stringify({
         <h3>Open-Core mit erzwungener Lizenzgrenze</h3>
         <p>
           Der Installer-Shim und sein IPC-Vertrag sind Apache-2.0; die Plattform ist Closed-Source.
-          Die Lizenzgrenze wird mechanisch im Build durchgesetzt — Closed-Source-Code kann nicht
-          versehentlich umlizenziert werden. Eine cosign-signierte Community-Edition als
-          Docker-Image dient dem Self-Hosting.
+          Die Lizenzgrenze wird mechanisch im Build durchgesetzt, sodass Closed-Source-Code nicht
+          versehentlich umlizenziert werden kann. Die kostenlose Community Edition läuft selbst
+          gehostet auf Docker Compose ohne Cloud-Abhängigkeit, wird als Sigstore-cosign-signierte
+          Images ausgeliefert und bringt Rollen, TOTP-Zwei-Faktor und Betriebs-Runbooks mit.
         </p>
       </div>
     </section>
@@ -157,9 +183,11 @@ const projectSchema = JSON.stringify({
         Die Marketing-Website unter attestree.com ist eine separate, vollständig öffentliche
         Oberfläche: statischer Astro-Build mit Tailwind + MDX, deployt auf Cloudflare Pages mit
         Preview-Deploy pro PR. Die Warteliste läuft als Same-Origin Cloudflare Pages Function mit
-        D1 in einer EU-Jurisdiktion und Turnstile-Bot-Abwehr. Die Build-Security-Baseline umfasst
-        SHA-gepinnte Actions, least-privilege Token, committetes Lockfile, Dependabot und ein
-        <code>npm audit</code> CI-Gate.
+        D1 in einer EU-Jurisdiktion und gehärteter Turnstile-Verifikation. Die Website-Texte werden
+        bei jedem Plattform-Release neu abgeglichen, mit expliziter Trennung zwischen ausgeliefert
+        und Roadmap; unbelegte Aussagen werden entfernt statt relativiert. Die
+        Build-Security-Baseline umfasst SHA-gepinnte Actions, least-privilege Token, committetes
+        Lockfile, Dependabot, ein <code>npm audit</code> CI-Gate und <code>security.txt</code>.
       </p>
     </section>
   </article>
