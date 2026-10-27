@@ -1,6 +1,6 @@
-# Cloudflare Pages project config: serves the Astro static build in dist/.
-# The project is connected to this repository through Git integration, so a push
-# to main deploys production and every pull request gets a preview URL.
+# Cloudflare Pages project config. The site is deployed by `wrangler pages deploy`
+# from .github/workflows/deploy.yml (Direct Upload), not by Cloudflare's Git build.
+# Create the project once: npx wrangler pages project create marc-borer-ch --production-branch=main
 name = "marc-borer-ch"
 pages_build_output_dir = "dist"
-compatibility_date = "2026-10-01"
+compatibility_date = "2025-09-01"
