@@ -632,7 +632,23 @@ a:hover {
 }
 
 .diagram svg text {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+}
+
+/* Narrow screens scroll the drawing sideways; say so. */
+@media (max-width: 640px) {
+  .diagram::after {
+    content: 'Diagramm seitlich scrollbar';
+    display: block;
+    margin-top: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+
+  :lang(en) .diagram::after {
+    content: 'Scroll sideways for the whole diagram';
+  }
 }
 
 .diagram-caption {
