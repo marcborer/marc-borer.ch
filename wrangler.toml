@@ -9,3 +9,7 @@ directory = "./dist"
 # /404.html is served for unknown paths; /path and /path/ both resolve to the folder's index.
 not_found_handling = "404-page"
 html_handling = "auto-trailing-slash"
+
+# Workers Builds runs `npx wrangler preview` for every non-production branch; the
+# command requires this table, which may stay empty for a static site.
+[previews]
