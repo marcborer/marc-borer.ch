@@ -3,7 +3,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 ---
 
 <PageLayout title="Datenschutzerklärung">
-  <section class="legal">
+  <section class="legal prose">
     <h1>Datenschutzerklärung</h1>
 
     <h2>1. Verantwortlicher</h2>
@@ -123,61 +123,24 @@ import PageLayout from '../layouts/PageLayout.astro';
 
 <style>
   .legal {
-    padding: var(--space-16) 0;
-    max-width: 50rem;
-    margin: 0 auto;
+    max-width: 46rem;
+    padding-block: var(--space-12) var(--space-8);
   }
 
   .legal h1 {
-    font-size: var(--text-4xl);
     margin-bottom: var(--space-8);
   }
 
   .legal h2 {
     font-size: var(--text-xl);
     margin-top: var(--space-8);
-    margin-bottom: var(--space-3);
+    padding-top: var(--space-4);
   }
 
-  .legal p,
   .legal address {
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    margin-bottom: var(--space-4);
     font-style: normal;
-  }
-
-  .legal ul {
-    color: var(--color-text-secondary);
-    line-height: 1.7;
+    line-height: var(--leading-prose);
+    color: var(--ink-2);
     margin-bottom: var(--space-4);
-    padding-left: var(--space-6);
-  }
-
-  .legal li {
-    margin-bottom: var(--space-2);
-  }
-
-  .legal a {
-    color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .legal a:hover {
-    text-decoration: underline;
-  }
-
-  .legal code {
-    font-size: var(--text-sm);
-    background: var(--color-bg-secondary);
-    padding: 0.15em 0.4em;
-    border-radius: var(--radius-sm);
-  }
-
-  .legal-date {
-    margin-top: var(--space-8);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
   }
 </style>

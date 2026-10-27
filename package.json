@@ -1,5 +1,5 @@
 {
-  "name": "marc-borer.github.io",
+  "name": "marc-borer.ch",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -8,7 +8,8 @@
     "fonts": "node scripts/fetch-fonts.mjs",
     "build": "node scripts/fetch-fonts.mjs && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "og": "node scripts/generate-og.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",

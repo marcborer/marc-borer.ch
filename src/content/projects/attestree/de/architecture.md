@@ -11,7 +11,7 @@ Das System hat zwei Oberflächen: eine **Control Plane + Endpoint-Agent**, die I
 
 ### Ingest Gate
 
-Jedes aus einer Quelle geladene Paket durchläuft das Gate, bevor es in den Katalog gelangt. winget ist heute live, und Chocolatey wird unter derselben Control Plane verwaltet. MSI/MST-Transforms, Treiber-Rings, Windows Update as Code und weitere Paketmanager stehen auf der Roadmap.
+Jedes aus einer Quelle geladene Paket durchläuft das Gate, bevor es in den Katalog gelangt. winget wird heute durchgängig verwaltet und attestiert. Chocolatey und Scoop werden inventarisiert und erst deployt, wenn sie attestiert werden können. Weitere Paketmanager und MSI/MST-Transforms stehen auf der Roadmap.
 
 | Stufe | Verantwortlichkeit |
 |-------|--------------------|

@@ -70,7 +70,7 @@ Eine optionale Pipeline hält winget-Pakete aktuell, ohne das Gate aufzugeben:
 
 ## Flotteninventar & CVE-Index
 
-- **Beobachtetes Inventar**: winget und Chocolatey werden durchgängig verwaltet (Inventar und Deployment); Scoop-Inventar wird erfasst, zählt aber nicht als verwalteter Paketmanager.
+- **Beobachtetes Inventar**: winget wird durchgängig verwaltet (Inventar und Deployment); Chocolatey und Scoop werden inventarisiert und erst deployt, wenn sie attestiert werden können. Software, die ausserhalb eines Paketmanagers ankam, erscheint über die Uninstall-Einträge des Endpunkts.
 - **Selbst gehosteter CVE-Index**: Das beobachtete Inventar wird mit der öffentlichen CVE-Liste (cvelistV5) und dem CISA-KEV-Katalog abgeglichen; die Daten werden ausschliesslich heruntergeladen.
 - **Air-Gap-tauglich**: Ein Offline-Index-Bundle versorgt Hosts ohne ausgehenden Zugriff.
 

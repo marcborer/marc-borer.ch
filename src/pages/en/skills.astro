@@ -1,247 +1,159 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const domains = [
+  {
+    title: 'Identity & Access',
+    depth: 'Strategic ownership',
+    strategic: true,
+    text: 'Hybrid identity architecture, lifecycle automation and an enterprise-wide authentication strategy, with a focus on governance and clean coexistence of on-premises and cloud.',
+    tech: 'Entra ID · Active Directory · Conditional Access · MFA · Graph API · Azure Automation',
+    links: [{ label: 'Cloud & Hybrid Infrastructure', href: '/projects/cloud-infrastructure/architecture' }],
+  },
+  {
+    title: 'Cloud & Messaging',
+    depth: 'Strategic ownership',
+    strategic: true,
+    text: 'Migration and operation of the company-wide communications platform: architecture decision, migration strategy, vendor evaluation and uninterrupted service through the switch.',
+    tech: 'Exchange Online · Exchange Hybrid · Microsoft Teams · Direct Routing · SBC · PowerShell',
+    links: [{ label: 'Cloud & Hybrid Infrastructure', href: '/projects/cloud-infrastructure/architecture' }],
+  },
+  {
+    title: 'Software Supply Chain & Platform Engineering',
+    depth: 'Hands-on delivery',
+    strategic: false,
+    text: 'Designing and building a control plane that attests software before rollout: sandbox detonation, observed SBOMs, signed provenance, fenced feeds and ring-based delivery with rollback.',
+    tech: '.NET · PostgreSQL · Docker · in-toto / SLSA · CycloneDX · Sigstore · Authenticode · winget',
+    links: [{ label: 'Attestree', href: '/projects/attestree/' }],
+  },
+  {
+    title: 'Endpoint Management',
+    depth: 'Hands-on delivery',
+    strategic: false,
+    text: 'A fully automated endpoint compliance and BIOS lifecycle platform: configuration as code, ring-based rollout and fleet-wide compliance visibility.',
+    tech: 'Microsoft Intune · Win32 packaging · BitLocker · OEM catalogs · Log Analytics · Logic Apps',
+    links: [{ label: 'Component reference', href: '/projects/cloud-infrastructure/components' }],
+  },
+  {
+    title: 'Security & Observability',
+    depth: 'Hands-on delivery',
+    strategic: false,
+    text: 'A central SIEM platform for threat detection and cross-site correlation: from scattered, uncorrelated logs to enterprise-wide security visibility.',
+    tech: 'Elastic Stack · Kibana · Winlogbeat · Azure Monitor · Prometheus · Grafana · OpenTelemetry',
+    links: [{ label: 'Cloud & Hybrid Infrastructure', href: '/projects/cloud-infrastructure/architecture' }],
+  },
+  {
+    title: 'Automation & CI/CD',
+    depth: 'Strategic ownership',
+    strategic: true,
+    text: 'Infrastructure as code, deployment automation and pipeline architecture across platforms: from enterprise SaaS infrastructure and cloud automation to daily release cycles with gates.',
+    tech: 'PowerShell · Ansible · GitHub Actions · Bamboo · Azure Automation · Docker · Python · TypeScript',
+    links: [
+      { label: 'SaaS CI/CD Pipeline', href: '/projects/cicd-automation/' },
+      { label: 'SmallCapTrader', href: '/projects/smallcaptrader/' },
+    ],
+  },
+];
 ---
 
-<PageLayout title="Skills & Competencies — Marc Borer" description="Architecture competencies of Marc Borer — Identity & Access, Cloud & Messaging, Endpoint Management, Security, and Automation." ogImage="/og/skills.png">
-  <section class="skills">
-    <h1 class="skills-heading page-heading-accent" data-animate="slide-up">Skills & Competencies</h1>
-    <p class="skills-intro" data-animate="slide-up" data-delay="100">
-      End-to-end architectural ownership across enterprise infrastructure —
-      from technology evaluation and design decisions through implementation
-      to scalable, production-grade operations.
+<PageLayout title="Skills — Marc Borer" description="Skills of Marc Borer: identity & access, cloud & messaging, software supply chain, endpoint management, security & observability, automation & CI/CD." ogImage="/og/skills.png">
+  <header class="page-head">
+    <span class="eyebrow">Skills</span>
+    <h1>Six domains, each with evidence.</h1>
+    <p class="lead">
+      Architecture ownership across the whole lifecycle of business-critical infrastructure: from evaluation and technology decisions through implementation to stable operations. Each domain points to the project where it is evidenced.
     </p>
+  </header>
 
-    <div class="domains">
-      <!-- Identity & Access -->
-      <article class="domain" data-animate="slide-up" data-delay="200">
-        <div class="domain-header">
-          <h2 class="domain-title">Identity & Access</h2>
-          <span class="depth-badge depth--strategic">Strategic Ownership</span>
-        </div>
-        <p class="domain-description">
-          Hybrid identity architecture, lifecycle automation, and enterprise-wide
-          authentication strategy — designing for scalable governance, compliance
-          requirements, and seamless cloud-to-on-premises coexistence.
-        </p>
-        <div class="domain-tech">
-          Entra ID · Active Directory · MFA · Graph API · Azure Automation
-        </div>
-        <a href={getRelativeLocaleUrl('en', '/projects/cloud-infrastructure/architecture')} class="domain-evidence">
-          View project: Identity & Access
-          <span aria-hidden="true">&rarr;</span>
-        </a>
-      </article>
-
-      <!-- Cloud & Messaging -->
-      <article class="domain" data-animate="slide-up" data-delay="300">
-        <div class="domain-header">
-          <h2 class="domain-title">Cloud & Messaging</h2>
-          <span class="depth-badge depth--strategic">Strategic Ownership</span>
-        </div>
-        <p class="domain-description">
-          Enterprise communications platform migration and operations —
-          architectural decision-making, migration strategy, vendor evaluation,
-          and zero-downtime transition at scale.
-        </p>
-        <div class="domain-tech">
-          Exchange Online · Microsoft Teams · Direct Routing · SBC · PowerShell
-        </div>
-        <a href={getRelativeLocaleUrl('en', '/projects/cloud-infrastructure/architecture')} class="domain-evidence">
-          View project: Cloud & Messaging
-          <span aria-hidden="true">&rarr;</span>
-        </a>
-      </article>
-
-      <!-- Endpoint Management -->
-      <article class="domain" data-animate="slide-up" data-delay="400">
-        <div class="domain-header">
-          <h2 class="domain-title">Endpoint Management</h2>
-          <span class="depth-badge depth--hands-on">Hands-on Delivery</span>
-        </div>
-        <p class="domain-description">
-          Designed and built a fully automated endpoint compliance and
-          BIOS lifecycle platform — Configuration-as-Code, ring-based rollout,
-          and fleet-wide compliance visibility at enterprise scale.
-        </p>
-        <div class="domain-tech">
-          Microsoft Intune · Win32 Packaging · BitLocker · BIOS Lifecycle · DCE/DCR
-        </div>
-        <a href={getRelativeLocaleUrl('en', '/projects/cloud-infrastructure/components')} class="domain-evidence">
-          View project: Endpoint Management
-          <span aria-hidden="true">&rarr;</span>
-        </a>
-      </article>
-
-      <!-- Security & Observability -->
-      <article class="domain" data-animate="slide-up" data-delay="500">
-        <div class="domain-header">
-          <h2 class="domain-title">Security & Observability</h2>
-          <span class="depth-badge depth--hands-on">Hands-on Delivery</span>
-        </div>
-        <p class="domain-description">
-          Built a centralized SIEM platform for real-time threat detection
-          and cross-site correlation — transforming scattered, uncorrelated logs
-          into enterprise-wide security visibility.
-        </p>
-        <div class="domain-tech">
-          Elastic Stack · Log Analytics · Azure Monitor · Kibana · Winlogbeat
-        </div>
-        <a href={getRelativeLocaleUrl('en', '/projects/cloud-infrastructure/architecture')} class="domain-evidence">
-          View project: Security & Observability
-          <span aria-hidden="true">&rarr;</span>
-        </a>
-      </article>
-
-      <!-- Automation & CI/CD -->
-      <article class="domain" data-animate="slide-up" data-delay="600">
-        <div class="domain-header">
-          <h2 class="domain-title">Automation & CI/CD</h2>
-          <span class="depth-badge depth--strategic">Strategic Ownership</span>
-        </div>
-        <p class="domain-description">
-          Infrastructure-as-Code, deployment automation, and pipeline architecture
-          across diverse platforms — from enterprise SaaS infrastructure to cloud
-          automation and algorithmic trading systems.
-        </p>
-        <div class="domain-tech">
-          Ansible · PowerShell · Bamboo · Azure Automation · Docker · Git · Python
-        </div>
-        <div class="domain-evidence-group">
-          <a href={getRelativeLocaleUrl('en', '/projects/cicd-automation/')} class="domain-evidence">
-            Project: SaaS CI/CD Pipeline
-            <span aria-hidden="true">&rarr;</span>
-          </a>
-          <a href={getRelativeLocaleUrl('en', '/projects/smallcaptrader/')} class="domain-evidence">
-            Project: SmallCapTrader
-            <span aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-      </article>
+  <section class="section">
+    <div class="plates">
+      {domains.map((d) => (
+        <article class="plate">
+          <div class="plate-head">
+            <h2 class="plate-title">{d.title}</h2>
+            <span class:list={['depth', d.strategic ? 'depth--strategic' : 'depth--hands-on']}>{d.depth}</span>
+          </div>
+          <p class="plate-text">{d.text}</p>
+          <p class="plate-tech">{d.tech}</p>
+          <div class="plate-links">
+            {d.links.map((l) => (
+              <a href={getRelativeLocaleUrl('en', l.href)} class="link-arrow">
+                {l.label}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            ))}
+          </div>
+        </article>
+      ))}
     </div>
   </section>
 </PageLayout>
 
 <style>
-  .skills {
-    padding: var(--space-16) 0;
+  .plates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-12);
   }
 
-  .skills-heading {
-    font-size: var(--text-4xl);
-    margin-bottom: var(--space-6);
-  }
-
-  .skills-intro {
-    font-size: var(--text-lg);
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    max-width: 50rem;
-    margin-bottom: var(--space-12);
-  }
-
-  .domains {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-  }
-
-  .domain {
-    position: relative;
-    padding: var(--space-8);
-    padding-left: calc(var(--space-8) + 3px);
-    background-color: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-left: 3px solid var(--color-accent);
-    border-radius: var(--radius-lg);
-    transition: border-color 0.2s ease, box-shadow 0.3s ease, transform 0.3s ease;
-  }
-
-  .domain:hover {
-    border-color: var(--color-accent);
-    border-left-color: var(--color-accent);
-    box-shadow: 0 4px 24px rgba(34, 211, 238, 0.06);
-    transform: translateY(-2px);
-  }
-
-  .domain-header {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+  .plate {
+    display: grid;
     gap: var(--space-4);
-    margin-bottom: var(--space-4);
+    align-content: start;
+    padding-block: var(--space-8);
+    border-top: var(--rule) solid var(--hairline-strong);
   }
 
-  .domain-title {
-    font-size: var(--text-2xl);
-    margin: 0;
+  .plate-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
   }
 
-  .depth-badge {
-    display: inline-block;
-    padding: var(--space-1) var(--space-3);
+  .plate-title {
+    font-size: var(--text-xl);
+  }
+
+  .depth {
+    font-family: var(--font-mono);
     font-size: var(--text-xs);
-    font-weight: 600;
-    line-height: 1.4;
-    border-radius: var(--radius-full);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     white-space: nowrap;
   }
 
   .depth--strategic {
-    color: var(--color-accent);
-    background-color: var(--color-accent-subtle);
+    color: var(--accent);
   }
 
   .depth--hands-on {
-    color: var(--amber-400);
-    background-color: rgba(251, 191, 36, 0.1);
+    color: var(--signal);
   }
 
-  .depth--advisory {
-    color: var(--color-text-secondary);
-    background-color: var(--color-bg-elevated);
+  .plate-text {
+    line-height: var(--leading-prose);
+    color: var(--ink-2);
   }
 
-  .domain-description {
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
+  .plate-tech {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
     line-height: 1.7;
-    margin-bottom: var(--space-4);
+    color: var(--muted);
   }
 
-  .domain-tech {
-    font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-    letter-spacing: 0.02em;
-    opacity: 0.7;
-    margin-bottom: var(--space-4);
-  }
-
-  .domain-evidence-group {
+  .plate-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-4);
+    gap: var(--space-2) var(--space-6);
   }
 
-  .domain-evidence {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--color-accent);
-    text-decoration: none;
-    transition: gap 0.2s ease;
-  }
-
-  .domain-evidence:hover {
-    gap: var(--space-3);
-  }
-
-  @media (max-width: 768px) {
-    .domain {
-      padding: var(--space-6);
+  @media (max-width: 760px) {
+    .plates {
+      grid-template-columns: 1fr;
     }
   }
 </style>

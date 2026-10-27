@@ -1,19 +1,34 @@
 [
   {
-    "date": "Mär 2019 — Heute",
+    "date": "2026 — heute",
+    "kind": "Eigenes Unternehmen",
+    "title": "Gründer und Architekt, Attestree",
+    "company": "Attestree, Breitenbach",
+    "description": [
+      "Konzeption und Umsetzung einer Deployment-Control-Plane für Windows-Flotten: Pakete werden beim Ingest in einer Sandbox detoniert, mit einer beobachteten SBOM versehen und als signiertes in-toto-Statement attestiert, bevor sie über einen eingezäunten winget-Feed ring-basiert ausgerollt werden",
+      "Plattform-Engineering end-to-end: .NET-Control-Plane mit PostgreSQL, Native-AOT-Agent und Installer-Shim, selbstaktualisierende Agents über dieselben Rings, selbst gehosteter CVE-Index",
+      "Open-Core-Distribution: Apache-2.0-Shim, kostenlose Community Edition auf Docker Compose mit Sigstore-signierten Images, öffentliche Website attestree.com mit Build-Security-Baseline",
+      "Release-Engineering mit täglichem Release-Takt, CI-Gates und Authenticode-signierten Windows-Binaries"
+    ],
+    "projectLink": "/projects/attestree/"
+  },
+  {
+    "date": "Mär 2019 — heute",
+    "kind": "Festanstellung",
     "title": "Senior ICT Systems Architect",
     "company": "CTC Analytics AG, Zwingen",
     "description": [
-      "Verantwortung für Zielarchitektur und Modernisierungsstrategie der gesamten Microsoft Cloud- und Hybrid-Infrastruktur eines internationalen Industrieunternehmens",
-      "Architekturentscheid und Umsetzung der unternehmensweiten Kommunikationsmigration (Exchange Online, Teams Direct Routing) — vollständige Migration ohne Ausfallzeit",
-      "Entwurf und Aufbau einer automatisierten Endpoint-Compliance- und BIOS-Lifecycle-Plattform mit ringbasiertem Rollout und unternehmensweiter Compliance-Sichtbarkeit",
-      "Konzeption der hybriden Identity-Architektur und User-Lifecycle-Automatisierung — abteilungsübergreifende Abstimmung mit HR, IT und Geschäftsleitung",
-      "Architektur und Einführung einer zentralen SIEM-Plattform (Elastic Stack) für Echtzeit-Bedrohungserkennung und standortübergreifende Korrelation"
+      "Zielarchitektur und Modernisierungsstrategie der Microsoft Cloud- und Hybrid-Infrastruktur eines internationalen Unternehmens der Laborautomation, rund 180 Mitarbeitende und über 100 Windows- und Linux-Server",
+      "Projektlead der Migration von Messaging und Telefonie nach Exchange Online und Teams Direct Routing: über 300 Mailboxen, SBC- und SIP-Trunk-Integration, ohne Serviceunterbruch",
+      "Entwurf und Aufbau einer serverlosen Endpoint-Compliance- und BIOS-Lifecycle-Plattform für über 500 Intune-verwaltete Geräte, mit ringbasiertem Rollout und Compliance-Dashboards",
+      "Hybride Identity-Architektur und automatisiertes On- und Offboarding, abgestimmt mit HR, IT und Geschäftsleitung",
+      "Aufbau einer zentralen SIEM-Plattform auf dem Elastic Stack für Bedrohungserkennung und standortübergreifende Korrelation"
     ],
-    "projectLink": "/projects/"
+    "projectLink": "/projects/cloud-infrastructure/"
   },
   {
     "date": "Jan 2018 — Feb 2019",
+    "kind": "Auszeit",
     "title": "Sabbatical",
     "company": null,
     "description": [
@@ -23,23 +38,23 @@
   },
   {
     "date": "Mai 2014 — Dez 2017",
+    "kind": "Festanstellung",
     "title": "IT Operations Manager",
     "company": "Picturepark / Vision Information Transaction AG, Aarau",
     "description": [
-      "CI/CD-Pipeline und Infrastrukturautomatisierung für eine Enterprise SaaS-Plattform",
-      "Aufbau einer Infrastructure-as-Code-Plattform mit Ansible und Bamboo für reproduzierbare Multi-Umgebungs-Deployments",
-      "Integration von Cloud-Providern und Azure als Deployment-Ziele mit Snapshot-basiertem Testing",
-      "Leitung der technischen Implementierung bei Enterprise-Kunden auf Multi-Server-Umgebungen"
+      "Aufbau der CI/CD-Pipeline und Infrastructure-as-Code-Plattform (Ansible, Bamboo) für reproduzierbare Multi-Umgebungs-Deployments einer Enterprise-SaaS-Plattform",
+      "Integration von Cloud-Providern und Azure als Deployment-Ziele mit Snapshot-basiertem Testen",
+      "Technische Leitung der Plattform-Implementierungen bei Enterprise-Kunden auf Multi-Server-Umgebungen"
     ],
     "projectLink": "/projects/cicd-automation/"
   },
   {
     "date": "2010 — 2014",
-    "title": "Informatiker EFZ — Systemtechnik",
+    "kind": "Ausbildung",
+    "title": "Informatiker EFZ, Systemtechnik",
     "company": "Wirtschaftsinformatikschule, Zürich",
     "description": [
-      "Eidgenössisches Fähigkeitszeugnis (EFZ) als Informatiker",
-      "Fachrichtung Systemtechnik"
+      "Eidgenössisches Fähigkeitszeugnis als Informatiker, Fachrichtung Systemtechnik"
     ],
     "projectLink": null
   }

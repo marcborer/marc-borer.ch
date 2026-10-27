@@ -3,7 +3,7 @@ import PageLayout from '../../layouts/PageLayout.astro';
 ---
 
 <PageLayout title="Legal Notice">
-  <section class="legal">
+  <section class="legal prose">
     <h1>Legal Notice</h1>
 
     <h2>Contact</h2>
@@ -47,37 +47,24 @@ import PageLayout from '../../layouts/PageLayout.astro';
 
 <style>
   .legal {
-    padding: var(--space-16) 0;
-    max-width: 50rem;
-    margin: 0 auto;
+    max-width: 46rem;
+    padding-block: var(--space-12) var(--space-8);
   }
 
   .legal h1 {
-    font-size: var(--text-4xl);
     margin-bottom: var(--space-8);
   }
 
   .legal h2 {
     font-size: var(--text-xl);
     margin-top: var(--space-8);
-    margin-bottom: var(--space-3);
+    padding-top: var(--space-4);
   }
 
-  .legal p,
   .legal address {
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    margin-bottom: var(--space-4);
     font-style: normal;
-  }
-
-  .legal a {
-    color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .legal a:hover {
-    text-decoration: underline;
+    line-height: var(--leading-prose);
+    color: var(--ink-2);
+    margin-bottom: var(--space-4);
   }
 </style>

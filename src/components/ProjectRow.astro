@@ -1,0 +1,26 @@
+---
+import { getLangFromUrl, getLocalePath } from '../i18n/utils';
+
+interface Props {
+  title: string;
+  description: string;
+  tech: string[];
+  link: string;
+  period: string;
+}
+
+const { title, description, tech, link, period } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+---
+
+<a class="register-row" href={getLocalePath(link, lang)}>
+  <span class="register-period">{period}</span>
+  <span class="register-body">
+    <span class="register-title">{title}</span>
+    <span class="register-desc">{description}</span>
+  </span>
+  <span class="register-tech">{tech.join(' · ')}</span>
+  <span class="register-arrow" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </span>
+</a>
