@@ -15,7 +15,7 @@ const { title, description, ogImage } = Astro.props;
 <BaseLayout title={title} description={description} ogImage={ogImage}>
   <div class="page">
     <Nav />
-    <main id="main-content">
+    <main id="main-content" class="container">
       <slot />
     </main>
     <Footer />
@@ -31,9 +31,6 @@ const { title, description, ogImage } = Astro.props;
 
   main {
     flex: 1;
-    width: 100%;
-    max-width: 90rem;
-    margin: 0 auto;
-    padding: var(--space-8) var(--space-6);
+    padding-bottom: var(--space-16);
   }
 </style>

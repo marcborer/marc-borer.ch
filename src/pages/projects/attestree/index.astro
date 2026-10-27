@@ -11,7 +11,7 @@ const lang = (Astro.currentLocale || 'de') as Lang;
 const t = useTranslations(lang);
 const nav = docNavs['attestree'];
 
-const tech = ['.NET', 'winget', 'in-toto / SLSA', 'SBOM / CycloneDX', 'Sigstore', 'PostgreSQL', 'Docker', 'Astro'];
+const tech = ['.NET', 'winget', 'in-toto / SLSA', 'CycloneDX', 'Sigstore', 'PostgreSQL', 'Docker', 'Hyper-V / Proxmox', 'Astro'];
 
 const projectSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -19,7 +19,8 @@ const projectSchema = JSON.stringify({
   "name": "Attestree",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Windows",
-  "description": "Deployment-Control-Plane für Windows-Flotten, die jedes winget-Paket beim Ingest attestiert — Sandbox-Detonation, beobachtete SBOM und signierte in-toto-/SLSA-Provenance — und es über einen eingezäunten Feed ring-basiert ausrollt.",
+  "url": "https://attestree.com",
+  "description": "Deployment-Control-Plane für Windows-Flotten, die jedes winget-Paket beim Ingest attestiert: Sandbox-Detonation, beobachtete SBOM und signiertes in-toto-Statement, bevor es über einen eingezäunten Feed ring-basiert ausgerollt wird.",
   "author": {
     "@type": "Person",
     "name": "Marc Borer",
@@ -30,109 +31,117 @@ const projectSchema = JSON.stringify({
 });
 ---
 
-<DocLayout title="Attestree — Attestiertes winget für Windows-Flotten" description="Deployment-Control-Plane, die jedes winget-Paket beim Ingest attestiert — Sandbox-Detonation, beobachtete SBOM, signierte in-toto-/SLSA-Provenance — und es über einen eingezäunten Feed ring-basiert ausrollt." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="Attestree — Attestiertes winget für Windows-Flotten" description="Fallstudie Attestree: eine Deployment-Control-Plane, die jedes winget-Paket beim Ingest detoniert, mit einer beobachteten SBOM versieht und signiert, bevor es über einen eingezäunten Feed in Rings ausgerollt wird." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
-      <span aria-hidden="true">&larr;</span> {t('projects.backToProjects')}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> {t('projects.backToProjects')}
     </a>
 
-    <header class="case-header" data-animate="slide-up">
+    <header class="case-header">
       <h1 class="case-title">Attestree</h1>
-      <p class="case-subtitle">Attestiertes winget für Windows-Flotten — signierte Provenance beim Ingest</p>
-      <div class="case-tech">
-        {tech.map((t) => <TechBadge name={t} />)}
+      <p class="case-subtitle">Attestiertes winget für Windows-Flotten: Jedes Paket wird vor dem Rollout detoniert, mit einer SBOM versehen und signiert.</p>
+      <div class="tags">
+        {tech.map((name) => <TechBadge name={name} />)}
       </div>
-      <p class="case-private">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0110 0v4"/>
-        </svg>
-        Privates Repository
+      <p class="case-meta">
+        <span>{t('projects.role')}: Gründer, Architektur und Umsetzung</span>
+        <span>{t('projects.period')}: 2026 – heute</span>
+        <span>{t('projects.site')}: <a href="https://attestree.com" target="_blank" rel="noopener noreferrer">attestree.com</a></span>
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          Plattform-Code privat, Installer-Shim Apache-2.0
+        </span>
       </p>
     </header>
 
-    <section class="case-section" data-animate="slide-up">
+    <section class="case-section">
       <h2>Problem</h2>
       <p>
-        Die meisten Windows-Umgebungen installieren Pakete direkt aus der öffentlichen Quelle und
-        entdecken Probleme erst, wenn Tage später ein Scanner über einen Endpunkt läuft. Bis dahin
-        läuft das Artefakt bereits flottenweit, SBOMs sind ein nachträglicher Gedanke,
-        Attestierungen fehlen, und die Supply-Chain-Story lautet „wir vertrauen dem CDN von
-        Microsoft". Tanium, Defender for Cloud, Snyk und vergleichbare Werkzeuge scannen
-        ausgerollte Binaries im Nachhinein. Niemand prüft die Katalog- und Distributionsschicht,
-        bevor deployt wird.
+        Die meisten Windows-Umgebungen installieren winget-Pakete direkt aus der öffentlichen Quelle
+        und entdecken Probleme erst, wenn Tage später ein Scanner über einen Endpunkt läuft. Bis dahin
+        läuft das Artefakt flottenweit, SBOMs sind ein nachträglicher Gedanke, Attestierungen fehlen,
+        und die Supply-Chain-Story lautet «wir vertrauen dem CDN von Microsoft». Die üblichen
+        Werkzeuge scannen ausgerollte Binaries im Nachhinein, und App-Patching-Werkzeuge verteilen
+        Drittanbieter-Updates in Intune oder ConfigMgr, ohne die Integrität der Apps selbst zu belegen.
+        Niemand prüft die Katalog- und Distributionsschicht, bevor deployt wird.
       </p>
     </section>
 
-    <section class="case-section" data-animate="slide-up">
+    <section class="case-section">
       <h2>Ansatz</h2>
       <p>
-        Attestree dreht die Reihenfolge um: <em>winget install, aber mit Beleg.</em> Jedes Paket
-        wird beim <strong>Ingest</strong> attestiert, nicht nach der Installation. Die Signatur des
-        Installers und die Kontinuität des Publishers werden geprüft, das Paket wird in einer
-        Sandbox detoniert, aus dem tatsächlichen Installationsverhalten entsteht eine
-        CycloneDX-SBOM, und Policy-as-Code entscheidet. Aufgenommene Artefakte tragen ein
-        signiertes in-toto-Statement mit SLSA-v1-Provenance, das ein Auditor mit einem öffentlichen
-        Schlüssel verifiziert. Endpunkte sind anschliessend auf den eigenen, attestierten
-        winget-Feed des Betreibers eingezäunt und erhalten Pakete über Groups und Rings. Bei der
-        Installation prüft der Agent erneut den exakt freigegebenen Hash.
+        Attestree dreht die Reihenfolge um: <em>winget install, aber mit Beleg.</em> Mit einem
+        angeschlossenen Detonation-Host (Hyper-V oder Proxmox/KVM) wird jede aufgenommene
+        winget-Version in einer isolierten VM tatsächlich installiert. Der reale Fussabdruck auf
+        Dateisystem und Registry wird aufgezeichnet, nicht aus dem Manifest abgeleitet. Syft erzeugt
+        eine CycloneDX-SBOM dessen, was der Installer auf die Platte gelegt hat, und die Plattform
+        signiert ein in-toto-Statement über den SHA-256 des Installers, das sich offline verifizieren
+        lässt. Erst danach wird die Version in einen Ring befördert.
+      </p>
+      <p>
+        Endpunkte sind auf den eigenen, attestierten winget-Feed des Betreibers eingezäunt: Ein
+        eingezäunter Endpunkt installiert genau den gepinnten SHA-256 und lehnt alles andere ab. Fragt
+        jemand die Quelle nach einem Paket, das nicht freigegeben ist, lehnt der Feed sauber ab und
+        zeichnet die Nachfrage auf. Was als Nächstes aufgenommen wird, ist damit gemessener Bedarf,
+        keine Vermutung.
       </p>
     </section>
 
     <AttestreeDiagram />
 
-    <section class="case-section" data-animate="slide-up">
+    <section class="case-section">
       <h2>Architektur</h2>
       <p>
-        Das System hat zwei Oberflächen. Eine Control Plane mit Endpoint-Agent betreibt Ingest Gate,
-        Attestierung und Deployment. Die öffentliche Eingangstür bilden Marketing-Website und
+        Das System hat zwei Oberflächen. Eine Control Plane mit Endpoint-Agent betreibt Ingest,
+        Attestierung und Deployment. Die öffentliche Eingangstür bilden die Website und die
         Open-Core Community Edition.
       </p>
 
       <h3>Ingest Gate</h3>
       <p>
-        Jedes Paket durchläuft Fetch, Prüfung von Installer-Signatur und Publisher-Zertifikat,
-        Sandbox-Detonation, eine beobachtete CycloneDX-1.6-SBOM und eine Policy-as-Code-Entscheidung.
-        Das Ergebnis wird als in-toto-Statement signiert (ECDSA P-256). winget ist live, und
-        Chocolatey wird unter derselben Control Plane verwaltet. MSI/MST-Transforms, Treiber-Rings
-        und weitere Paketmanager stehen auf der Roadmap.
+        Jedes Paket durchläuft Fetch aus der öffentlichen winget-Quelle, Prüfung von Installer-Signatur
+        und Publisher-Kontinuität, Sandbox-Detonation, eine beobachtete CycloneDX-1.6-SBOM und eine
+        Policy-Entscheidung. Das Ergebnis wird als in-toto-Statement signiert (ECDSA P-256). winget
+        wird heute durchgängig verwaltet und attestiert; Chocolatey und Scoop werden inventarisiert
+        und erst deployt, wenn sie attestiert werden können. Weitere Paketmanager und
+        MSI/MST-Transforms stehen auf der Roadmap.
       </p>
 
       <h3>Eingezäunter Feed, Groups × Rings</h3>
       <p>
         Endpunkte installieren aus der eigenen, spezifikationskonformen winget-REST-Quelle des
-        Betreibers, gepinnt auf den freigegebenen SHA-256; ein normales <code>winget install</code>
-        erreicht nie das öffentliche Repository. PC-Groups bestimmen, <em>was</em> ein Gerät
-        betreibt; Rings (canary → pilot → broad → all) bestimmen, <em>welche Version</em>. Ein
+        Betreibers, gepinnt auf den freigegebenen SHA-256. PC-Groups bestimmen, <em>was</em> ein
+        Gerät betreibt; Rings (canary → pilot → broad → all) bestimmen, <em>welche Version</em>. Ein
         Rollback führt auf jede frühere Version zurück. Ein scheiternder Rollout erzeugt einen
-        Rollback-Vorschlag, den der Operator bestätigt, statt eigenmächtig zu handeln.
+        Rollback-Vorschlag, den der Operator bestätigt, statt dass das System eigenmächtig handelt.
       </p>
 
       <h3>Unbeaufsichtigte Updates mit Halt-Queue</h3>
       <p>
         Eine optionale Pipeline nimmt neue winget-Versionen auf, detoniert sie und befördert sie
-        Ring für Ring. Sie stoppt zur Prüfung, wenn sich das Signaturzertifikat eines Publishers
-        ändert oder ein Installer unsigniert eintrifft. Genau dieses Signal erzeugt ein gekapertes
-        Release.
+        Ring für Ring. Sie ist standardmässig deaktiviert und wird bewusst scharf geschaltet. Sie
+        stoppt zur Prüfung, wenn sich das Signaturzertifikat eines Publishers ändert oder ein
+        Installer unsigniert eintrifft. Genau dieses Signal erzeugt ein gekapertes Release.
       </p>
 
       <h3>Control-Plane-Stack</h3>
       <ul class="feature-list">
-        <li><strong>.NET</strong>: Native-AOT-Installer-Shim und ein selbstaktualisierender Endpoint-Agent, ausgerollt über dieselben Rings</li>
-        <li><strong>Docker + PostgreSQL</strong>: Server-Image mit Postgres-Sidecar; Per-Tenant-Scope als erstklassige Invariante</li>
-        <li><strong>Offene Formate</strong>: in-toto, SLSA v1, CycloneDX 1.6 (Syft); Sigstore wird unterstützt, ist aber nicht erforderlich</li>
+        <li><strong>.NET</strong>: Linux-Container als Control Plane; Native-AOT-Installer-Shim und ein selbstaktualisierender Endpoint-Agent, ausgerollt über dieselben Rings</li>
+        <li><strong>PostgreSQL und Docker</strong>: ein Server-Image mit Postgres; die Community Edition läuft auf Docker Compose ohne Cloud-Abhängigkeit</li>
+        <li><strong>Detonation-Hosts</strong>: Hyper-V oder Proxmox/KVM, mit einem Golden Image, das der Betreiber aus dem eigenen ISO baut</li>
+        <li><strong>Offene Formate und Signaturen</strong>: in-toto, SLSA v1, CycloneDX 1.6 (Syft); Sigstore-cosign-signierte Images und Authenticode-signierte Windows-Binaries</li>
         <li><strong>Flotten-CVE-Index</strong>: selbst gehostet, gleicht beobachtetes Inventar mit cvelistV5 und CISA KEV ab, mit Offline-Bundle für Air-Gapped-Hosts</li>
       </ul>
     </section>
 
-    <section class="case-section" data-animate="slide-up">
+    <section class="case-section">
       <h2>Technische Schlüsselentscheidungen</h2>
 
       <div class="decision">
         <h3>Beim Ingest attestieren statt nach der Installation scannen</h3>
         <p>
-          Der strukturelle Wedge: Attestree besitzt die Katalog-/Distributionsschicht und prüft vor
-          dem Deploy. Ohne Pre-Deploy-Attestierung ist „wir inventarisieren es" nur ein schöneres
+          Der strukturelle Wedge: Attestree besitzt die Katalog- und Distributionsschicht und prüft vor
+          dem Deploy. Ohne Pre-Deploy-Attestierung ist «wir inventarisieren es» nur ein schöneres
           <code>winget list</code>.
         </p>
       </div>
@@ -171,149 +180,35 @@ const projectSchema = JSON.stringify({
           Der Installer-Shim und sein IPC-Vertrag sind Apache-2.0; die Plattform ist Closed-Source.
           Die Lizenzgrenze wird mechanisch im Build durchgesetzt, sodass Closed-Source-Code nicht
           versehentlich umlizenziert werden kann. Die kostenlose Community Edition läuft selbst
-          gehostet auf Docker Compose ohne Cloud-Abhängigkeit, wird als Sigstore-cosign-signierte
-          Images ausgeliefert und bringt Rollen, TOTP-Zwei-Faktor und Betriebs-Runbooks mit.
+          gehostet auf Docker Compose, wird als Sigstore-cosign-signierte Images ausgeliefert und
+          ist im Early Access. Kommerziell gibt es eine dedizierte Instanz im eigenen
+          Azure-Abonnement des Kunden, bewusst kein geteiltes Multi-Tenant-SaaS.
         </p>
       </div>
     </section>
 
-    <section class="case-section" data-animate="slide-up">
+    <section class="case-section">
+      <h2>Arbeitsweise</h2>
+      <p>
+        Releases werden in einem täglichen Takt geschnitten, sobald die CI-Gates auf dem Hauptzweig
+        grün sind; ein Release ohne Agent-Änderung startet keinen Agent-Rollout. Architekturentscheide
+        sind als Entscheidungsprotokolle festgehalten, und die Website-Texte werden bei jedem Release
+        gegen den tatsächlichen Produktstand abgeglichen: Aussagen, die das Produkt nicht belegt,
+        werden entfernt statt relativiert.
+      </p>
+    </section>
+
+    <section class="case-section">
       <h2>Öffentliche Website</h2>
       <p>
-        Die Marketing-Website unter attestree.com ist eine separate, vollständig öffentliche
-        Oberfläche: statischer Astro-Build mit Tailwind + MDX, deployt auf Cloudflare Pages mit
-        Preview-Deploy pro PR. Die Warteliste läuft als Same-Origin Cloudflare Pages Function mit
-        D1 in einer EU-Jurisdiktion und gehärteter Turnstile-Verifikation. Die Website-Texte werden
-        bei jedem Plattform-Release neu abgeglichen, mit expliziter Trennung zwischen ausgeliefert
-        und Roadmap; unbelegte Aussagen werden entfernt statt relativiert. Die
-        Build-Security-Baseline umfasst SHA-gepinnte Actions, least-privilege Token, committetes
-        Lockfile, Dependabot, ein <code>npm audit</code> CI-Gate und <code>security.txt</code>.
+        Die Website unter attestree.com ist eine separate, vollständig öffentliche Oberfläche:
+        statischer Astro-Build mit Tailwind und MDX, deployt auf Cloudflare Pages mit Preview-Deploy
+        pro PR. Die Warteliste läuft als Same-Origin Cloudflare Pages Function mit D1 in einer
+        EU-Jurisdiktion und Turnstile-Verifikation. Die Build-Security-Baseline umfasst SHA-gepinnte
+        Actions, least-privilege Token, committetes Lockfile, Dependabot, ein <code>npm audit</code>
+        CI-Gate und <code>security.txt</code>.
       </p>
     </section>
   </article>
   <script type="application/ld+json" set:html={projectSchema} />
 </DocLayout>
-
-<style>
-  .case-study {
-    max-width: 65rem;
-    margin: 0 auto;
-    padding: var(--space-8) 0 var(--space-16);
-  }
-
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    transition: color 0.2s ease;
-    margin-bottom: var(--space-8);
-  }
-
-  .back-link:hover {
-    color: var(--color-accent);
-  }
-
-  .case-header {
-    margin-bottom: var(--space-12);
-  }
-
-  .case-title {
-    font-size: var(--text-4xl);
-    margin-bottom: var(--space-2);
-  }
-
-  .case-subtitle {
-    font-size: var(--text-lg);
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-6);
-  }
-
-  .case-tech {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-bottom: var(--space-4);
-  }
-
-  .case-private {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-  }
-
-  .case-private svg {
-    display: inline-block;
-  }
-
-  .case-section {
-    margin-bottom: var(--space-10);
-  }
-
-  .case-section h2 {
-    font-size: var(--text-2xl);
-    margin-bottom: var(--space-4);
-  }
-
-  .case-section h3 {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-3);
-    margin-top: var(--space-6);
-  }
-
-  .case-section p {
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: 1.8;
-  }
-
-  .feature-list {
-    list-style: none;
-    padding-left: 0;
-    margin-top: var(--space-4);
-  }
-
-  .feature-list li {
-    position: relative;
-    padding-left: var(--space-6);
-    padding-bottom: var(--space-3);
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-  }
-
-  .feature-list li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 6px;
-    height: 6px;
-    background-color: var(--color-accent);
-    border-radius: var(--radius-full);
-  }
-
-  .feature-list li strong {
-    color: var(--color-text-heading);
-  }
-
-  .decision {
-    margin-bottom: var(--space-6);
-  }
-
-  .decision h3 {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-2);
-  }
-
-  .decision p {
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: 1.8;
-  }
-</style>

@@ -11,7 +11,7 @@ The system has two surfaces: a **control plane + endpoint agent** that runs the 
 
 ### Ingest Gate
 
-Every package pulled from a source passes through the gate before it enters the catalog. winget is live today, and Chocolatey is managed under the same control plane. MSI/MST transforms, driver rings, Windows Update as code, and further package managers are on the roadmap.
+Every package pulled from a source passes through the gate before it enters the catalog. winget is managed and attested end to end today. Chocolatey and Scoop are inventoried and are not deployed until they can be attested. Further package managers and MSI/MST transforms are on the roadmap.
 
 | Stage | Responsibility |
 |-------|----------------|

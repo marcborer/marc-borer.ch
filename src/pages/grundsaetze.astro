@@ -1,141 +1,105 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+
+const principles = [
+  {
+    title: 'Blast Radius vor Feature-Geschwindigkeit',
+    text: 'Jede Änderung an Produktionsinfrastruktur, ob Exchange-Migration, BIOS-Update oder MFA-Umstellung, durchläuft ein ringbasiertes Rollout: canary, pilot, broad, all. Nicht weil es langsamer ist, sondern weil der Schaden einer fehlgeschlagenen Änderung an der ganzen Flotte um Grössenordnungen teurer ist als die Wartezeit auf eine kontrollierte Validierung. Attestree macht aus diesem Ablauf ein Produkt.',
+  },
+  {
+    title: 'Evidenz vor Vertrauen',
+    text: 'Ein Artefakt, das installiert wird, «weil das CDN es sagte», lässt die Frage des Auditors Monate später unbeantwortet. Deshalb wird Software bei mir vor dem Rollout geprüft, nicht nach der Installation gescannt: in einer Sandbox ausgeführt, als beobachtete SBOM festgehalten und als signiertes Statement belegt. Eine Entscheidung, die sich nicht belegen lässt, ist eine Annahme.',
+  },
+  {
+    title: 'Automatisiere das Bekannte, entwerfe das Komplexe',
+    text: 'Automatisierung ist kein Selbstzweck. Was ich gut verstehe und sich wiederholt, gehört in eine Pipeline: Konfigurationsdeployment, Compliance-Checks, Onboarding-Workflows. Was ich noch nicht vollständig verstehe, verdient zuerst eine Architekturentscheidung, keine voreilige Automatisierung, die das Falsche schneller macht.',
+  },
+  {
+    title: 'Hybrid ist eine Strategie, kein Kompromiss',
+    text: 'Hybrid-Architektur entsteht nicht aus der Unfähigkeit, vollständig in die Cloud zu migrieren. Sie ist eine bewusste Entscheidung, wenn lokale Infrastruktur regulatorische, performancebezogene oder kostenbezogene Anforderungen erfüllt, die eine reine Cloud-Lösung nicht abdeckt. Die Bridge-Architektur der Exchange-Migration und die hybride Identity-Lösung waren Koexistenzstrategien, keine Übergangslösungen.',
+  },
+  {
+    title: 'Beobachtbarkeit vor Optimierung',
+    text: 'Man kann nicht optimieren, was man nicht sieht. Bevor ich Leistungsprobleme behebe oder Prozesse verändere, baue ich die Sichtbarkeit auf: zentrale Log-Aggregation, Compliance-Dashboards, Alarmierung in Echtzeit. Der SIEM-Aufbau war kein Sicherheitsprojekt, das zufällig Monitoring abwarf. Er war die Grundlage, auf der alle weiteren operativen Entscheidungen aufgebaut werden konnten.',
+  },
+  {
+    title: 'Der destruktive Schritt bleibt beim Menschen',
+    text: 'Automatisierung schlägt vor, Menschen genehmigen. Ein Rollback, eine Quarantäne, ein Release unter einem neuen Signaturzertifikat: Das System stoppt und legt die Evidenz vor, statt zu raten. Wo ein Fehler die ganze Flotte trifft, ist die Bestätigung keine Reibung, sondern die Stelle, an der Verantwortung sichtbar wird.',
+  },
+];
 ---
 
-<PageLayout title="Architektur-Grundsätze — Marc Borer" description="Vier Architektur-Grundsätze, die meine Entscheidungen leiten — von ringbasiertem Rollout bis zur bewussten Hybrid-Strategie." ogImage="/og/principles.png">
-  <section class="principles">
-    <h1 class="principles-heading page-heading-accent" data-animate="slide-up">Architektur-Grundsätze</h1>
-    <p class="principles-intro" data-animate="slide-up" data-delay="100">
-      Vier Überzeugungen, die meine Architekturentscheidungen leiten — geformt durch
-      den Aufbau und Betrieb unternehmenskritischer Infrastruktur in komplexen
-      Unternehmensumgebungen.
+<PageLayout title="Architektur-Grundsätze — Marc Borer" description="Sechs Grundsätze, die Marc Borers Architekturentscheidungen leiten: von ringbasiertem Rollout und Evidenz vor Vertrauen bis zur bewussten Hybrid-Strategie." ogImage="/og/principles.png">
+  <header class="page-head">
+    <span class="eyebrow">Grundsätze</span>
+    <h1>Sechs Überzeugungen, aus dem Betrieb gelernt.</h1>
+    <p class="lead">
+      Geformt durch den Aufbau und Betrieb unternehmenskritischer Infrastruktur und, seit 2026, durch den Bau einer Plattform, die genau diese Grundsätze für andere Flotten durchsetzt.
     </p>
+  </header>
 
-    <div class="principles-list">
-      <article class="principle" data-animate="slide-up" data-delay="200">
-        <h2 class="principle-title">Blast Radius vor Feature-Geschwindigkeit</h2>
-        <p class="principle-text">
-          Jede Änderung an Produktionsinfrastruktur — ob Exchange-Migration, BIOS-Update
-          oder MFA-Umstellung — durchläuft ringbasiertes Rollout: Canary, Pilot, Broad.
-          Nicht weil es langsamer ist, sondern weil der Schaden einer fehlgeschlagenen
-          Änderung an der ganzen Flotte um Grössenordnungen teurer ist als die Wartezeit
-          auf eine kontrollierte Validierung.
-        </p>
-      </article>
-
-      <article class="principle" data-animate="slide-up" data-delay="300">
-        <h2 class="principle-title">Automatisiere das Bekannte, entwerfe das Komplexe</h2>
-        <p class="principle-text">
-          Automatisierung ist kein Selbstzweck. Was ich gut verstehe und sich wiederholt,
-          gehört in eine Pipeline — Konfigurationsdeployment, Compliance-Checks,
-          Onboarding-Workflows. Was ich noch nicht vollständig verstehe, verdient
-          zuerst eine Architekturentscheidung, keine voreilige Automatisierung, die
-          das Falsche schneller macht.
-        </p>
-      </article>
-
-      <article class="principle" data-animate="slide-up" data-delay="400">
-        <h2 class="principle-title">Hybrid ist eine Strategie, kein Kompromiss</h2>
-        <p class="principle-text">
-          Hybrid-Architektur entsteht nicht aus der Unfähigkeit, vollständig in die
-          Cloud zu migrieren. Sie ist eine bewusste Entscheidung, wenn lokale
-          Infrastruktur regulatorische, performancebezogene oder kostenbezogene
-          Anforderungen erfüllt, die eine reine Cloud-Lösung nicht abdeckt.
-          Die Bridge-Architektur bei der Exchange-Migration und die hybride Identity-Lösung
-          waren bewusste Koexistenzstrategien — keine temporären Übergangslösungen.
-        </p>
-      </article>
-
-      <article class="principle" data-animate="slide-up" data-delay="500">
-        <h2 class="principle-title">Beobachtbarkeit vor Optimierung</h2>
-        <p class="principle-text">
-          Man kann nicht optimieren, was man nicht sieht. Bevor ich Leistungsprobleme
-          behebe oder Prozesse verändere, baue ich die Sichtbarkeit auf —
-          zentrale Log-Aggregation, Compliance-Dashboards, Echtzeit-Alarmierung.
-          Der SIEM-Aufbau war nicht ein Sicherheitsprojekt, das zufällig Monitoring
-          abwarf — er war die bewusste Grundlage, auf der alle weiteren operativen
-          Entscheidungen aufgebaut werden konnten.
-        </p>
-      </article>
-    </div>
+  <section class="section">
+    <ol class="principles" role="list">
+      {principles.map((p, i) => (
+        <li class="principle">
+          <span class="principle-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <div class="principle-body">
+            <h2 class="principle-title">{p.title}</h2>
+            <p class="principle-text">{p.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
   </section>
 </PageLayout>
 
 <style>
   .principles {
-    padding: var(--space-16) 0;
-    max-width: 50rem;
-    margin: 0 auto;
-  }
-
-  .principles-heading {
-    font-size: var(--text-4xl);
-    margin-bottom: var(--space-6);
-  }
-
-  .principles-intro {
-    font-size: var(--text-lg);
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    margin-bottom: var(--space-12);
-  }
-
-  .principles-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    counter-reset: principle;
+    display: grid;
+    max-width: 60rem;
   }
 
   .principle {
-    position: relative;
-    padding: var(--space-10) 0;
-    padding-left: 4.5rem;
-    border-top: none;
-    border-image: linear-gradient(to right, transparent, var(--color-accent-subtle), var(--color-accent), var(--color-accent-subtle), transparent) 1;
-    border-image-width: 1px 0 0 0;
-    counter-increment: principle;
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: var(--space-6);
+    padding-block: var(--space-8);
+    border-bottom: var(--rule) solid var(--hairline);
   }
 
-  .principle::before {
-    content: "0" counter(principle);
-    position: absolute;
-    left: 0;
-    top: var(--space-10);
-    font-family: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  .principle-index {
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 600;
     font-size: var(--text-3xl);
-    font-weight: 800;
-    color: var(--color-accent);
-    opacity: 0.25;
     line-height: 1;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    padding-top: 0.1em;
   }
 
-  .principle:first-child {
-    border-image: none;
-    padding-top: 0;
-  }
-
-  .principle:first-child::before {
-    top: 0;
+  .principle-body {
+    display: grid;
+    gap: var(--space-3);
   }
 
   .principle-title {
     font-size: var(--text-xl);
-    margin-bottom: var(--space-3);
   }
 
   .principle-text {
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: 1.8;
+    line-height: var(--leading-prose);
+    color: var(--ink-2);
+    max-width: var(--measure);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 640px) {
     .principle {
-      padding-left: 3.5rem;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
     }
 
-    .principle::before {
+    .principle-index {
       font-size: var(--text-2xl);
     }
   }

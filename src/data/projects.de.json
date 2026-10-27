@@ -1,32 +1,78 @@
 [
   {
-    "title": "Enterprise Cloud & Hybrid Infrastructure",
-    "description": "Unternehmensweite Infrastrukturmodernisierung: Cloud-Migration einer Messaging- und Telefonie-Plattform, automatisierte Endpoint-Compliance-Plattform, hybride Identity Lifecycle Automation und zentrale Log-Aggregation mit Elastic Stack.",
-    "tech": ["Exchange Online", "Microsoft Teams", "Direct Routing", "Microsoft Intune", "PowerShell", "Azure AD", "Elastic Stack"],
-    "link": "/projects/cloud-infrastructure/"
-  },
-  {
-    "title": "Enterprise SaaS Platform — CI/CD",
-    "description": "Infrastructure-as-Code und Deployment-Automatisierung für eine Enterprise SaaS-Plattform. Aufbau einer CI/CD-Pipeline für reproduzierbare Multi-Umgebungs-Deployments, Leitung von Enterprise-Kundenimplementierungen.",
-    "tech": ["Ansible", "Bamboo", "Azure", "Python", "Elasticsearch", "HAProxy"],
-    "link": "/projects/cicd-automation/"
-  },
-  {
-    "title": "SmallCapTrader",
-    "description": "Full-Stack algorithmische Handelsplattform mit mehreren integrierten Strategien, einer Beam Search Rule-Mining-Engine zur automatisierten Strategieentdeckung und Live-Promotion, und Dual-Mode-Architektur (monolithisch/sharded) mit Multi-Broker-Ausführung.",
-    "tech": ["Python", "FastAPI", "Next.js", "React", "TypeScript", "PostgreSQL", "QuestDB", "Redis", "Docker"],
-    "link": "/projects/smallcaptrader/"
-  },
-  {
     "title": "Attestree",
-    "description": "Deployment-Control-Plane für Windows-Flotten, die jedes winget-Paket beim Ingest attestiert — Sandbox-Detonation, beobachtete SBOM und signierte in-toto-/SLSA-Provenance, bevor ein Artefakt einen einzigen Endpunkt erreicht — und es über einen eingezäunten winget-Feed mit Groups und Rings ausliefert, ergänzt um eine Open-Core Community Edition.",
-    "tech": [".NET", "winget", "in-toto / SLSA", "SBOM / CycloneDX", "Sigstore", "PostgreSQL", "Docker", "Astro"],
+    "period": "2026 —",
+    "description": "Deployment-Control-Plane für Windows-Flotten: Jedes winget-Paket wird beim Ingest in einer Sandbox detoniert, mit einer beobachteten SBOM versehen und als signiertes in-toto-Statement attestiert, bevor es über einen eigenen, eingezäunten winget-Feed in Rings ausgerollt wird. Open-Core, mit kostenloser Community Edition.",
+    "tech": [
+      ".NET",
+      "winget",
+      "in-toto / SLSA",
+      "CycloneDX",
+      "Sigstore",
+      "PostgreSQL",
+      "Docker",
+      "Astro"
+    ],
     "link": "/projects/attestree/"
   },
   {
+    "title": "Enterprise Cloud & Hybrid Infrastructure",
+    "period": "2019 —",
+    "description": "Modernisierung der Microsoft-Infrastruktur eines internationalen Industrieunternehmens: Migration von Messaging und Telefonie nach Exchange Online und Teams, automatisierte Endpoint-Compliance- und BIOS-Lifecycle-Plattform, hybride Identity-Automatisierung und eine zentrale SIEM-Plattform auf dem Elastic Stack.",
+    "tech": [
+      "Exchange Online",
+      "Microsoft Teams",
+      "Direct Routing",
+      "Intune",
+      "Entra ID",
+      "PowerShell",
+      "Elastic Stack"
+    ],
+    "link": "/projects/cloud-infrastructure/"
+  },
+  {
+    "title": "SmallCapTrader",
+    "period": "laufend",
+    "description": "Full-Stack-Handelsplattform mit mehreren Strategien, einer Beam-Search-Rule-Mining-Engine zur automatisierten Strategieentdeckung und Dual-Mode-Architektur (monolithisch oder sharded) mit Multi-Broker-Ausführung.",
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Next.js",
+      "TypeScript",
+      "PostgreSQL",
+      "QuestDB",
+      "Redis",
+      "Docker"
+    ],
+    "link": "/projects/smallcaptrader/"
+  },
+  {
     "title": "options-gex",
-    "description": "Gamma-Exposure-Research-Engine für den Optionshandel: lädt historische Optionsketten, berechnet GEX lokal, evaluiert level-basierte Handelsregeln und backtestet sie gegen Baseline-Kontrollen hinter einem mehrstufigen statistischen Gate, das bestehen muss, bevor Live-Ausführung freigeschaltet wird.",
-    "tech": ["Python", "Alpaca API", "PostgreSQL", "SQLite", "SOPS / age", "Fernet", "Docker", "Jupyter"],
+    "period": "laufend",
+    "description": "Research-Engine für Gamma Exposure im Optionshandel: lädt historische Optionsketten, berechnet GEX lokal und backtestet level-basierte Regeln gegen Baselines, hinter einem mehrstufigen statistischen Gate, das vor jeder Live-Ausführung bestehen muss.",
+    "tech": [
+      "Python",
+      "Alpaca API",
+      "PostgreSQL",
+      "SQLite",
+      "SOPS / age",
+      "Docker",
+      "Jupyter"
+    ],
     "link": "/projects/options-gex/"
+  },
+  {
+    "title": "Enterprise SaaS Platform — CI/CD",
+    "period": "2014 – 2017",
+    "description": "Infrastructure-as-Code und Deployment-Automatisierung für eine Enterprise-SaaS-Plattform: CI/CD-Pipeline für reproduzierbare Multi-Umgebungs-Deployments und technische Leitung von Kundenimplementierungen.",
+    "tech": [
+      "Ansible",
+      "Bamboo",
+      "Azure",
+      "Python",
+      "Elasticsearch",
+      "HAProxy"
+    ],
+    "link": "/projects/cicd-automation/"
   }
 ]

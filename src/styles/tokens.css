@@ -1,27 +1,40 @@
 /* ==========================================================================
-   Design Tokens — 2-layer system: primitives + semantic
+   Design tokens — marc-borer.ch
+
+   Layout concept: a specification sheet. Ruled hairlines, monospaced
+   metadata in the margins, wide-set grotesk headings, and one drawn motif:
+   the rollout rings (canary → pilot → broad → all) that run through the work.
+
+   Color: cool paper and ink with a single cobalt accent. Dark theme mirrors
+   the same roles on a blue-black ground; the cobalt lifts to periwinkle so it
+   keeps the same contrast against the dark paper.
    ========================================================================== */
 
 :root {
-  /* ---- Primitives ---- */
+  /* ---- Type ---- */
+  --font-display: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Slate scale */
-  --slate-950: #0F172A;
-  --slate-900: #1E293B;
-  --slate-800: #1E293B;
-  --slate-700: #334155;
-  --slate-400: #94A3B8;
-  --slate-200: #E2E8F0;
-  --slate-50:  #F8FAFC;
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-md:   1.0625rem;
+  --text-lg:   1.1875rem;
+  --text-xl:   1.375rem;
+  --text-2xl:  1.75rem;
+  --text-3xl:  clamp(1.875rem, 1.45rem + 1.4vw, 2.5rem);
+  --text-4xl:  clamp(2.125rem, 1.5rem + 2.2vw, 3.25rem);
+  --text-display: clamp(2.5rem, 1.5rem + 3.8vw, 4.75rem);
 
-  /* Cyan */
-  --cyan-400: #22D3EE;
-  --cyan-600: #0891B2;
+  --leading-tight: 1.08;
+  --leading-snug: 1.25;
+  --leading-body: 1.6;
+  --leading-prose: 1.7;
 
-  /* Amber */
-  --amber-400: #FBBF24;
+  --measure: 64ch;
 
-  /* Spacing */
+  /* ---- Space ---- */
   --space-1:  0.25rem;
   --space-2:  0.5rem;
   --space-3:  0.75rem;
@@ -35,60 +48,81 @@
   --space-20: 5rem;
   --space-24: 6rem;
 
-  /* Radii */
-  --radius-sm:   0.25rem;
-  --radius-md:   0.5rem;
-  --radius-lg:   0.75rem;
-  --radius-full: 9999px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --container: 76rem;
 
-  /* ---- Semantic tokens (dark-first) ---- */
-  --color-bg-primary:    var(--slate-950);
-  --color-bg-secondary:  var(--slate-900);
-  --color-bg-elevated:   var(--slate-800);
+  /* ---- Shape ---- */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --rule: 1px;
 
-  --color-text-primary:   var(--slate-200);
-  --color-text-secondary: var(--slate-400);
-  --color-text-heading:   #FFFFFF;
+  /* ---- Color (light / paper) ---- */
+  --paper: #EEF0F4;
+  --surface: #FFFFFF;
+  --surface-2: #E4E8EF;
+  --ink: #141821;
+  --ink-2: #2F3644;
+  --muted: #5C6474;
+  --hairline: #CBD1DB;
+  --hairline-strong: #A9B1BF;
+  --accent: #1E40D0;
+  --accent-hover: #1633A6;
+  --accent-ink: #FFFFFF;
+  --accent-wash: rgba(30, 64, 208, 0.08);
+  --signal: #B2520A;
+  --signal-wash: rgba(178, 82, 10, 0.1);
+  --shadow-float: 0 1px 0 rgba(20, 24, 33, 0.04), 0 12px 32px -16px rgba(20, 24, 33, 0.25);
+  --nav-glass: rgba(238, 240, 244, 0.88);
+  --code-bg: #1A1F29;
+  --code-fg: #DCE1EA;
 
-  --color-border: var(--slate-800);
-
-  --color-accent:        var(--cyan-400);
-  --color-accent-hover:  var(--cyan-600);
-  --color-accent-subtle: rgba(34, 211, 238, 0.1);
+  color-scheme: light;
 }
 
-/* ---- Light theme (explicit) ---- */
-[data-theme="light"] {
-  --color-bg-primary:    var(--slate-50);
-  --color-bg-secondary:  #FFFFFF;
-  --color-bg-elevated:   #FFFFFF;
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1319;
+    --surface: #161B23;
+    --surface-2: #1E2430;
+    --ink: #E9ECF1;
+    --ink-2: #C6CCD7;
+    --muted: #8F98A8;
+    --hairline: #2A3140;
+    --hairline-strong: #3B4454;
+    --accent: #809AFF;
+    --accent-hover: #A5B6FF;
+    --accent-ink: #0F1319;
+    --accent-wash: rgba(128, 154, 255, 0.12);
+    --signal: #F2A65A;
+    --signal-wash: rgba(242, 166, 90, 0.12);
+    --shadow-float: 0 1px 0 rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+    --nav-glass: rgba(15, 19, 25, 0.86);
+    --code-bg: #0B0E13;
+    --code-fg: #D5DAE3;
 
-  --color-text-primary:   var(--slate-900);
-  --color-text-secondary: #64748B;
-  --color-text-heading:   var(--slate-950);
-
-  --color-border: var(--slate-200);
-
-  --color-accent:        #0E7490;
-  --color-accent-hover:  var(--cyan-400);
-  --color-accent-subtle: rgba(8, 145, 178, 0.08);
-}
-
-/* ---- Auto light (no explicit theme set) ---- */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    --color-bg-primary:    var(--slate-50);
-    --color-bg-secondary:  #FFFFFF;
-    --color-bg-elevated:   #FFFFFF;
-
-    --color-text-primary:   var(--slate-900);
-    --color-text-secondary: #64748B;
-    --color-text-heading:   var(--slate-950);
-
-    --color-border: var(--slate-200);
-
-    --color-accent:        #0E7490;
-    --color-accent-hover:  var(--cyan-400);
-    --color-accent-subtle: rgba(8, 145, 178, 0.08);
+    color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --paper: #0F1319;
+  --surface: #161B23;
+  --surface-2: #1E2430;
+  --ink: #E9ECF1;
+  --ink-2: #C6CCD7;
+  --muted: #8F98A8;
+  --hairline: #2A3140;
+  --hairline-strong: #3B4454;
+  --accent: #809AFF;
+  --accent-hover: #A5B6FF;
+  --accent-ink: #0F1319;
+  --accent-wash: rgba(128, 154, 255, 0.12);
+  --signal: #F2A65A;
+  --signal-wash: rgba(242, 166, 90, 0.12);
+  --shadow-float: 0 1px 0 rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+  --nav-glass: rgba(15, 19, 25, 0.86);
+  --code-bg: #0B0E13;
+  --code-fg: #D5DAE3;
+
+  color-scheme: dark;
 }

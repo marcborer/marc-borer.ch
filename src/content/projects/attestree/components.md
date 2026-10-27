@@ -70,7 +70,7 @@ An opt-in pipeline keeps winget packages current without giving up the gate:
 
 ## Fleet Inventory & CVE Index
 
-- **Observed inventory**: winget and Chocolatey are managed end to end (inventory and deploy); Scoop inventory is collected but not counted as a managed manager.
+- **Observed inventory**: winget is managed end to end (inventory and deploy); Chocolatey and Scoop are inventoried and not deployed until they can be attested. Software that arrived outside any package manager shows up through the endpoint’s uninstall entries.
 - **Self-hosted CVE index**: observed inventory matched against the public CVE list (cvelistV5) and the CISA KEV catalogue, pulled download-only.
 - **Air-gap friendly**: an offline index bundle serves hosts without outbound access.
 

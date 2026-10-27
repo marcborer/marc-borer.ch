@@ -1,19 +1,34 @@
 [
   {
-    "date": "Mar 2019 — Present",
+    "date": "2026 — present",
+    "kind": "Own company",
+    "title": "Founder and Architect, Attestree",
+    "company": "Attestree, Breitenbach",
+    "description": [
+      "Designed and built a deployment control plane for Windows fleets: packages are detonated in a sandbox at ingest, given an observed SBOM and attested with a signed in-toto statement before they roll out in rings from a fenced winget feed",
+      "Platform engineering end to end: a .NET control plane on PostgreSQL, a Native AOT agent and installer shim, agents that update themselves through the same rings, a self-hosted CVE index",
+      "Open-core distribution: Apache-2.0 shim, free Community Edition on Docker Compose with Sigstore-signed images, the public site attestree.com with a build-security baseline",
+      "Release engineering on a daily release cadence, with CI gates and Authenticode-signed Windows binaries"
+    ],
+    "projectLink": "/projects/attestree/"
+  },
+  {
+    "date": "Mar 2019 — present",
+    "kind": "Employment",
     "title": "Senior ICT Systems Architect",
     "company": "CTC Analytics AG, Zwingen",
     "description": [
-      "Ownership of target architecture and modernization strategy for the entire Microsoft Cloud and Hybrid infrastructure at an international industrial company",
-      "Architectural decision-making and delivery of the enterprise-wide communications migration (Exchange Online, Teams Direct Routing) — complete migration with zero downtime",
-      "Designed and built an automated endpoint compliance and BIOS lifecycle platform with ring-based rollout and enterprise-wide compliance visibility",
-      "Designed the hybrid identity architecture and user lifecycle automation — cross-departmental alignment with HR, IT, and executive management",
-      "Architected and deployed a centralized SIEM platform (Elastic Stack) for real-time threat detection and cross-site correlation"
+      "Target architecture and modernisation strategy for the Microsoft cloud and hybrid infrastructure of an international laboratory-automation company, around 180 employees and more than 100 Windows and Linux servers",
+      "Project lead for migrating messaging and telephony to Exchange Online and Teams Direct Routing: over 300 mailboxes, SBC and SIP trunk integration, no service interruption",
+      "Designed and built a serverless endpoint compliance and BIOS lifecycle platform for over 500 Intune-managed devices, with ring-based rollout and compliance dashboards",
+      "Hybrid identity architecture and automated on- and offboarding, aligned with HR, IT and executive management",
+      "Built a central SIEM platform on the Elastic Stack for threat detection and cross-site correlation"
     ],
-    "projectLink": "/projects/"
+    "projectLink": "/projects/cloud-infrastructure/"
   },
   {
     "date": "Jan 2018 — Feb 2019",
+    "kind": "Time off",
     "title": "Sabbatical",
     "company": null,
     "description": [
@@ -23,23 +38,23 @@
   },
   {
     "date": "May 2014 — Dec 2017",
+    "kind": "Employment",
     "title": "IT Operations Manager",
     "company": "Picturepark / Vision Information Transaction AG, Aarau",
     "description": [
-      "CI/CD pipeline and infrastructure automation for an enterprise SaaS platform",
-      "Built an Infrastructure-as-Code platform with Ansible and Bamboo for reproducible multi-environment deployments",
+      "Built the CI/CD pipeline and Infrastructure-as-Code platform (Ansible, Bamboo) for reproducible multi-environment deployments of an enterprise SaaS platform",
       "Integrated cloud providers and Azure as deployment targets with snapshot-based testing",
-      "Led technical implementation at enterprise customers on multi-server environments"
+      "Technical lead for platform implementations at enterprise customers on multi-server environments"
     ],
     "projectLink": "/projects/cicd-automation/"
   },
   {
     "date": "2010 — 2014",
-    "title": "Informatiker EFZ — Systemtechnik",
+    "kind": "Education",
+    "title": "Informatiker EFZ, Systems Engineering",
     "company": "Wirtschaftsinformatikschule, Zurich",
     "description": [
-      "Federal Diploma of Vocational Education and Training (EFZ) in IT",
-      "Specialization in systems engineering"
+      "Swiss Federal Diploma of Vocational Education and Training (EFZ) in IT, specialisation in systems engineering"
     ],
     "projectLink": null
   }

@@ -1,0 +1,141 @@
+---
+/**
+ * The rollout rings: canary → pilot → broad → all.
+ * The one drawing the site repeats — the hero figure, the favicon, the 404.
+ * Labels are optional so the same mark works as a small glyph.
+ */
+interface Props {
+  labels?: boolean;
+  class?: string;
+  animate?: boolean;
+}
+
+const { labels = true, class: className, animate = true } = Astro.props;
+const rings = [
+  { r: 44, label: 'canary' },
+  { r: 96, label: 'pilot' },
+  { r: 148, label: 'broad' },
+  { r: 200, label: 'all' },
+];
+// Leader lines leave each ring at 38° above the horizontal and end on one label column.
+const angle = (-38 * Math.PI) / 180;
+const labelX = 470;
+---
+
+<svg
+  class:list={['ringmark', className, { 'ringmark--animate': animate }]}
+  viewBox="0 0 560 480"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-labelledby="ringmark-title"
+>
+  <title id="ringmark-title">Rollout rings: canary, pilot, broad, all</title>
+  <g transform="translate(240 240)">
+    {rings.map((ring, i) => (
+      <circle
+        class={i === 0 ? 'ring ring--canary' : 'ring'}
+        cx="0"
+        cy="0"
+        r={ring.r}
+        style={`--i: ${i}`}
+      />
+    ))}
+    <!-- the canary cohort: a few endpoints inside the first ring -->
+    <g class="dots">
+      <circle cx="-14" cy="-8" r="3.5" />
+      <circle cx="10" cy="-16" r="3.5" />
+      <circle cx="6" cy="12" r="3.5" />
+      <circle cx="-9" cy="17" r="3.5" />
+    </g>
+    <!-- crosshair ticks at the four cardinal points of the outer ring -->
+    <g class="ticks">
+      <line x1="0" y1="-212" x2="0" y2="-200" />
+      <line x1="0" y1="200" x2="0" y2="212" />
+      <line x1="-212" y1="0" x2="-200" y2="0" />
+      <line x1="200" y1="0" x2="212" y2="0" />
+    </g>
+    {labels && rings.map((ring) => {
+      const x = Math.cos(angle) * ring.r;
+      const y = Math.sin(angle) * ring.r;
+      const lx = labelX - 240;
+      return (
+        <g class="label">
+          <line x1={x} y1={y} x2={lx - 10} y2={y} />
+          <circle cx={x} cy={y} r="2.5" />
+          <text x={lx} y={y + 4}>{ring.label}</text>
+        </g>
+      );
+    })}
+  </g>
+</svg>
+
+<style>
+  .ringmark {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .ring {
+    fill: none;
+    stroke: var(--hairline-strong);
+    stroke-width: 1;
+  }
+
+  .ring--canary {
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+
+  .dots circle {
+    fill: var(--accent);
+  }
+
+  .ticks line {
+    stroke: var(--hairline-strong);
+    stroke-width: 1;
+  }
+
+  .label line {
+    stroke: var(--hairline-strong);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+  }
+
+  .label circle {
+    fill: var(--ink);
+  }
+
+  .label text {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    fill: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ringmark--animate .ring {
+      stroke-dasharray: 1300;
+      stroke-dashoffset: 1300;
+      animation: ring-draw 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation-delay: calc(var(--i) * 140ms);
+      transform: rotate(-90deg);
+    }
+
+    .ringmark--animate .label,
+    .ringmark--animate .dots,
+    .ringmark--animate .ticks {
+      opacity: 0;
+      animation: ring-fade 0.5s ease forwards;
+      animation-delay: 0.9s;
+    }
+
+    @keyframes ring-draw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes ring-fade {
+      to { opacity: 1; }
+    }
+  }
+</style>

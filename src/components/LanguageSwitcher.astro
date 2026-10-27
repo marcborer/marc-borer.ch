@@ -7,57 +7,57 @@ import type { Lang } from '../i18n/utils';
 const currentLocale = (Astro.currentLocale || 'de') as Lang;
 const currentPath = Astro.url.pathname;
 
-// Strip the locale prefix to get the base path
 let basePath = currentPath;
 if (currentLocale !== 'de' && currentPath.startsWith(`/${currentLocale}`)) {
   basePath = currentPath.slice(`/${currentLocale}`.length) || '/';
 }
 ---
 
-<div class="lang-switcher" role="navigation" aria-label="Language switcher">
-  {Object.entries(languages).map(([lang, label], index) => {
+<nav class="lang" aria-label={currentLocale === 'de' ? 'Sprache' : 'Language'}>
+  {Object.entries(languages).map(([lang, label]) => {
     const targetPath = getTranslatedPath(basePath, currentLocale, lang as Lang);
-    return (
-      <>
-        {index > 0 && <span class="lang-separator" aria-hidden="true">|</span>}
-        {lang === currentLocale ? (
-          <span class="lang-link active" aria-current="true">{lang.toUpperCase()}</span>
-        ) : (
-          <a href={getRelativeLocaleUrl(lang, targetPath)} class="lang-link">{lang.toUpperCase()}</a>
-        )}
-      </>
+    return lang === currentLocale ? (
+      <span class="lang-link active" aria-current="true" lang={lang}>{lang.toUpperCase()}</span>
+    ) : (
+      <a href={getRelativeLocaleUrl(lang, targetPath)} class="lang-link" lang={lang} hreflang={lang} title={label}>{lang.toUpperCase()}</a>
     );
   })}
-</div>
+</nav>
 
 <style>
-  .lang-switcher {
-    display: flex;
+  .lang {
+    display: inline-flex;
     align-items: center;
-    gap: var(--space-1);
-  }
-
-  .lang-separator {
-    color: var(--color-border);
-    font-size: var(--text-sm);
-    user-select: none;
+    border: var(--rule) solid var(--hairline-strong);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    height: 2.5rem;
   }
 
   .lang-link {
-    font-size: var(--text-sm);
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
     font-weight: 500;
-    color: var(--color-text-secondary);
+    letter-spacing: 0.08em;
+    color: var(--muted);
     text-decoration: none;
-    padding: var(--space-1) var(--space-1);
-    transition: color 0.2s ease;
   }
 
-  .lang-link:hover {
-    color: var(--color-text-heading);
+  .lang-link + .lang-link {
+    border-left: var(--rule) solid var(--hairline-strong);
+  }
+
+  a.lang-link:hover {
+    color: var(--ink);
+    background-color: var(--accent-wash);
   }
 
   .lang-link.active {
-    color: var(--color-accent);
-    font-weight: 600;
+    color: var(--accent-ink);
+    background-color: var(--ink);
   }
 </style>

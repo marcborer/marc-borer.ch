@@ -17,19 +17,19 @@ const tech = ['Ansible', 'Bamboo', 'Azure', 'Python', 'Bash', 'PowerShell', 'Ela
 <DocLayout title="Enterprise SaaS Platform — CI/CD & Infrastructure Automation — Marc Borer" ogImage="/og/cicd-automation.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
-      <span aria-hidden="true">&larr;</span> {t('projects.backToProjects')}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> {t('projects.backToProjects')}
     </a>
 
-    <header class="case-header" data-animate="slide-up">
+    <header class="case-header">
       <h1 class="case-title">Enterprise SaaS Platform — CI/CD & Infrastructure Automation</h1>
       <p class="case-subtitle">Infrastructure-as-Code und Deployment-Automatisierung für eine Enterprise SaaS-Plattform</p>
-      <div class="case-tech">
+      <div class="tags">
         {tech.map((t) => <TechBadge name={t} />)}
       </div>
-      <p class="case-meta">IT Operations Manager — Mai 2014 – Dez. 2017</p>
+      <p class="case-meta"><span>IT Operations Manager — Mai 2014 – Dez. 2017</span></p>
     </header>
 
-    <section class="case-section" data-animate="slide-up">
+    <section class="case-section">
       <h2>Übersicht</h2>
       <p>
         Mitglied des IT Operations-Teams bei einem internationalen SaaS-Anbieter für eine
@@ -39,7 +39,7 @@ const tech = ['Ansible', 'Bamboo', 'Azure', 'Python', 'Bash', 'PowerShell', 'Ela
       </p>
     </section>
 
-    <section class="case-section" data-animate="slide-up">
+    <section class="case-section">
       <h2>Meine Rolle</h2>
       <p>
         IT Operations Manager — Konzeption und Aufbau der CI/CD-Pipeline von Grund auf.
@@ -102,118 +102,3 @@ const tech = ['Ansible', 'Bamboo', 'Azure', 'Python', 'Bash', 'PowerShell', 'Ela
   </article>
 </DocLayout>
 
-<style>
-  .case-study {
-    max-width: 65rem;
-    margin: 0 auto;
-    padding: var(--space-8) 0 var(--space-16);
-  }
-
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    transition: color 0.2s ease;
-    margin-bottom: var(--space-8);
-  }
-
-  .back-link:hover {
-    color: var(--color-accent);
-  }
-
-  .case-header {
-    margin-bottom: var(--space-12);
-  }
-
-  .case-title {
-    font-size: var(--text-4xl);
-    margin-bottom: var(--space-2);
-  }
-
-  .case-subtitle {
-    font-size: var(--text-lg);
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-6);
-  }
-
-  .case-tech {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-bottom: var(--space-4);
-  }
-
-  .case-meta {
-    font-size: var(--text-sm);
-    color: var(--color-text-secondary);
-  }
-
-  .case-section {
-    margin-bottom: var(--space-10);
-  }
-
-  .project-section {
-    padding-top: var(--space-8);
-    border-top: none;
-    border-image: linear-gradient(to right, transparent, var(--color-accent-subtle), var(--color-accent), var(--color-accent-subtle), transparent) 1;
-    border-image-width: 1px 0 0 0;
-  }
-
-  .case-section h2 {
-    font-size: var(--text-2xl);
-    margin-bottom: var(--space-3);
-  }
-
-  .project-tagline {
-    font-size: var(--text-base);
-    color: var(--color-accent);
-    font-weight: 500;
-    margin-bottom: var(--space-6);
-  }
-
-  .case-section h3 {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-3);
-    margin-top: var(--space-6);
-  }
-
-  .case-section p {
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: 1.8;
-  }
-
-  .feature-list {
-    list-style: none;
-    padding-left: 0;
-    margin-top: var(--space-4);
-  }
-
-  .feature-list li {
-    position: relative;
-    padding-left: var(--space-6);
-    padding-bottom: var(--space-3);
-    font-size: var(--text-base);
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-  }
-
-  .feature-list li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 6px;
-    height: 6px;
-    background-color: var(--color-accent);
-    border-radius: var(--radius-full);
-  }
-
-  .feature-list li strong {
-    color: var(--color-text-heading);
-  }
-</style>

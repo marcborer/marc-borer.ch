@@ -1,8 +1,6 @@
 ---
 import HreflangLinks from '../components/HreflangLinks.astro';
-import ScrollAnimations from '../components/ScrollAnimations.astro';
 import CookieConsent from '../components/CookieConsent.astro';
-import { useTranslations } from '../i18n/utils';
 import type { Lang } from '../i18n/utils';
 
 interface Props {
@@ -12,11 +10,10 @@ interface Props {
 }
 
 const lang = (Astro.currentLocale || 'de') as Lang;
-const t = useTranslations(lang);
 
 const defaultDescription = lang === 'de'
-  ? 'Portfolio von Marc Borer — Senior ICT Systems Architect'
-  : 'Portfolio of Marc Borer — Senior ICT Systems Architect';
+  ? 'Marc Borer, Senior ICT Systems Architect in Breitenbach: Hybrid Identity, Microsoft 365, Endpoint-Lifecycle und mit Attestree attestierte Software-Verteilung für Windows-Flotten.'
+  : 'Marc Borer, Senior ICT Systems Architect in Breitenbach, Switzerland: hybrid identity, Microsoft 365, endpoint lifecycle and, with Attestree, attested software delivery for Windows fleets.';
 
 const { title, description = defaultDescription, ogImage } = Astro.props;
 const resolvedOgImage = ogImage
@@ -31,21 +28,33 @@ const personSchema = {
   "name": "Marc Borer",
   "jobTitle": "Senior ICT Systems Architect",
   "url": "https://marc-borer.ch",
+  "email": "mailto:mb@marc-borer.ch",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Breitenbach",
+    "addressRegion": "SO",
+    "postalCode": "4226",
+    "addressCountry": "CH"
+  },
   "sameAs": [
     "https://github.com/marcborer",
-    "https://linkedin.com/in/marc-b-6780ab5a/"
+    "https://linkedin.com/in/marc-b-6780ab5a/",
+    "https://attestree.com"
   ],
   "knowsAbout": [
     "Enterprise Architecture",
-    "Hybrid Cloud Infrastructure",
-    "Identity & Access Management",
+    "Hybrid Identity",
+    "Microsoft 365",
+    "Microsoft Intune",
+    "Endpoint Lifecycle Management",
+    "Software Supply Chain Security",
+    "SBOM",
+    "in-toto / SLSA",
     "CI/CD Automation",
-    "Security & Observability",
-    "Algorithmic Trading",
-    "Full-Stack Development",
-    "Python",
-    "FastAPI",
-    "Next.js"
+    "Security Monitoring",
+    ".NET",
+    "PowerShell",
+    "Python"
   ]
 };
 
@@ -53,17 +62,21 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Marc Borer — Senior ICT Systems Architect",
-  "url": "https://marc-borer.ch"
+  "url": "https://marc-borer.ch",
+  "inLanguage": ["de-CH", "en"]
 };
 ---
 
 <!doctype html>
-<html lang={Astro.currentLocale || 'de'}>
+<html lang={lang === 'de' ? 'de-CH' : 'en'}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#EEF0F4" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1319" />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
@@ -73,6 +86,7 @@ const websiteSchema = {
     <meta property="og:image" content={resolvedOgImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'de' ? 'de_CH' : 'en_US'} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -102,7 +116,8 @@ const websiteSchema = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!-- Fonts (self-hosted) -->
-    <link rel="preload" href="/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/archivo-latin-lSfdnoLg.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/ibm-plex-sans-latin-1syxeKYY.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Global Styles -->
     <style is:global>
@@ -110,20 +125,15 @@ const websiteSchema = {
       @import '../styles/global.css';
     </style>
 
-    <!-- Theme Detection (inline to prevent FOUC) -->
+    <!-- Theme: honour a stored choice; otherwise the OS preference applies through CSS -->
     <script is:inline>
       (function () {
-        var theme = null;
         try {
-          theme = localStorage.getItem('theme');
+          var theme = localStorage.getItem('theme');
+          if (theme === 'light' || theme === 'dark') {
+            document.documentElement.dataset.theme = theme;
+          }
         } catch (e) {}
-        if (theme === 'light' || theme === 'dark') {
-          document.documentElement.dataset.theme = theme;
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-          document.documentElement.dataset.theme = 'light';
-        } else {
-          document.documentElement.dataset.theme = 'dark';
-        }
       })();
     </script>
 
@@ -136,9 +146,8 @@ const websiteSchema = {
     <slot name="head" />
   </head>
   <body>
-    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    <a href="#main-content" class="skip-to-content">{lang === 'de' ? 'Zum Inhalt springen' : 'Skip to main content'}</a>
     <slot />
-    <ScrollAnimations />
     <CookieConsent />
   </body>
 </html>
