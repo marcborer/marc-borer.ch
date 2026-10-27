@@ -1,6 +1,11 @@
-# Cloudflare Pages project config. The site is deployed by `wrangler pages deploy`
-# from .github/workflows/deploy.yml (Direct Upload), not by Cloudflare's Git build.
-# Create the project once: npx wrangler pages project create marc-borer-ch --production-branch=main
+# Cloudflare Workers config: the site is served as static assets from dist/.
+# Workers Builds is connected to this repository: it runs `npm run build`, then
+# `npx wrangler deploy`, for production on main and a preview per pull request.
 name = "marc-borer-ch"
-pages_build_output_dir = "dist"
 compatibility_date = "2025-09-01"
+
+[assets]
+directory = "./dist"
+# /404.html is served for unknown paths; /path and /path/ both resolve to the folder's index.
+not_found_handling = "404-page"
+html_handling = "auto-trailing-slash"

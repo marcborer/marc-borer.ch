@@ -16,7 +16,7 @@ The site is set like a specification sheet: ruled hairlines, monospaced metadata
 - Vanilla CSS with custom properties
 - i18n: German (default) and English under `/en/`
 - Cloudflare Web Analytics (cookieless, no consent banner)
-- Cloudflare Pages, deployed by `wrangler pages deploy` from GitHub Actions
+- Cloudflare Workers (static assets), deployed by Workers Builds on every push
 
 ## Content
 
@@ -60,15 +60,14 @@ npm run preview
 
 ## Deployment
 
-Hosted on **Cloudflare Pages**. `.github/workflows/deploy.yml` builds on every push and pull request and deploys with `wrangler pages deploy` (Direct Upload): `main` to production, pull requests from this repository to a preview URL. `wrangler.toml` names the project and the `dist/` output; `public/_headers` sets the response headers (CSP, HSTS, caching).
+Hosted on **Cloudflare Workers** as static assets. **Workers Builds** is connected to this repository: every push to `main` runs `npm run build` and `npx wrangler deploy` for production, and every pull request gets a preview URL. `wrangler.toml` holds the Worker config (`[assets]` serves `dist/`, `/404.html` for unknown paths); `public/_headers` sets the response headers (CSP, HSTS, caching). GitHub Actions (`.github/workflows/ci.yml`) only proves that a change builds.
 
-One-time setup:
+One-time setup in the Cloudflare dashboard (Workers & Pages → the `marc-borer-ch` Worker):
 
-1. Create the Pages project as Direct Upload: `npx wrangler pages project create marc-borer-ch --production-branch=main` (or dashboard → Workers & Pages → Create → Pages → Upload assets). A project of the same name connected to Git must be deleted first.
-2. Repository secrets: `CLOUDFLARE_API_TOKEN` (API token with Account → Cloudflare Pages → Edit) and `CLOUDFLARE_ACCOUNT_ID`.
-3. Custom domains on the project: `marc-borer.ch` and `www.marc-borer.ch` (zone on Cloudflare DNS, Microsoft 365 mail records DNS-only) plus a redirect rule `www` → apex.
-4. Web Analytics: enable it on the Pages project (Cloudflare injects the beacon), or create a Web Analytics site and store its token as the repository variable `CF_BEACON_TOKEN` so the build renders the beacon itself.
+1. Settings → Build: repository `marcborer/marc-borer.ch`, production branch `main`, build command `npm run build`, deploy command `npx wrangler deploy`, root `/`. Node comes from `.nvmrc`.
+2. Settings → Domains & Routes: add `marc-borer.ch` and `www.marc-borer.ch` (the zone must be on Cloudflare DNS; keep the Microsoft 365 mail records DNS-only), then a redirect rule `www` → apex.
+3. Web Analytics: enable it for the Worker if the dashboard offers it, or create a Web Analytics site and set its token as the build variable `PUBLIC_CF_BEACON_TOKEN` (Settings → Build → Variables) so the build renders the beacon itself.
 
-[![Build and deploy](https://github.com/marcborer/marc-borer.ch/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/marcborer/marc-borer.ch/actions/workflows/deploy.yml)
+[![CI](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml)
 
 Site: [marc-borer.ch](https://marc-borer.ch)
