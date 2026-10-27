@@ -15,8 +15,8 @@ The site is set like a specification sheet: ruled hairlines, monospaced metadata
 - [Astro 7](https://astro.build/), static output
 - Vanilla CSS with custom properties
 - i18n: German (default) and English under `/en/`
-- Google Analytics 4 behind a consent banner (nDSG / GDPR)
-- Cloudflare Pages (Git integration: push to `main` deploys, every PR gets a preview)
+- Cloudflare Web Analytics (cookieless, no consent banner)
+- Cloudflare Workers (static assets), deployed by Workers Builds on every push
 
 ## Content
 
@@ -60,9 +60,13 @@ npm run preview
 
 ## Deployment
 
-Hosted on **Cloudflare Pages** through Git integration: Cloudflare builds `main` with `npm run build` (Node from `.nvmrc`) and serves `dist/`; every pull request gets a preview URL. `wrangler.toml` holds the project config, `public/_headers` the response headers (CSP, HSTS, caching). GitHub Actions (`.github/workflows/ci.yml`) only proves that a change builds.
+Hosted on **Cloudflare Workers** as static assets. **Workers Builds** is connected to this repository: every push to `main` runs `npm run build` and `npx wrangler deploy` for production, and every pull request gets a preview URL. `wrangler.toml` holds the Worker config (`[assets]` serves `dist/`, `/404.html` for unknown paths); `public/_headers` sets the response headers (CSP, HSTS, caching). GitHub Actions (`.github/workflows/ci.yml`) only proves that a change builds.
 
-One-time setup in the Cloudflare dashboard: Workers & Pages → Create → Pages → Connect to Git → `marcborer/marc-borer.ch`, production branch `main`, framework preset Astro, build command `npm run build`, output directory `dist`. Then Custom domains → add `marc-borer.ch` and `www.marc-borer.ch` (the zone must be on Cloudflare DNS; keep the Microsoft 365 mail records as DNS-only) and a redirect rule `www` → apex.
+One-time setup in the Cloudflare dashboard (Workers & Pages → the `marc-borer-ch` Worker):
+
+1. Settings → Build: repository `marcborer/marc-borer.ch`, production branch `main`, build command `npm run build`, deploy command `npx wrangler deploy`, root `/`. Node comes from `.nvmrc`.
+2. Settings → Domains & Routes: add `marc-borer.ch` and `www.marc-borer.ch` (the zone must be on Cloudflare DNS; keep the Microsoft 365 mail records DNS-only), then a redirect rule `www` → apex.
+3. Web Analytics: enable it for the Worker if the dashboard offers it, or create a Web Analytics site and set its token as the build variable `PUBLIC_CF_BEACON_TOKEN` (Settings → Build → Variables) so the build renders the beacon itself.
 
 [![CI](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml)
 

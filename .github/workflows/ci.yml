@@ -1,8 +1,8 @@
 name: CI
 
-# Cloudflare Pages builds and deploys the site from `main` (and a preview per
-# pull request) through its Git integration. This workflow only proves a change
-# builds before it lands; it deploys nothing.
+# Cloudflare Workers Builds deploys the site from this repository (production
+# from main, a preview per pull request). This workflow only proves that a
+# change builds before it lands; it deploys nothing.
 
 on:
   pull_request:

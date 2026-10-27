@@ -1,6 +1,5 @@
 ---
 import HreflangLinks from '../components/HreflangLinks.astro';
-import CookieConsent from '../components/CookieConsent.astro';
 import type { Lang } from '../i18n/utils';
 
 interface Props {
@@ -16,6 +15,9 @@ const defaultDescription = lang === 'de'
   : 'Marc Borer, Senior ICT Systems Architect in Breitenbach, Switzerland: hybrid identity, Microsoft 365, endpoint lifecycle and, with Attestree, attested software delivery for Windows fleets.';
 
 const { title, description = defaultDescription, ogImage } = Astro.props;
+// Cloudflare Web Analytics: Cloudflare injects the beacon for proxied sites; set
+// PUBLIC_CF_BEACON_TOKEN at build time to render it here instead (cookieless either way).
+const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
 const resolvedOgImage = ogImage
   ? `https://marc-borer.ch${ogImage}`
   : 'https://marc-borer.ch/og/default.png';
@@ -94,24 +96,6 @@ const websiteSchema = {
 
     <title>{title}</title>
 
-    <!-- Google Analytics (loaded only after consent) -->
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      function loadGA() {
-        if (document.querySelector('script[src*="googletagmanager"]')) return;
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-YDWCY6XBPN';
-        document.head.appendChild(s);
-        gtag('js', new Date());
-        gtag('config', 'G-YDWCY6XBPN');
-      }
-      try {
-        if (localStorage.getItem('cookie-consent') === 'accepted') loadGA();
-      } catch(e) {}
-    </script>
-
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -144,10 +128,12 @@ const websiteSchema = {
     )}
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
     <slot name="head" />
+    {beaconToken && (
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: beaconToken })}></script>
+    )}
   </head>
   <body>
     <a href="#main-content" class="skip-to-content">{lang === 'de' ? 'Zum Inhalt springen' : 'Skip to main content'}</a>
     <slot />
-    <CookieConsent />
   </body>
 </html>

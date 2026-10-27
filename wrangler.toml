@@ -1,6 +1,11 @@
-# Cloudflare Pages project config: serves the Astro static build in dist/.
-# The project is connected to this repository through Git integration, so a push
-# to main deploys production and every pull request gets a preview URL.
+# Cloudflare Workers config: the site is served as static assets from dist/.
+# Workers Builds is connected to this repository: it runs `npm run build`, then
+# `npx wrangler deploy`, for production on main and a preview per pull request.
 name = "marc-borer-ch"
-pages_build_output_dir = "dist"
-compatibility_date = "2026-10-01"
+compatibility_date = "2025-09-01"
+
+[assets]
+directory = "./dist"
+# /404.html is served for unknown paths; /path and /path/ both resolve to the folder's index.
+not_found_handling = "404-page"
+html_handling = "auto-trailing-slash"
