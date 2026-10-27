@@ -1,0 +1,31 @@
+# Cloudflare Pages response headers, served for every request.
+#
+# CSP notes:
+# - script-src keeps 'unsafe-inline': the theme bootstrap and the consent-gated
+#   Google Analytics loader are inline scripts (BaseLayout.astro), and Astro
+#   inlines small component scripts. googletagmanager.com serves gtag.js once
+#   the visitor accepts analytics.
+# - style-src keeps 'unsafe-inline': Astro emits component styles as inline
+#   <style> blocks.
+# - font-src is 'self': every face is self-hosted under /fonts/.
+# - connect-src and img-src admit the Google Analytics collection endpoints
+#   (regional hosts included), nothing else off-origin.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+
+# Hashed build assets and the hash-named font files never change under the same name.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/og/*
+  Cache-Control: public, max-age=86400

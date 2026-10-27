@@ -1,0 +1,6 @@
+# Cloudflare Pages project config: serves the Astro static build in dist/.
+# The project is connected to this repository through Git integration, so a push
+# to main deploys production and every pull request gets a preview URL.
+name = "marc-borer-ch"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-01"
