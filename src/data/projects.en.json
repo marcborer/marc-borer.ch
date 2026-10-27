@@ -3,35 +3,76 @@
     "title": "Attestree",
     "period": "2026 —",
     "description": "Deployment control plane for Windows fleets: every winget package is detonated in a sandbox at ingest, given an observed SBOM and attested with a signed in-toto statement before it rolls out in rings from the operator’s own fenced winget feed. Open-core, with a free Community Edition.",
-    "tech": [".NET", "winget", "in-toto / SLSA", "CycloneDX", "Sigstore", "PostgreSQL", "Docker", "Astro"],
+    "tech": [
+      ".NET",
+      "winget",
+      "in-toto / SLSA",
+      "CycloneDX",
+      "Sigstore",
+      "PostgreSQL",
+      "Docker",
+      "Astro"
+    ],
     "link": "/projects/attestree/"
   },
   {
     "title": "Enterprise Cloud & Hybrid Infrastructure",
     "period": "2019 —",
     "description": "Modernising the Microsoft infrastructure of an international industrial company: migrating messaging and telephony to Exchange Online and Teams, an automated endpoint compliance and BIOS lifecycle platform, hybrid identity automation and a central SIEM platform on the Elastic Stack.",
-    "tech": ["Exchange Online", "Microsoft Teams", "Direct Routing", "Intune", "Entra ID", "PowerShell", "Elastic Stack"],
+    "tech": [
+      "Exchange Online",
+      "Microsoft Teams",
+      "Direct Routing",
+      "Intune",
+      "Entra ID",
+      "PowerShell",
+      "Elastic Stack"
+    ],
     "link": "/projects/cloud-infrastructure/"
   },
   {
     "title": "SmallCapTrader",
-    "period": "2025 —",
+    "period": "ongoing",
     "description": "Full-stack trading platform with several strategies, a beam-search rule-mining engine for automated strategy discovery, and a dual-mode architecture (monolithic or sharded) with multi-broker execution.",
-    "tech": ["Python", "FastAPI", "Next.js", "TypeScript", "PostgreSQL", "QuestDB", "Redis", "Docker"],
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Next.js",
+      "TypeScript",
+      "PostgreSQL",
+      "QuestDB",
+      "Redis",
+      "Docker"
+    ],
     "link": "/projects/smallcaptrader/"
   },
   {
     "title": "options-gex",
-    "period": "2025 —",
+    "period": "ongoing",
     "description": "Gamma-exposure research engine for options trading: pulls historical option chains, computes GEX locally and backtests level-driven rules against baselines, behind a multi-condition statistical gate that must pass before any live execution.",
-    "tech": ["Python", "Alpaca API", "PostgreSQL", "SQLite", "SOPS / age", "Docker", "Jupyter"],
+    "tech": [
+      "Python",
+      "Alpaca API",
+      "PostgreSQL",
+      "SQLite",
+      "SOPS / age",
+      "Docker",
+      "Jupyter"
+    ],
     "link": "/projects/options-gex/"
   },
   {
     "title": "Enterprise SaaS Platform — CI/CD",
     "period": "2014 – 2017",
     "description": "Infrastructure-as-Code and deployment automation for an enterprise SaaS platform: a CI/CD pipeline for reproducible multi-environment deployments and technical lead on customer implementations.",
-    "tech": ["Ansible", "Bamboo", "Azure", "Python", "Elasticsearch", "HAProxy"],
+    "tech": [
+      "Ansible",
+      "Bamboo",
+      "Azure",
+      "Python",
+      "Elasticsearch",
+      "HAProxy"
+    ],
     "link": "/projects/cicd-automation/"
   }
 ]
