@@ -16,7 +16,7 @@ The site is set like a specification sheet: ruled hairlines, monospaced metadata
 - Vanilla CSS with custom properties
 - i18n: German (default) and English under `/en/`
 - Google Analytics 4 behind a consent banner (nDSG / GDPR)
-- GitHub Pages
+- Cloudflare Pages (Git integration: push to `main` deploys, every PR gets a preview)
 
 ## Content
 
@@ -60,8 +60,10 @@ npm run preview
 
 ## Deployment
 
-Deployed to GitHub Pages via GitHub Actions on push to `main`.
+Hosted on **Cloudflare Pages** through Git integration: Cloudflare builds `main` with `npm run build` (Node from `.nvmrc`) and serves `dist/`; every pull request gets a preview URL. `wrangler.toml` holds the project config, `public/_headers` the response headers (CSP, HSTS, caching). GitHub Actions (`.github/workflows/ci.yml`) only proves that a change builds.
 
-[![Deploy to GitHub Pages](https://github.com/marcborer/marc-borer.ch/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/marcborer/marc-borer.ch/actions/workflows/deploy.yml)
+One-time setup in the Cloudflare dashboard: Workers & Pages → Create → Pages → Connect to Git → `marcborer/marc-borer.ch`, production branch `main`, framework preset Astro, build command `npm run build`, output directory `dist`. Then Custom domains → add `marc-borer.ch` and `www.marc-borer.ch` (the zone must be on Cloudflare DNS; keep the Microsoft 365 mail records as DNS-only) and a redirect rule `www` → apex.
+
+[![CI](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml)
 
 Site: [marc-borer.ch](https://marc-borer.ch)
