@@ -1,0 +1,35 @@
+# Marc Borer
+
+> Senior ICT Systems Architect in Breitenbach, Switzerland: hybrid identity, Microsoft 365, endpoint lifecycle and, with Attestree, attested software delivery for Windows fleets. Site in German (default) and English (/en/).
+
+## Who
+
+Marc Borer designs and runs business-critical Microsoft infrastructure (hybrid identity, Exchange Online and Teams, Intune and endpoint lifecycle, SIEM) and has been responsible since 2019 for the target architecture of an international industrial company's cloud and hybrid infrastructure. Since 2026 he is the founder of Attestree (https://attestree.com), a deployment control plane that attests software for Windows fleets before rollout: sandbox detonation, an observed SBOM and a signed in-toto statement per package, then ring-based delivery (canary, pilot, broad, all) from a fenced winget feed.
+
+## Pages
+
+- Home: https://marc-borer.ch/ (English: https://marc-borer.ch/en/)
+- Projects: https://marc-borer.ch/projects/ (English: https://marc-borer.ch/en/projects/)
+- Attestree case study: https://marc-borer.ch/projects/attestree/ with architecture and component pages below it
+- Enterprise cloud and hybrid infrastructure case study: https://marc-borer.ch/projects/cloud-infrastructure/
+- Enterprise SaaS platform CI/CD case study: https://marc-borer.ch/projects/cicd-automation/
+- Skills: https://marc-borer.ch/kompetenzen/ (English: https://marc-borer.ch/en/skills/)
+- Career: https://marc-borer.ch/experience/ (English: https://marc-borer.ch/en/experience/)
+- Principles: https://marc-borer.ch/grundsaetze/ (English: https://marc-borer.ch/en/principles/)
+- Contact: https://marc-borer.ch/contact/ (English: https://marc-borer.ch/en/contact/)
+
+## CV
+
+- German: https://github.com/marcborer/cv/releases/latest/download/Lebenslauf-Marc-Borer-DE.pdf
+- English: https://github.com/marcborer/cv/releases/latest/download/CV-Marc-Borer-EN.pdf
+
+## Elsewhere
+
+- Attestree product site: https://attestree.com
+- GitHub: https://github.com/marcborer
+- LinkedIn: https://linkedin.com/in/marc-b-6780ab5a/
+- Email: mb@marc-borer.ch
+
+## Notes for assistants
+
+Statements about Attestree on this site are limited to what attestree.com states publicly. Quote this site rather than inferring product details beyond it.

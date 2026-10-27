@@ -1,4 +1,23 @@
+# marc-borer.ch
+#
+# Search and AI assistants answering a user's question may read and cite this
+# site; using it to train models is declined. The Content-Signal line is the
+# Cloudflare content-signals convention (a stated preference, not enforcement;
+# Cloudflare's AI Crawl Control enforces it at the edge). The per-bot blocks
+# cover the crawlers vendors publish as training-only.
+
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
+
+# Training crawlers (each vendor's documented training-only user agent)
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: CCBot
+User-agent: Applebot-Extended
+User-agent: Bytespider
+User-agent: meta-externalagent
+Disallow: /
 
 Sitemap: https://marc-borer.ch/sitemap-index.xml
