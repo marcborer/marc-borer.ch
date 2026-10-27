@@ -12,7 +12,7 @@ The site is set like a specification sheet: ruled hairlines, monospaced metadata
 
 ## Tech Stack
 
-- [Astro 6](https://astro.build/), static output
+- [Astro 7](https://astro.build/), static output
 - Vanilla CSS with custom properties
 - i18n: German (default) and English under `/en/`
 - Google Analytics 4 behind a consent banner (nDSG / GDPR)
