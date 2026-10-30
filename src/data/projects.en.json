@@ -2,11 +2,12 @@
   {
     "title": "Attestree",
     "period": "2026 —",
-    "description": "Deployment control plane for Windows fleets: every winget package is detonated in a sandbox at ingest, given an observed SBOM and attested with a signed in-toto statement before it rolls out in rings from the operator’s own fenced winget feed. Open-core, with a free Community Edition.",
+    "description": "App-patching control plane for Windows fleets: every winget, Chocolatey and Scoop version is detonated in a sandbox at ingest, given an observed SBOM and attested with a signed in-toto statement before it rolls out in rings, served only as bytes the operator’s own server holds. Open-core, with a free Community Edition.",
     "tech": [
       ".NET",
       "winget",
-      "in-toto / SLSA",
+      "Chocolatey · Scoop",
+      "in-toto",
       "CycloneDX",
       "Sigstore",
       "PostgreSQL",

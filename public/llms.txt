@@ -4,7 +4,7 @@
 
 ## Who
 
-Marc Borer designs and runs business-critical Microsoft infrastructure (hybrid identity, Exchange Online and Teams, Intune and endpoint lifecycle, SIEM) and has been responsible since 2019 for the target architecture of an international industrial company's cloud and hybrid infrastructure. Since 2026 he is the founder of Attestree (https://attestree.com), a deployment control plane that attests software for Windows fleets before rollout: sandbox detonation, an observed SBOM and a signed in-toto statement per package, then ring-based delivery (canary, pilot, broad, all) from a fenced winget feed.
+Marc Borer designs and runs business-critical Microsoft infrastructure (hybrid identity, Exchange Online and Teams, Intune and endpoint lifecycle, SIEM) and has been responsible since 2019 for the target architecture of an international industrial company's cloud and hybrid infrastructure. Since 2026 he is the founder of Attestree (https://attestree.com), an app-patching control plane that attests software for Windows fleets before rollout: sandbox detonation, an observed SBOM and a signed in-toto statement per winget, Chocolatey or Scoop version, then ring-based delivery (canary, pilot, broad, all) only from bytes the operator's own server holds.
 
 ## Pages
 
