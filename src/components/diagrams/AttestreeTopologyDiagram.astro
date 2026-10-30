@@ -1,0 +1,95 @@
+---
+// Two ways to run Attestree, compared row by row: what differs between the
+// self-hosted Community Edition and the dedicated instance in the customer's
+// own Azure subscription, and what both share. Grounded in attestree.com.
+import type { Lang } from '../../i18n/utils';
+import DiagramIcon from './DiagramIcon.astro';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const copy = {
+  de: {
+    claim: 'Die beiden Betriebsarten unterscheiden sich darin, wo der Server läuft, wo die Schlüssel liegen und wer ihn betreibt. Agent, Broker und Sandbox sind in beiden dieselben.',
+    ce: ['Community Edition', 'selbst gehostet · kostenlos'],
+    di: ['Dedizierte Instanz', 'im eigenen Azure-Abonnement'],
+    rows: [
+      ['LÄUFT AUF', 'einem Server · Docker Compose', 'einer Ressourcengruppe · Container App'],
+      ['DATENBANK', 'PostgreSQL 18 im Container', 'Postgres Flexible Server'],
+      ['SCHLÜSSEL', 'Schlüsseldatei auf dem Server', 'Key Vault im eigenen Abonnement'],
+      ['ANMELDUNG', 'lokale Konten · 4 Rollen · TOTP', 'Entra-ID-SSO'],
+      ['BETRIEB', 'durch Sie · bis 200 Endpunkte', 'durch Attestree, inkl. Upgrades'],
+    ],
+    same: 'IN BEIDEN GLEICH',
+    shared: [['Agent + Shim', 'auf jedem Endpunkt'], ['Broker + Sandbox', 'Hyper-V oder Proxmox'], ['Eingezäunter Feed', 'signiertes Audit']],
+  },
+  en: {
+    claim: 'The two ways to run it differ in where the server runs, where the keys live and who operates it. The agent, the broker and the sandbox are the same in both.',
+    ce: ['Community Edition', 'self-hosted · free'],
+    di: ['Dedicated instance', 'in your own Azure subscription'],
+    rows: [
+      ['RUNS ON', 'one server · Docker Compose', 'one resource group · Container App'],
+      ['DATABASE', 'PostgreSQL 18 in a container', 'Postgres Flexible Server'],
+      ['SIGNING KEYS', 'key file on the server', 'Key Vault in your subscription'],
+      ['SIGN-IN', 'local accounts · 4 roles · TOTP', 'Entra ID SSO'],
+      ['OPERATED BY', 'you · up to 200 endpoints', 'Attestree, upgrades included'],
+    ],
+    same: 'THE SAME IN BOTH',
+    shared: [['Agent + shim', 'on every endpoint'], ['Broker + sandbox', 'Hyper-V or Proxmox'], ['Fenced feed', 'signed audit']],
+  },
+}[lang === 'en' ? 'en' : 'de'];
+
+const col = { label: 32, ce: 184, di: 488, w: 288 };
+const rows = copy.rows.map((r, i) => ({ label: r[0], ce: r[1], di: r[2], y: 96 + i * 44 }));
+const shared = copy.shared.map((s, i) => ({ title: s[0], sub: s[1], x: 40 + i * 248, icon: (['monitor', 'vm', 'server'] as const)[i] }));
+---
+
+<figure class="diagram attestree-diagram">
+  <svg viewBox="0 0 800 432" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.claim}>
+    <!-- column heads -->
+    <DiagramIcon name="server" x={col.ce} y={24} />
+    <text x={col.ce + 32} y="36" fill="var(--ink)" font-size="13" font-weight="600">{copy.ce[0]}</text>
+    <text x={col.ce + 32} y="52" fill="var(--muted)" font-size="11">{copy.ce[1]}</text>
+    <DiagramIcon name="cloud" x={col.di} y={24} />
+    <text x={col.di + 32} y="36" fill="var(--ink)" font-size="13" font-weight="600">{copy.di[0]}</text>
+    <text x={col.di + 32} y="52" fill="var(--muted)" font-size="11">{copy.di[1]}</text>
+    <line x1={col.ce} y1="72" x2={col.ce + col.w} y2="72" stroke="var(--accent)" stroke-width="2" />
+    <line x1={col.di} y1="72" x2={col.di + col.w} y2="72" stroke="var(--accent)" stroke-width="2" />
+
+    <!-- rows: what differs -->
+    {rows.map((r) => (
+      <g>
+        <text class="dg-mono" x={col.label} y={r.y + 21} fill="var(--muted)" font-size="10" font-weight="600">{r.label}</text>
+        <rect x={col.ce} y={r.y} width={col.w} height="32" rx="6" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <text x={col.ce + 14} y={r.y + 21} fill="var(--ink-2)" font-size="11.5">{r.ce}</text>
+        <rect x={col.di} y={r.y} width={col.w} height="32" rx="6" fill="var(--accent-wash)" stroke="var(--accent)" stroke-opacity="0.5" />
+        <text x={col.di + 14} y={r.y + 21} fill="var(--ink-2)" font-size="11.5">{r.di}</text>
+      </g>
+    ))}
+
+    <!-- what both share -->
+    <rect x="24" y="332" width="752" height="84" rx="10" fill="var(--surface-2)" stroke="var(--hairline)" />
+    <text class="dg-mono" x="40" y="352" fill="var(--muted)" font-size="10" font-weight="600">{copy.same}</text>
+    {shared.map((s) => (
+      <g>
+        <rect x={s.x} y="362" width="232" height="42" rx="6" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <DiagramIcon name={s.icon} x={s.x + 12} y={372} size={20} />
+        <text x={s.x + 42} y="379" fill="var(--ink)" font-size="12" font-weight="600">{s.title}</text>
+        <text x={s.x + 42} y="395" fill="var(--muted)" font-size="10.5">{s.sub}</text>
+      </g>
+    ))}
+  </svg>
+  <figcaption class="diagram-caption">{copy.claim}</figcaption>
+</figure>
+
+<style>
+  .attestree-diagram .diagram-caption {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    max-width: 64ch;
+  }
+
+  .attestree-diagram svg text.dg-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+</style>

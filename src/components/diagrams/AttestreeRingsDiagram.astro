@@ -1,0 +1,143 @@
+---
+// Rings decide which version, groups decide what, windows and freezes decide
+// when. Drawn with the site's concentric-ring motif. Rollback returns a ring to
+// its one armed predecessor. Grounded in attestree.com.
+import type { Lang } from '../../i18n/utils';
+import DiagramIcon from './DiagramIcon.astro';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const copy = {
+  de: {
+    claim: 'Groups bestimmen, welche Apps ein Endpunkt bekommt, sein Ring bestimmt die Version, Wartungsfenster und Freezes den Zeitpunkt. Ein Critical- oder KEV-Fix kommt standardmässig innert drei Tagen durch jedes Fenster und jeden Freeze.',
+    which: 'WELCHE VERSION',
+    example: 'z. B. Firefox',
+    armed: 'v1 gesichert für Rollback',
+    what: 'WAS',
+    groups: [['Basis', '7-Zip · Firefox · Notepad++'], ['Entwicklung', 'Git · VS Code · jq (Scoop)'], ['Büro', 'Acrobat Reader · Zoom']],
+    endpoint: ['PC-017', '6 Apps aus 2 Groups', 'Ring pilot → Firefox v2'],
+    when: 'WANN',
+    days: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+    window: 'Fenster',
+    freeze: 'Freeze',
+    cve: 'CVE-Fix',
+    cveDays: 'max. 3 Tage',
+  },
+  en: {
+    claim: 'Groups decide which apps an endpoint gets, its ring decides the version, maintenance windows and freezes decide when. A Critical or KEV fix gets through any window and freeze, within three days by default.',
+    which: 'WHICH VERSION',
+    example: 'e.g. Firefox',
+    armed: 'v1 armed for rollback',
+    what: 'WHAT',
+    groups: [['Base', '7-Zip · Firefox · Notepad++'], ['Development', 'Git · VS Code · jq (Scoop)'], ['Office', 'Acrobat Reader · Zoom']],
+    endpoint: ['PC-017', '6 apps from 2 groups', 'ring pilot → Firefox v2'],
+    when: 'WHEN',
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    window: 'window',
+    freeze: 'freeze',
+    cve: 'CVE fix',
+    cveDays: 'max. 3 days',
+  },
+}[lang === 'en' ? 'en' : 'de'];
+
+const c = { x: 166, y: 200 };
+// each ring meets its label row at a chosen height; the leader runs right from there
+const rings = [
+  { name: 'canary', r: 34, ly: 200, v: 'v2' },
+  { name: 'pilot', r: 68, ly: 168, v: 'v2' },
+  { name: 'broad', r: 102, ly: 136, v: 'v1' },
+  { name: 'all', r: 136, ly: 104, v: 'v1' },
+].map((ring, i) => ({ ...ring, i, px: c.x + Math.sqrt(ring.r * ring.r - (ring.ly - c.y) ** 2) }));
+const groups = copy.groups.map((g, i) => ({ name: g[0], apps: g[1], y: 52 + i * 48, member: i < 2 }));
+const dayW = 88;
+const days = copy.days.map((label, i) => ({ label, x: 152 + i * dayW, frozen: i === 3 || i === 4 }));
+---
+
+<figure class="diagram attestree-diagram">
+  <svg viewBox="0 0 800 472" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.claim}>
+    <defs>
+      <marker id="rings-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="var(--accent)" />
+      </marker>
+    </defs>
+
+    <!-- WHICH VERSION: the rings -->
+    <text class="dg-mono" x="32" y="32" fill="var(--accent)" font-size="10.5" font-weight="600">{copy.which}</text>
+    <text class="dg-mono" x="150" y="32" fill="var(--muted)" font-size="10">{copy.example}</text>
+    {rings.slice().reverse().map((ring) => (
+      <circle cx={c.x} cy={c.y} r={ring.r} fill={ring.i === 0 ? 'var(--accent-wash)' : 'none'} stroke="var(--accent)" stroke-opacity={1 - ring.i * 0.2} stroke-width="1.5" />
+    ))}
+    <g fill="var(--accent)">
+      <circle cx={c.x - 12} cy={c.y - 7} r="3.5" />
+      <circle cx={c.x + 9} cy={c.y - 14} r="3.5" />
+      <circle cx={c.x + 5} cy={c.y + 11} r="3.5" />
+      <circle cx={c.x - 8} cy={c.y + 15} r="3.5" />
+    </g>
+    {rings.map((ring) => (
+      <g>
+        <circle cx={ring.px} cy={ring.ly} r="2.5" fill="var(--accent)" />
+        <line x1={ring.px} y1={ring.ly} x2="336" y2={ring.ly} stroke="var(--accent)" stroke-opacity="0.45" />
+        <text class="dg-mono" x="344" y={ring.ly + 4} fill="var(--ink)" font-size="11">{ring.name}</text>
+        <rect x="404" y={ring.ly - 10} width="32" height="20" rx="4" fill={ring.v === 'v2' ? 'var(--accent)' : 'var(--surface)'} stroke={ring.v === 'v2' ? 'var(--accent)' : 'var(--hairline-strong)'} />
+        <text class="dg-mono" x="420" y={ring.ly + 4} text-anchor="middle" fill={ring.v === 'v2' ? 'var(--accent-ink)' : 'var(--ink)'} font-size="10.5" font-weight="600">{ring.v}</text>
+        {ring.v === 'v2' && (
+          <g>
+            <rect x="442" y={ring.ly - 10} width="32" height="20" rx="4" fill="var(--signal-wash)" stroke="var(--signal)" stroke-dasharray="3 2" />
+            <text class="dg-mono" x="458" y={ring.ly + 4} text-anchor="middle" fill="var(--signal)" font-size="10.5">v1</text>
+          </g>
+        )}
+      </g>
+    ))}
+    <text x="344" y="232" fill="var(--signal)" font-size="10.5">{copy.armed}</text>
+
+    <!-- WHAT: the groups -->
+    <text class="dg-mono" x="560" y="32" fill="var(--accent)" font-size="10.5" font-weight="600">{copy.what}</text>
+    {groups.map((g) => (
+      <g>
+        <rect x="560" y={g.y} width="208" height="40" rx="6" fill={g.member ? 'var(--accent-wash)' : 'var(--surface)'} stroke={g.member ? 'var(--accent)' : 'var(--hairline-strong)'} stroke-width={g.member ? 1.25 : 1} />
+        <text x="572" y={g.y + 17} fill="var(--ink)" font-size="12" font-weight="600">{g.name}</text>
+        <text x="572" y={g.y + 32} fill="var(--muted)" font-size="10.5">{g.apps}</text>
+      </g>
+    ))}
+    <path d="M768 72 H782 V120 H768" fill="none" stroke="var(--accent)" stroke-width="1.25" />
+    <path d="M782 96 V230 H774" fill="none" stroke="var(--accent)" stroke-width="1.25" marker-end="url(#rings-arrow)" />
+    <rect x="560" y="200" width="208" height="64" rx="6" fill="var(--surface)" stroke="var(--hairline-strong)" />
+    <DiagramIcon name="monitor" x={572} y={210} size={20} />
+    <text x="600" y="225" fill="var(--ink)" font-size="12" font-weight="600">{copy.endpoint[0]}</text>
+    <text x="572" y="244" fill="var(--muted)" font-size="10.5">{copy.endpoint[1]}</text>
+    <text x="572" y="258" fill="var(--accent)" font-size="10.5">{copy.endpoint[2]}</text>
+
+    <!-- WHEN: windows, freezes, the CVE deadline -->
+    <rect x="24" y="352" width="752" height="104" rx="10" fill="none" stroke="var(--hairline-strong)" />
+    <text class="dg-mono" x="40" y="376" fill="var(--accent)" font-size="10.5" font-weight="600">{copy.when}</text>
+    {days.map((d) => (
+      <g>
+        <line x1={d.x} y1="364" x2={d.x} y2="444" stroke="var(--hairline)" />
+        <text class="dg-mono" x={d.x + 8} y="376" fill="var(--muted)" font-size="10">{d.label}</text>
+        <rect x={d.x + 50} y="390" width="30" height="18" rx="3" fill="var(--accent-wash)" stroke="var(--accent)" opacity={d.frozen ? 0.3 : 1} />
+      </g>
+    ))}
+    <line x1={152 + 7 * dayW} y1="364" x2={152 + 7 * dayW} y2="444" stroke="var(--hairline)" />
+    <text class="dg-mono" x="40" y="403" fill="var(--muted)" font-size="10">{copy.window}</text>
+    <rect x={152 + 3 * dayW + 4} y="386" width={2 * dayW - 8} height="26" rx="4" fill="var(--signal-wash)" stroke="var(--signal)" stroke-dasharray="4 3" />
+    <text class="dg-mono" x={152 + 3 * dayW + 14} y="403" fill="var(--signal)" font-size="10" font-weight="600">{copy.freeze}</text>
+    <text class="dg-mono" x="40" y="435" fill="var(--muted)" font-size="10">{copy.cve}</text>
+    <circle cx={152 + dayW + 12} cy="431" r="3.5" fill="var(--accent)" />
+    <line x1={152 + dayW + 16} y1="431" x2={152 + 4 * dayW + 12} y2="431" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#rings-arrow)" />
+    <text x={152 + 4 * dayW + 22} y="435" fill="var(--ink)" font-size="10.5">{copy.cveDays}</text>
+  </svg>
+  <figcaption class="diagram-caption">{copy.claim}</figcaption>
+</figure>
+
+<style>
+  .attestree-diagram .diagram-caption {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    max-width: 64ch;
+  }
+
+  .attestree-diagram svg text.dg-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+</style>

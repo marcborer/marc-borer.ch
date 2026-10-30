@@ -1,10 +1,131 @@
 ---
 import DocLayout from '../../../../layouts/DocLayout.astro';
-import { Content, frontmatter } from '../../../../content/projects/attestree/architecture.md';
+import AttestreeSystemDiagram from '../../../../components/diagrams/AttestreeSystemDiagram.astro';
+import AttestreeRingsDiagram from '../../../../components/diagrams/AttestreeRingsDiagram.astro';
+import AttestreeTopologyDiagram from '../../../../components/diagrams/AttestreeTopologyDiagram.astro';
 import docNavs from '../../../../data/doc-navs.en.json';
 const nav = docNavs['attestree'];
 ---
 
-<DocLayout prose title={`${frontmatter.title} — Attestree Supply-Chain Platform`} description="System architecture of Attestree: ingest gate with sandboxed detonation and signed attestation, fenced winget feed, groups × rings, fleet CVE index, and open-core distribution." sidebarTitle={nav.title} sidebarItems={nav.items}>
-  <Content />
+<DocLayout prose title="Architecture — Attestree App-Patching Platform" description="System architecture of Attestree: who connects to whom, the ingest gate with sandboxed detonation and a signed statement, the fenced feed, groups × rings with windows and freezes, the fleet CVE index and the two ways to run it." sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <h2>System architecture</h2>
+  <p>
+    Attestree is a control plane for third-party app patching on Windows fleets, built around one
+    idea: <strong>attest at ingest, not after install.</strong> Most scanners inspect binaries that
+    already run across a fleet; Attestree owns the catalog and the distribution layer, so every
+    version is observed, signed and checked <em>before</em> an endpoint can install it.
+  </p>
+  <p>
+    The deployment is simple to firewall. Only the server accepts connections: endpoints and the
+    detonation broker dial out, and installers reach the sandbox through the server, never straight
+    from the internet.
+  </p>
+
+  <AttestreeSystemDiagram />
+
+  <h3>Ingest gate</h3>
+  <p>
+    Every version passes the gate before it enters the catalog: winget, Chocolatey and Scoop today.
+    Chocolatey and Scoop are tested with the manager’s own install, need a Hyper-V detonation host,
+    and their upstream reads stay off until an operator allows that egress. Your own apps can be
+    added through the API so far; cached MSIs with generated MST transforms, npm and pip are on the
+    roadmap.
+  </p>
+  <table>
+    <thead><tr><th>Stage</th><th>Responsibility</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Fetch</strong></td><td>Retrieve the manifest and installer from the source; the installer’s SHA-256 is checked as it streams in</td></tr>
+      <tr><td><strong>Signature</strong></td><td>Check the installer’s Authenticode signature and whether the signer changed since the previous version</td></tr>
+      <tr><td><strong>Detonation</strong></td><td>Install the version in a short-lived VM cloned from the operator’s signed golden image, offline by default</td></tr>
+      <tr><td><strong>SBOM</strong></td><td>Syft builds a CycloneDX SBOM of what the installer put on disk: an observation, not a declaration</td></tr>
+      <tr><td><strong>Statement</strong></td><td>Sign an in-toto Statement v1 in a DSSE envelope with the deployment’s own ECDSA P-256 key, stored with the SBOMs and verifiable offline</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The statement records what the deployment observed. It is not SLSA build provenance, because
+    Attestree does not build the vendor’s installer.
+  </p>
+
+  <h3>Three enforcement points</h3>
+  <p>For a Windows fleet the endpoint is the load-bearing enforcement point, so policy is not checked only once:</p>
+  <ol>
+    <li><strong>Ingest gate</strong>: detonation decides what gets attested, before anything enters the catalog.</li>
+    <li><strong>Reconciliation</strong>: continuous reconciliation against declared desired state, with drift flagged in the console.</li>
+    <li><strong>Endpoint agent</strong>: acts only on desired state whose HMAC checks out and, for winget on a fenced endpoint, installs only the attested SHA-256.</li>
+  </ol>
+
+  <h3>Fenced feed</h3>
+  <p>
+    Fenced endpoints run from the operator’s own attested winget source. A user can still run a
+    normal <code>winget install</code>, but the agent serves only admitted packages, pinned to the
+    attested SHA-256. Chocolatey and Scoop versions are served only from bytes the server holds, and
+    only to endpoints whose groups name the app.
+  </p>
+
+  <h3>Groups × rings</h3>
+
+  <AttestreeRingsDiagram />
+
+  <p>
+    <strong>PC groups</strong> carry version-free sets of packages and can mix winget, Chocolatey and
+    Scoop; an endpoint converges to the union of its groups. <strong>Rings</strong> (canary → pilot →
+    broad → all) resolve each package to the exact attested version at deploy time. Each ring keeps
+    one armed predecessor, and rolling back makes it the ring’s version again. Maintenance windows,
+    per group or per package, and dated freezes decide when endpoints install; a Critical or
+    KEV-listed fix gets through within three days by default.
+  </p>
+  <p>
+    An opt-in <strong>unattended update pipeline</strong> ingests, detonates and promotes new versions
+    ring by ring, for winget and for subscribed Chocolatey and Scoop apps. It halts into a review
+    queue when a publisher’s signing certificate changes or an installer arrives unsigned. Rollback
+    proposals for bad CVE and slow-burn signals ship off; when on, an operator confirms each one.
+  </p>
+
+  <h3>Fleet inventory and CVE index</h3>
+  <p>
+    The agent reports an observed inventory across winget, Chocolatey, Scoop and the uninstall
+    entries. A <strong>self-hosted CVE index</strong> matches it against the public CVE list
+    (cvelistV5) and the CISA Known Exploited Vulnerabilities catalogue, with an offline bundle for
+    air-gapped sites. A card per product leads to Deploy fix, which promotes the fixed version one
+    ring per typed confirmation. The audit trail, the catalog evidence and the fleet inventory export
+    as signed bundles that verify offline.
+  </p>
+
+  <h3>Control plane stack</h3>
+  <table>
+    <thead><tr><th>Layer</th><th>Choice</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Installer shim</strong></td><td>.NET Native AOT, Apache-2.0</td></tr>
+      <tr><td><strong>Endpoint agent</strong></td><td>.NET, self-updating through the same rings; dials out only</td></tr>
+      <tr><td><strong>Server</strong></td><td>Linux container with PostgreSQL 18; row-level security and an insert-only audit log bind the platform itself</td></tr>
+      <tr><td><strong>Detonation</strong></td><td>A broker on the operator’s Hyper-V or Proxmox host, gRPC over mutual TLS; VM size and concurrency set per broker</td></tr>
+      <tr><td><strong>Formats</strong></td><td>in-toto Statement v1 in DSSE, CycloneDX, ECDSA P-256; an optional Sigstore Rekor entry, off by default</td></tr>
+      <tr><td><strong>Release signing</strong></td><td>cosign-signed images; Authenticode-signed agent and broker MSIs</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Ways to run it</h3>
+
+  <AttestreeTopologyDiagram />
+
+  <p>
+    Attestree ships as open-core. The installer shim and its IPC contract are Apache-2.0; the
+    platform is closed source, and the licence boundary is enforced in the build. The <strong>Community Edition</strong> is free up to 200 endpoints, self-hosted on Docker Compose
+    with no cloud dependency, and in early access. Commercially there is a <strong>dedicated instance</strong> in the customer’s own Azure subscription, deployed and
+    upgraded by Attestree. There is deliberately no shared multi-tenant SaaS.
+  </p>
+
+  <h3>Public front door</h3>
+  <p>The site at attestree.com is a separate, fully public surface:</p>
+  <table>
+    <thead><tr><th>Layer</th><th>Choice</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Framework</strong></td><td>Astro with Tailwind and MDX, static output, build-time OG images</td></tr>
+      <tr><td><strong>Hosting</strong></td><td>Cloudflare Pages, with a preview deploy per pull request</td></tr>
+      <tr><td><strong>Demo</strong></td><td>A clickable, read-only copy of the running console with a guided tour, captured from the Community Edition against a seeded test fleet</td></tr>
+      <tr><td><strong>Changelog</strong></td><td>One public changelog for every release, mirrored to the Community Edition repository</td></tr>
+      <tr><td><strong>Waitlist</strong></td><td>A same-origin Cloudflare Pages Function backed by D1 in an EU jurisdiction, with Turnstile verification</td></tr>
+      <tr><td><strong>Build security</strong></td><td>SHA-pinned actions, a least-privilege token, a committed lockfile, Dependabot, an <code>npm audit</code> gate and <code>security.txt</code></td></tr>
+    </tbody>
+  </table>
 </DocLayout>

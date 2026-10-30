@@ -32,7 +32,7 @@ export const ui = {
     'spec.focus': 'Schwerpunkte',
     'spec.focus.value': 'Hybrid Identity · Microsoft 365 · Endpoint-Lifecycle · Software Supply Chain',
     'spec.now': 'Aktuell',
-    'spec.now.value': 'Attestree: attestiertes winget für Windows-Flotten',
+    'spec.now.value': 'Attestree: attestiertes App-Patching für Windows-Flotten',
     'spec.since': 'Erfahrung',
     'spec.since.value': 'Seit 2014 in Betrieb und Architektur, seit 2019 mit Architekturverantwortung',
     // Sections
@@ -113,7 +113,7 @@ export const ui = {
     'spec.focus': 'Focus',
     'spec.focus.value': 'Hybrid identity · Microsoft 365 · Endpoint lifecycle · Software supply chain',
     'spec.now': 'Now',
-    'spec.now.value': 'Attestree: attested winget for Windows fleets',
+    'spec.now.value': 'Attestree: attested app patching for Windows fleets',
     'spec.since': 'Experience',
     'spec.since.value': 'Operations and architecture since 2014, architecture ownership since 2019',
     'section.featured': 'Projects',

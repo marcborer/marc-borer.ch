@@ -1,93 +1,160 @@
 ---
-// Attestree: Vertical supply-chain flow showing the ingest gate
-// winget / Chocolatey → Ingest Gate (evidence + policy) → Admit/Reject → Signed Attestation
-// → Fenced winget Feed → Groups × Rings → Fleet. Fleet inventory + CVE index as a side surface.
+// Attestree, from source to fleet: six numbered stages on one spine. The
+// halt queue branches off the gate; the CVE loop runs from the fleet back
+// into the rings. Statements stay within what attestree.com states publicly.
+import type { Lang } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const copy = {
+  de: {
+    claim: 'Eine Version erreicht die Flotte erst nach Detonation, SBOM und signiertem Statement, und nur als Bytes, die der Server hält. Ein Signer-Wechsel stoppt sie, ein CVE-Treffer in der Flotte zieht den Fix Ring für Ring nach.',
+    titles: ['Quellen', 'Ingest Gate', 'Signiertes Statement', 'Ausliefern', 'Groups × Rings', 'Windows-Flotte'],
+    sources: ['winget', 'Chocolatey', 'Scoop', 'eigene Apps · nur API'],
+    notes: ['Roadmap: MSI/MST · npm · pip', 'Evidenz vor der Aufnahme', 'offline prüfbar', 'nur attestierte Bytes', 'Fenster · Freezes · Rollback auf den Vorgänger', 'kein offener Port'],
+    gate: ['Abruf', 'Signatur', 'Detonation', 'SBOM, beobachtet'],
+    haltWhy: 'Signer neu',
+    halt: 'Halt-Queue · ein Mensch entscheidet',
+    statement: ['in-toto v1', 'DSSE', 'ECDSA P-256', 'SBOM dabei'],
+    serve: ['winget-Feed · SHA-256 gepinnt', 'Chocolatey · Scoop · Bytes vom Server'],
+    fleet: ['Agent · HMAC-geprüfter Soll-Zustand', 'Shim · Apache-2.0'],
+    loop: ['Inventar · CVE-Abgleich', 'Deploy fix, Ring für Ring'],
+  },
+  en: {
+    claim: 'A version reaches the fleet only after detonation, an SBOM and a signed statement, and only as bytes the server holds. A signer change halts it; a CVE match in the fleet pulls the fix through the rings.',
+    titles: ['Sources', 'Ingest gate', 'Signed statement', 'Serve', 'Groups × rings', 'Windows fleet'],
+    sources: ['winget', 'Chocolatey', 'Scoop', 'own apps · API only'],
+    notes: ['roadmap: MSI/MST · npm · pip', 'evidence before admission', 'verifiable offline', 'attested bytes only', 'windows · freezes · rollback to the predecessor', 'no inbound port'],
+    gate: ['fetch', 'signature', 'detonation', 'observed SBOM'],
+    haltWhy: 'new signer',
+    halt: 'halt queue · a person decides',
+    statement: ['in-toto v1', 'DSSE', 'ECDSA P-256', 'SBOM attached'],
+    serve: ['winget feed · SHA-256 pinned', 'Chocolatey · Scoop · server-held bytes'],
+    fleet: ['agent · HMAC-checked desired state', 'shim · Apache-2.0'],
+    loop: ['inventory · CVE match', 'Deploy fix, ring by ring'],
+  },
+}[lang === 'en' ? 'en' : 'de'];
+
+const step = 76;
+const yc = (i: number) => 44 + i * step;
+// lay out a row of chips from x=96 with an 8-unit gap, sized by a rough glyph width
+const row = (labels: string[], size = 11, gap = 8, start = 96) => {
+  let x = start;
+  return labels.map((label) => {
+    const w = Math.round(label.length * size * 0.56 + 24);
+    const chip = { label, x, w };
+    x += w + gap;
+    return chip;
+  });
+};
+const sources = row(copy.sources);
+const gate = row(copy.gate, 11, 22);
+const statement = row(copy.statement);
+const serve = row(copy.serve);
+const rings = row(['canary', 'pilot', 'broad', 'all'], 10.5, 18);
+const fleet = row(copy.fleet);
+const end = (chips: { x: number; w: number }[]) => chips[chips.length - 1].x + chips[chips.length - 1].w;
 ---
 
-<div class="diagram">
-  <svg viewBox="0 0 800 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Attestree Supply-Chain Architecture Diagram">
-    <!-- Package Sources -->
-    <rect x="210" y="20" width="380" height="44" rx="8" fill="none" stroke="var(--hairline-strong)" stroke-width="1" stroke-dasharray="4 3"/>
-    <text x="400" y="40" text-anchor="middle" fill="var(--muted)" font-size="12">Package Sources</text>
-    <text x="400" y="56" text-anchor="middle" fill="var(--muted)" font-size="10">winget · Chocolatey, Scoop inventoried · MSI/MST: roadmap</text>
+<figure class="diagram attestree-diagram">
+  <svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.claim}>
+    <defs>
+      <marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="var(--accent)" />
+      </marker>
+      <marker id="flow-arrow-signal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="var(--signal)" />
+      </marker>
+      <marker id="flow-arrow-quiet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="var(--muted)" />
+      </marker>
+    </defs>
 
-    <!-- Arrow -->
-    <line x1="400" y1="64" x2="400" y2="85" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="395,85 400,95 405,85" fill="var(--accent)" opacity="0.5"/>
+    <!-- the gate band -->
+    <rect x="76" y={yc(1) - 30} width="700" height="70" rx="10" fill="var(--accent-wash)" />
 
-    <!-- Ingest Gate -->
-    <rect x="230" y="95" width="340" height="68" rx="8" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.5"/>
-    <text x="400" y="117" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600">INGEST GATE — EVIDENCE + POLICY</text>
-    <text x="400" y="136" text-anchor="middle" fill="var(--muted)" font-size="11">Installer signature · Publisher continuity</text>
-    <text x="400" y="152" text-anchor="middle" fill="var(--muted)" font-size="11">Sandboxed detonation · Observed SBOM</text>
+    <!-- spine -->
+    <line x1="48" y1={yc(0)} x2="48" y2={yc(5)} stroke="var(--accent)" stroke-width="2" stroke-opacity="0.35" />
+    {copy.titles.map((title, i) => (
+      <g>
+        <circle cx="48" cy={yc(i)} r="15" fill={i === 1 || i === 2 ? 'var(--accent)' : 'var(--surface)'} stroke="var(--accent)" stroke-width="1.5" />
+        <text class="dg-mono" x="48" y={yc(i) + 4} text-anchor="middle" fill={i === 1 || i === 2 ? 'var(--accent-ink)' : 'var(--accent)'} font-size="11" font-weight="600">{`0${i + 1}`}</text>
+        <text x="96" y={yc(i) - 6} fill="var(--ink)" font-size="13" font-weight="600">{title}</text>
+        <text class="dg-mono" x={96 + title.length * 7.7 + 14} y={yc(i) - 6} fill="var(--muted)" font-size="10">{copy.notes[i]}</text>
+      </g>
+    ))}
 
-    <!-- Reject branch -->
-    <line x1="570" y1="129" x2="690" y2="129" stroke="var(--hairline-strong)" stroke-width="1.5" opacity="0.4"/>
-    <rect x="690" y="110" width="90" height="38" rx="6" fill="var(--paper)" stroke="var(--hairline-strong)" stroke-width="1"/>
-    <text x="735" y="133" text-anchor="middle" fill="var(--muted)" font-size="11">Rejected</text>
+    <!-- 01 sources -->
+    {sources.map((c, i) => (
+      <g>
+        <rect x={c.x} y={yc(0) + 4} width={c.w} height="24" rx="12" fill="var(--surface)" stroke="var(--hairline-strong)" stroke-dasharray={i === 3 ? '3 3' : undefined} />
+        <text x={c.x + c.w / 2} y={yc(0) + 20} text-anchor="middle" fill="var(--ink-2)" font-size="11">{c.label}</text>
+      </g>
+    ))}
 
-    <!-- Arrow down: admit -->
-    <line x1="400" y1="163" x2="400" y2="188" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="395,188 400,198 405,188" fill="var(--accent)" opacity="0.5"/>
-    <text x="430" y="182" text-anchor="start" fill="var(--muted)" font-size="10">admit</text>
+    <!-- 02 ingest gate -->
+    {gate.map((c, i) => (
+      <g>
+        <rect x={c.x} y={yc(1) + 4} width={c.w} height="24" rx="4" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.25" />
+        <text x={c.x + c.w / 2} y={yc(1) + 20} text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="500">{c.label}</text>
+        {i < gate.length - 1 && <line x1={c.x + c.w + 3} y1={yc(1) + 16} x2={c.x + c.w + 18} y2={yc(1) + 16} stroke="var(--accent)" stroke-width="1.25" marker-end="url(#flow-arrow)" />}
+      </g>
+    ))}
+    <line x1={end(gate) + 8} y1={yc(1) + 16} x2={end(gate) + 62} y2={yc(1) + 16} stroke="var(--signal)" stroke-width="1.25" stroke-dasharray="3 3" marker-end="url(#flow-arrow-signal)" />
+    <text x={end(gate) + 35} y={yc(1) + 9} text-anchor="middle" fill="var(--signal)" font-size="10">{copy.haltWhy}</text>
+    <rect x={end(gate) + 66} y={yc(1) + 4} width={760 - end(gate) - 66} height="24" rx="4" fill="var(--signal-wash)" stroke="var(--signal)" stroke-width="1.25" />
+    <text x={end(gate) + 66 + (760 - end(gate) - 66) / 2} y={yc(1) + 20} text-anchor="middle" fill="var(--signal)" font-size="10.5" font-weight="500">{copy.halt}</text>
 
-    <!-- Signed Attestation -->
-    <rect x="230" y="198" width="340" height="50" rx="8" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.5"/>
-    <text x="400" y="220" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600">SIGNED ATTESTATION</text>
-    <text x="400" y="238" text-anchor="middle" fill="var(--muted)" font-size="11">in-toto · SLSA v1 · CycloneDX · ECDSA P-256</text>
+    <!-- 03 signed statement -->
+    {statement.map((c) => (
+      <g>
+        <rect x={c.x} y={yc(2) + 4} width={c.w} height="24" rx="4" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <text class="dg-mono" x={c.x + c.w / 2} y={yc(2) + 20} text-anchor="middle" fill="var(--ink)" font-size="10">{c.label}</text>
+      </g>
+    ))}
 
-    <!-- Arrow -->
-    <line x1="400" y1="248" x2="400" y2="273" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="395,273 400,283 405,273" fill="var(--accent)" opacity="0.5"/>
+    <!-- 04 serve -->
+    {serve.map((c) => (
+      <g>
+        <rect x={c.x} y={yc(3) + 4} width={c.w} height="24" rx="12" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <text x={c.x + c.w / 2} y={yc(3) + 20} text-anchor="middle" fill="var(--ink-2)" font-size="11">{c.label}</text>
+      </g>
+    ))}
 
-    <!-- Fenced Feed -->
-    <rect x="230" y="283" width="340" height="50" rx="8" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.5"/>
-    <text x="400" y="305" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600">FENCED WINGET FEED</text>
-    <text x="400" y="323" text-anchor="middle" fill="var(--muted)" font-size="11">Private REST source · SHA-256 pinned</text>
+    <!-- 05 rings -->
+    {rings.map((c, i) => (
+      <g>
+        <rect x={c.x} y={yc(4) + 4} width={c.w} height="24" rx="12" fill={i === 0 ? 'var(--accent-wash)' : 'var(--surface)'} stroke="var(--accent)" stroke-opacity={1 - i * 0.18} stroke-width="1.25" />
+        <text class="dg-mono" x={c.x + c.w / 2} y={yc(4) + 20} text-anchor="middle" fill="var(--ink)" font-size="10.5">{c.label}</text>
+        {i < rings.length - 1 && <line x1={c.x + c.w + 3} y1={yc(4) + 16} x2={c.x + c.w + 14} y2={yc(4) + 16} stroke="var(--accent)" stroke-width="1.25" marker-end="url(#flow-arrow)" />}
+      </g>
+    ))}
 
-    <!-- Arrow -->
-    <line x1="400" y1="333" x2="400" y2="358" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="395,358 400,368 405,358" fill="var(--accent)" opacity="0.5"/>
+    <!-- 06 fleet -->
+    {fleet.map((c) => (
+      <g>
+        <rect x={c.x} y={yc(5) + 4} width={c.w} height="24" rx="12" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <text x={c.x + c.w / 2} y={yc(5) + 20} text-anchor="middle" fill="var(--ink-2)" font-size="11">{c.label}</text>
+      </g>
+    ))}
 
-    <!-- Groups × Rings -->
-    <rect x="230" y="368" width="340" height="55" rx="8" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.5"/>
-    <text x="400" y="391" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600">GROUPS × RINGS</text>
-    <text x="400" y="410" text-anchor="middle" fill="var(--muted)" font-size="11">Canary → Pilot → Broad → All · rollback</text>
-
-    <!-- Arrow -->
-    <line x1="400" y1="423" x2="400" y2="448" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="395,448 400,458 405,448" fill="var(--accent)" opacity="0.5"/>
-
-    <!-- Fleet -->
-    <rect x="230" y="458" width="340" height="50" rx="8" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.5"/>
-    <text x="400" y="480" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600">WINDOWS FLEET ENDPOINTS</text>
-    <text x="400" y="498" text-anchor="middle" fill="var(--muted)" font-size="11">Agent re-verifies at install · shim (Apache-2.0)</text>
-
-    <!-- Fleet Inventory + CVE index (side, spans the pipeline) -->
-    <rect x="40" y="198" width="160" height="310" rx="8" fill="none" stroke="var(--accent)" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"/>
-    <text x="120" y="222" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600" opacity="0.7">FLEET INVENTORY</text>
-    <text x="120" y="236" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600" opacity="0.7">&amp; CVE INDEX</text>
-    <text x="120" y="266" text-anchor="middle" fill="var(--muted)" font-size="10">Observed inventory</text>
-    <text x="120" y="280" text-anchor="middle" fill="var(--muted)" font-size="10">winget · Chocolatey · Scoop</text>
-    <text x="120" y="310" text-anchor="middle" fill="var(--muted)" font-size="10">Self-hosted index</text>
-    <text x="120" y="324" text-anchor="middle" fill="var(--muted)" font-size="10">cvelistV5 · CISA KEV</text>
-    <text x="120" y="354" text-anchor="middle" fill="var(--muted)" font-size="10">Update pipeline</text>
-    <text x="120" y="368" text-anchor="middle" fill="var(--muted)" font-size="10">with halt queue</text>
-    <text x="120" y="398" text-anchor="middle" fill="var(--muted)" font-size="10">Signed evidence</text>
-    <text x="120" y="412" text-anchor="middle" fill="var(--muted)" font-size="10">bundle, offline-verifiable</text>
-    <line x1="200" y1="483" x2="230" y2="483" stroke="var(--hairline-strong)" stroke-width="1" opacity="0.3"/>
-
-    <!-- Data / control layer -->
-    <text x="400" y="548" text-anchor="middle" fill="var(--muted)" font-size="11" font-weight="600" letter-spacing="0.1em">CONTROL PLANE</text>
-
-    <rect x="95" y="563" width="160" height="40" rx="6" fill="var(--paper)" stroke="var(--hairline-strong)" stroke-width="1"/>
-    <text x="175" y="588" text-anchor="middle" fill="var(--muted)" font-size="11">.NET · PostgreSQL</text>
-
-    <rect x="270" y="563" width="190" height="40" rx="6" fill="var(--paper)" stroke="var(--hairline-strong)" stroke-width="1"/>
-    <text x="365" y="588" text-anchor="middle" fill="var(--muted)" font-size="11">Community Edition (Docker)</text>
-
-    <rect x="475" y="563" width="235" height="40" rx="6" fill="var(--paper)" stroke="var(--hairline-strong)" stroke-width="1"/>
-    <text x="592" y="588" text-anchor="middle" fill="var(--muted)" font-size="11">Marketing site (Astro · CF Pages)</text>
+    <!-- CVE loop: the fleet's inventory pulls a fix back through the rings -->
+    <path d={`M${end(fleet) + 8} ${yc(5) + 16} H744 V${yc(4) + 16} H${end(rings) + 10}`} fill="none" stroke="var(--muted)" stroke-width="1.25" stroke-dasharray="4 3" marker-end="url(#flow-arrow-quiet)" />
+    <text x="734" y={yc(5) - 34} text-anchor="end" fill="var(--muted)" font-size="10.5">{copy.loop[0]}</text>
+    <text x="734" y={yc(4) + 8} text-anchor="end" fill="var(--ink-2)" font-size="10.5">{copy.loop[1]}</text>
   </svg>
-</div>
+  <figcaption class="diagram-caption">{copy.claim}</figcaption>
+</figure>
 
+<style>
+  .attestree-diagram .diagram-caption {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    max-width: 64ch;
+  }
+
+  .attestree-diagram svg text.dg-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+</style>

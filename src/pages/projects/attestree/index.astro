@@ -2,6 +2,7 @@
 import DocLayout from '../../../layouts/DocLayout.astro';
 import TechBadge from '../../../components/TechBadge.astro';
 import AttestreeDiagram from '../../../components/diagrams/AttestreeDiagram.astro';
+import AttestreeSystemDiagram from '../../../components/diagrams/AttestreeSystemDiagram.astro';
 import docNavs from '../../../data/doc-navs.de.json';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/utils';
@@ -11,7 +12,7 @@ const lang = (Astro.currentLocale || 'de') as Lang;
 const t = useTranslations(lang);
 const nav = docNavs['attestree'];
 
-const tech = ['.NET', 'winget', 'in-toto / SLSA', 'CycloneDX', 'Sigstore', 'PostgreSQL', 'Docker', 'Hyper-V / Proxmox', 'Astro'];
+const tech = ['.NET', 'winget', 'Chocolatey', 'Scoop', 'in-toto', 'CycloneDX', 'Sigstore', 'PostgreSQL', 'Docker', 'Hyper-V / Proxmox', 'Astro'];
 
 const projectSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -20,18 +21,18 @@ const projectSchema = JSON.stringify({
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Windows",
   "url": "https://attestree.com",
-  "description": "Deployment-Control-Plane für Windows-Flotten, die jedes winget-Paket beim Ingest attestiert: Sandbox-Detonation, beobachtete SBOM und signiertes in-toto-Statement, bevor es über einen eingezäunten Feed ring-basiert ausgerollt wird.",
+  "description": "Control Plane für App-Patching auf Windows-Flotten, die jede winget-, Chocolatey- und Scoop-Version beim Ingest attestiert: Sandbox-Detonation, beobachtete SBOM und signiertes in-toto-Statement, bevor sie ring-basiert ausgerollt wird.",
   "author": {
     "@type": "Person",
     "name": "Marc Borer",
     "url": "https://marc-borer.ch"
   },
   "programmingLanguage": ["C#", "TypeScript"],
-  "keywords": "Software Supply Chain, winget, Attestierung, SBOM, in-toto, SLSA, Provenance, Windows-Flotte, Ring-Deployment, private winget-Quelle"
+  "keywords": "Software Supply Chain, App-Patching, winget, Chocolatey, Scoop, Attestierung, SBOM, in-toto, Windows-Flotte, Ring-Deployment, private winget-Quelle"
 });
 ---
 
-<DocLayout title="Attestree — Attestiertes winget für Windows-Flotten" description="Fallstudie Attestree: eine Deployment-Control-Plane, die jedes winget-Paket beim Ingest detoniert, mit einer beobachteten SBOM versieht und signiert, bevor es über einen eingezäunten Feed in Rings ausgerollt wird." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="Attestree — Attestiertes App-Patching für Windows-Flotten" description="Fallstudie Attestree: eine Control Plane für App-Patching, die jede winget-, Chocolatey- und Scoop-Version beim Ingest detoniert, mit einer beobachteten SBOM versieht und signiert, bevor sie in Rings ausgerollt wird." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> {t('projects.backToProjects')}
@@ -39,7 +40,7 @@ const projectSchema = JSON.stringify({
 
     <header class="case-header">
       <h1 class="case-title">Attestree</h1>
-      <p class="case-subtitle">Attestiertes winget für Windows-Flotten: Jedes Paket wird vor dem Rollout detoniert, mit einer SBOM versehen und signiert.</p>
+      <p class="case-subtitle">Attestiertes App-Patching für Windows-Flotten: Jede winget-, Chocolatey- und Scoop-Version wird vor dem Rollout detoniert, mit einer SBOM versehen und signiert.</p>
       <div class="tags">
         {tech.map((name) => <TechBadge name={name} />)}
       </div>
@@ -47,6 +48,7 @@ const projectSchema = JSON.stringify({
         <span>{t('projects.role')}: Gründer, Architektur und Umsetzung</span>
         <span>{t('projects.period')}: 2026 – heute</span>
         <span>{t('projects.site')}: <a href="https://attestree.com" target="_blank" rel="noopener noreferrer">attestree.com</a></span>
+        <span>Demo: <a href="https://attestree.com/demo/" target="_blank" rel="noopener noreferrer">die Konsole, nur lesend</a></span>
         <span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
           Plattform-Code privat, Installer-Shim Apache-2.0
@@ -57,7 +59,7 @@ const projectSchema = JSON.stringify({
     <section class="case-section">
       <h2>Problem</h2>
       <p>
-        Die meisten Windows-Umgebungen installieren winget-Pakete direkt aus der öffentlichen Quelle
+        Die meisten Windows-Umgebungen installieren winget-, Chocolatey- oder Scoop-Pakete direkt aus der öffentlichen Quelle
         und entdecken Probleme erst, wenn Tage später ein Scanner über einen Endpunkt läuft. Bis dahin
         läuft das Artefakt flottenweit, SBOMs sind ein nachträglicher Gedanke, Attestierungen fehlen,
         und die Supply-Chain-Story lautet «wir vertrauen dem CDN von Microsoft». Die üblichen
@@ -72,15 +74,18 @@ const projectSchema = JSON.stringify({
       <p>
         Attestree dreht die Reihenfolge um: <em>winget install, aber mit Beleg.</em> Mit einem
         angeschlossenen Detonation-Host (Hyper-V oder Proxmox/KVM) wird jede aufgenommene
-        winget-Version in einer isolierten VM tatsächlich installiert. Der reale Fussabdruck auf
-        Dateisystem und Registry wird aufgezeichnet, nicht aus dem Manifest abgeleitet. Syft erzeugt
+        winget-Version in einer isolierten VM tatsächlich installiert, auf einem Hyper-V-Host auch jede
+        Chocolatey- und Scoop-Version, mit der Installation des jeweiligen Managers. Der reale
+        Fussabdruck auf Dateisystem und Registry wird aufgezeichnet, nicht aus dem Manifest abgeleitet. Syft erzeugt
         eine CycloneDX-SBOM dessen, was der Installer auf die Platte gelegt hat, und die Plattform
         signiert ein in-toto-Statement über den SHA-256 des Installers, das sich offline verifizieren
         lässt. Erst danach wird die Version in einen Ring befördert.
       </p>
       <p>
         Endpunkte sind auf den eigenen, attestierten winget-Feed des Betreibers eingezäunt: Ein
-        eingezäunter Endpunkt installiert genau den gepinnten SHA-256 und lehnt alles andere ab. Fragt
+        eingezäunter Endpunkt installiert genau den gepinnten SHA-256 und lehnt alles andere ab.
+        Chocolatey- und Scoop-Versionen kommen nur als Bytes vom Server und nur auf Endpunkte, deren
+        Groups die App nennen. Fragt
         jemand die Quelle nach einem Paket, das nicht freigegeben ist, lehnt der Feed sauber ab und
         zeichnet die Nachfrage auf. Was als Nächstes aufgenommen wird, ist damit gemessener Bedarf,
         keine Vermutung.
@@ -94,32 +99,39 @@ const projectSchema = JSON.stringify({
       <p>
         Das System hat zwei Oberflächen. Eine Control Plane mit Endpoint-Agent betreibt Ingest,
         Attestierung und Deployment. Die öffentliche Eingangstür bilden die Website und die
-        Open-Core Community Edition.
+        Open-Core Community Edition. Das Deployment ist einfach abzusichern: Nur der Server nimmt
+        Verbindungen an.
       </p>
+
+      <AttestreeSystemDiagram />
 
       <h3>Ingest Gate</h3>
       <p>
-        Jedes Paket durchläuft Fetch aus der öffentlichen winget-Quelle, Prüfung von Installer-Signatur
-        und Publisher-Kontinuität, Sandbox-Detonation, eine beobachtete CycloneDX-1.6-SBOM und eine
-        Policy-Entscheidung. Das Ergebnis wird als in-toto-Statement signiert (ECDSA P-256). winget
-        wird heute durchgängig verwaltet und attestiert; Chocolatey und Scoop werden inventarisiert
-        und erst deployt, wenn sie attestiert werden können. Weitere Paketmanager und
-        MSI/MST-Transforms stehen auf der Roadmap.
+        Jede Version durchläuft den Abruf aus ihrer öffentlichen Quelle, die Prüfung von
+        Installer-Signatur und Publisher-Kontinuität, die Sandbox-Detonation und eine beobachtete
+        CycloneDX-SBOM. Das Ergebnis wird als in-toto-Statement in einem DSSE-Umschlag mit dem eigenen
+        Schlüssel des Deployments signiert (ECDSA P-256). Es hält fest, was das Deployment beobachtet
+        hat; SLSA-Build-Provenance ist es nicht, weil Attestree den Installer des Herstellers nicht
+        baut. winget, Chocolatey und Scoop werden heute attestiert; Chocolatey und Scoop brauchen einen
+        Hyper-V-Detonation-Host, und ihre Upstream-Abrufe bleiben aus, bis ein Operator diesen Egress
+        freigibt. Eigene Apps lassen sich bisher über die API aufnehmen; zwischengespeicherte MSIs mit
+        generierten MST-Transforms, npm und pip stehen auf der Roadmap.
       </p>
 
       <h3>Eingezäunter Feed, Groups × Rings</h3>
       <p>
         Endpunkte installieren aus der eigenen, spezifikationskonformen winget-REST-Quelle des
         Betreibers, gepinnt auf den freigegebenen SHA-256. PC-Groups bestimmen, <em>was</em> ein
-        Gerät betreibt; Rings (canary → pilot → broad → all) bestimmen, <em>welche Version</em>. Ein
-        Rollback führt auf jede frühere Version zurück. Ein scheiternder Rollout erzeugt einen
-        Rollback-Vorschlag, den der Operator bestätigt, statt dass das System eigenmächtig handelt.
+        Gerät betreibt; Rings (canary → pilot → broad → all) bestimmen, <em>welche Version</em>. Jeder
+        Ring hält einen gesicherten Vorgänger, und ein Rollback macht ihn wieder zur Version des Rings.
+        Wartungsfenster und datierte Freezes bestimmen, <em>wann</em> Endpunkte installieren; ein
+        Critical- oder KEV-Fix kommt standardmässig innert drei Tagen trotzdem durch.
       </p>
 
       <h3>Unbeaufsichtigte Updates mit Halt-Queue</h3>
       <p>
-        Eine optionale Pipeline nimmt neue winget-Versionen auf, detoniert sie und befördert sie
-        Ring für Ring. Sie ist standardmässig deaktiviert und wird bewusst scharf geschaltet. Sie
+        Eine optionale Pipeline nimmt neue winget-Versionen und solche abonnierter Chocolatey- und
+        Scoop-Apps auf, detoniert sie und befördert sie Ring für Ring. Sie ist standardmässig deaktiviert und wird bewusst scharf geschaltet. Sie
         stoppt zur Prüfung, wenn sich das Signaturzertifikat eines Publishers ändert oder ein
         Installer unsigniert eintrifft. Genau dieses Signal erzeugt ein gekapertes Release.
       </p>
@@ -128,8 +140,8 @@ const projectSchema = JSON.stringify({
       <ul class="feature-list">
         <li><strong>.NET</strong>: Linux-Container als Control Plane; Native-AOT-Installer-Shim und ein selbstaktualisierender Endpoint-Agent, ausgerollt über dieselben Rings</li>
         <li><strong>PostgreSQL und Docker</strong>: ein Server-Image mit Postgres; die Community Edition läuft auf Docker Compose ohne Cloud-Abhängigkeit</li>
-        <li><strong>Detonation-Hosts</strong>: Hyper-V oder Proxmox/KVM, mit einem Golden Image, das der Betreiber aus dem eigenen ISO baut</li>
-        <li><strong>Offene Formate und Signaturen</strong>: in-toto, SLSA v1, CycloneDX 1.6 (Syft); Sigstore-cosign-signierte Images und Authenticode-signierte Windows-Binaries</li>
+        <li><strong>Detonation-Hosts</strong>: Hyper-V oder Proxmox/KVM, mit einem Golden Image, das der Betreiber aus dem eigenen ISO baut; der Broker wählt über gegenseitiges TLS hinaus, VM-Grösse und Parallelität werden pro Broker eingestellt</li>
+        <li><strong>Offene Formate und Signaturen</strong>: in-toto Statement v1 in DSSE, CycloneDX (Syft), ein optionaler Sigstore-Rekor-Eintrag; cosign-signierte Images und Authenticode-signierte MSIs</li>
         <li><strong>Flotten-CVE-Index</strong>: selbst gehostet, gleicht beobachtetes Inventar mit cvelistV5 und CISA KEV ab, mit Offline-Bundle für Air-Gapped-Hosts</li>
       </ul>
     </section>
@@ -141,8 +153,7 @@ const projectSchema = JSON.stringify({
         <h3>Beim Ingest attestieren statt nach der Installation scannen</h3>
         <p>
           Der strukturelle Wedge: Attestree besitzt die Katalog- und Distributionsschicht und prüft vor
-          dem Deploy. Ohne Pre-Deploy-Attestierung ist «wir inventarisieren es» nur ein schöneres
-          <code>winget list</code>.
+          dem Deploy. Ohne Pre-Deploy-Attestierung ist «wir inventarisieren es» nur ein schöneres <code>winget list</code>.
         </p>
       </div>
 
@@ -160,8 +171,9 @@ const projectSchema = JSON.stringify({
         <p>
           In einer Windows-Flotte ist der Endpunkt der tragende Durchsetzungspunkt. Die Richtlinie
           ist deshalb keine einzelne Pipeline-Prüfung: Das Ingest Gate blockiert vor dem Katalog,
-          die Reconciliation erkennt Drift gegenüber dem deklarierten Zustand, und der Agent prüft
-          Signatur, Hash und Richtlinie bei der Installation erneut.
+          die Reconciliation erkennt Drift gegenüber dem deklarierten Zustand, und der Agent handelt
+          nur auf HMAC-geprüftem Soll-Zustand und installiert für winget auf einem eingezäunten
+          Endpunkt nur den attestierten SHA-256.
         </p>
       </div>
 
@@ -169,8 +181,9 @@ const projectSchema = JSON.stringify({
         <h3>Den destruktiven Schritt bestätigt ein Mensch</h3>
         <p>
           Die Automatisierung schlägt vor, Menschen genehmigen. Rollback-Vorschläge sind
-          bestätigungspflichtig und standardmässig deaktiviert. Die Update-Pipeline stoppt in einer
-          Review-Queue, statt zu raten, wenn sich die Signaturidentität eines Publishers ändert.
+          bestätigungspflichtig und standardmässig deaktiviert; «Deploy fix» befördert einen CVE-Fix
+          pro getippter Bestätigung um einen Ring. Die Update-Pipeline stoppt in einer Review-Queue,
+          statt zu raten, wenn sich die Signaturidentität eines Publishers ändert.
         </p>
       </div>
 
@@ -191,7 +204,8 @@ const projectSchema = JSON.stringify({
       <h2>Arbeitsweise</h2>
       <p>
         Releases werden in einem täglichen Takt geschnitten, sobald die CI-Gates auf dem Hauptzweig
-        grün sind; ein Release ohne Agent-Änderung startet keinen Agent-Rollout. Architekturentscheide
+        grün sind, und nach Datum nummeriert; ein Release ohne Agent-Änderung startet keinen
+        Agent-Rollout. Jedes Release steht in einem <a href="https://attestree.com/changelog/" target="_blank" rel="noopener noreferrer">öffentlichen Changelog</a>. Architekturentscheide
         sind als Entscheidungsprotokolle festgehalten, und die Website-Texte werden bei jedem Release
         gegen den tatsächlichen Produktstand abgeglichen: Aussagen, die das Produkt nicht belegt,
         werden entfernt statt relativiert.
@@ -204,7 +218,9 @@ const projectSchema = JSON.stringify({
         Die Website unter attestree.com ist eine separate, vollständig öffentliche Oberfläche:
         statischer Astro-Build mit Tailwind und MDX, deployt auf Cloudflare Pages mit Preview-Deploy
         pro PR. Die Warteliste läuft als Same-Origin Cloudflare Pages Function mit D1 in einer
-        EU-Jurisdiktion und Turnstile-Verifikation. Die Build-Security-Baseline umfasst SHA-gepinnte
+        EU-Jurisdiktion und Turnstile-Verifikation. Sie zeigt eine anklickbare, nur lesende Kopie der
+        laufenden Konsole mit geführter Tour, aufgenommen in der Community Edition mit einer
+        Test-Flotte. Die Build-Security-Baseline umfasst SHA-gepinnte
         Actions, least-privilege Token, committetes Lockfile, Dependabot, ein <code>npm audit</code>
         CI-Gate und <code>security.txt</code>.
       </p>

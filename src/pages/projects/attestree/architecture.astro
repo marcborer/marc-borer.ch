@@ -1,10 +1,134 @@
 ---
 import DocLayout from '../../../layouts/DocLayout.astro';
-import { Content, frontmatter } from '../../../content/projects/attestree/de/architecture.md';
+import AttestreeSystemDiagram from '../../../components/diagrams/AttestreeSystemDiagram.astro';
+import AttestreeRingsDiagram from '../../../components/diagrams/AttestreeRingsDiagram.astro';
+import AttestreeTopologyDiagram from '../../../components/diagrams/AttestreeTopologyDiagram.astro';
 import docNavs from '../../../data/doc-navs.de.json';
 const nav = docNavs['attestree'];
 ---
 
-<DocLayout prose title={`${frontmatter.title} — Attestree Supply-Chain-Plattform`} description="Systemarchitektur von Attestree: Ingest Gate mit Sandbox-Detonation und signierter Attestierung, eingezäunter winget-Feed, Groups × Rings, Flotten-CVE-Index und Open-Core-Distribution." sidebarTitle={nav.title} sidebarItems={nav.items}>
-  <Content />
+<DocLayout prose title="Architektur — Attestree App-Patching-Plattform" description="Systemarchitektur von Attestree: wer mit wem verbunden ist, das Ingest Gate mit Sandbox-Detonation und signiertem Statement, der eingezäunte Feed, Groups × Rings mit Fenstern und Freezes, der Flotten-CVE-Index und die zwei Betriebsarten." sidebarTitle={nav.title} sidebarItems={nav.items}>
+  <h2>Systemarchitektur</h2>
+  <p>
+    Attestree ist eine Control Plane für das Patchen von Drittanbieter-Apps auf Windows-Flotten,
+    gebaut um eine Idee: <strong>beim Ingest attestieren, nicht nach der Installation.</strong> Die
+    meisten Scanner prüfen Binaries, die bereits flottenweit laufen; Attestree besitzt den Katalog
+    und die Distributionsschicht, sodass jede Version beobachtet, signiert und geprüft ist, <em>bevor</em> ein Endpunkt sie installieren kann.
+  </p>
+  <p>
+    Das Deployment ist einfach abzusichern. Nur der Server nimmt Verbindungen an: Endpunkte und der
+    Detonation-Broker wählen hinaus, und Installer erreichen die Sandbox über den Server, nie direkt
+    aus dem Internet.
+  </p>
+
+  <AttestreeSystemDiagram />
+
+  <h3>Ingest Gate</h3>
+  <p>
+    Jede Version durchläuft das Gate, bevor sie in den Katalog gelangt: heute winget, Chocolatey und
+    Scoop. Chocolatey und Scoop werden mit der Installation des jeweiligen Managers getestet,
+    brauchen einen Hyper-V-Detonation-Host, und ihre Upstream-Abrufe bleiben aus, bis ein Operator
+    diesen Egress freigibt. Eigene Apps lassen sich bisher über die API aufnehmen;
+    zwischengespeicherte MSIs mit generierten MST-Transforms, npm und pip stehen auf der Roadmap.
+  </p>
+  <table>
+    <thead><tr><th>Stufe</th><th>Aufgabe</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Abruf</strong></td><td>Manifest und Installer aus der Quelle laden; der SHA-256 des Installers wird schon beim Herunterladen geprüft</td></tr>
+      <tr><td><strong>Signatur</strong></td><td>Authenticode-Signatur des Installers prüfen und ob sich der Signer gegenüber der Vorversion geändert hat</td></tr>
+      <tr><td><strong>Detonation</strong></td><td>Die Version in einer kurzlebigen VM installieren, geklont aus dem signierten Golden Image des Betreibers, standardmässig offline</td></tr>
+      <tr><td><strong>SBOM</strong></td><td>Syft erzeugt eine CycloneDX-SBOM dessen, was der Installer auf die Platte gelegt hat: eine Beobachtung, keine Deklaration</td></tr>
+      <tr><td><strong>Statement</strong></td><td>Ein in-toto Statement v1 in einem DSSE-Umschlag mit dem eigenen ECDSA-P-256-Schlüssel des Deployments signieren, zusammen mit den SBOMs abgelegt und offline prüfbar</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Das Statement hält fest, was das Deployment beobachtet hat. SLSA-Build-Provenance ist es nicht,
+    weil Attestree den Installer des Herstellers nicht baut.
+  </p>
+
+  <h3>Drei Durchsetzungspunkte</h3>
+  <p>In einer Windows-Flotte ist der Endpunkt der tragende Durchsetzungspunkt, deshalb wird nicht nur einmal geprüft:</p>
+  <ol>
+    <li><strong>Ingest Gate</strong>: Die Detonation entscheidet, was attestiert wird, bevor etwas in den Katalog gelangt.</li>
+    <li><strong>Reconciliation</strong>: laufender Abgleich mit dem deklarierten Soll-Zustand, Drift wird in der Konsole markiert.</li>
+    <li><strong>Endpoint-Agent</strong>: handelt nur auf einem Soll-Zustand, dessen HMAC stimmt, und installiert für winget auf einem eingezäunten Endpunkt nur den attestierten SHA-256.</li>
+  </ol>
+
+  <h3>Eingezäunter Feed</h3>
+  <p>
+    Eingezäunte Endpunkte beziehen aus der eigenen, attestierten winget-Quelle des Betreibers. Ein
+    normales <code>winget install</code> funktioniert weiterhin, aber der Agent liefert nur
+    aufgenommene Pakete, gepinnt auf den attestierten SHA-256. Chocolatey- und Scoop-Versionen kommen
+    nur als Bytes vom Server und nur auf Endpunkte, deren Groups die App nennen.
+  </p>
+
+  <h3>Groups × Rings</h3>
+
+  <AttestreeRingsDiagram />
+
+  <p>
+    <strong>PC-Groups</strong> tragen versionsfreie Sets von Paketen und können winget, Chocolatey und
+    Scoop mischen; ein Endpunkt konvergiert zur Vereinigung seiner Groups. <strong>Rings</strong>
+    (canary → pilot → broad → all) lösen jedes Paket zum Deploy-Zeitpunkt auf die exakte attestierte
+    Version auf. Jeder Ring hält einen gesicherten Vorgänger, und ein Rollback macht ihn wieder zur
+    Version des Rings. Wartungsfenster, pro Group oder pro Paket, und datierte Freezes bestimmen,
+    wann Endpunkte installieren; ein Critical- oder KEV-Fix kommt standardmässig innert drei Tagen
+    trotzdem durch.
+  </p>
+  <p>
+    Eine optionale <strong>unbeaufsichtigte Update-Pipeline</strong> nimmt neue Versionen auf,
+    detoniert sie und befördert sie Ring für Ring, für winget und für abonnierte Chocolatey- und
+    Scoop-Apps. Sie stoppt in einer Review-Queue, wenn sich das Signaturzertifikat eines Publishers
+    ändert oder ein Installer unsigniert eintrifft. Rollback-Vorschläge für CVE- und
+    Slow-Burn-Signale sind standardmässig aus; eingeschaltet bestätigt ein Operator jeden einzeln.
+  </p>
+
+  <h3>Flotteninventar und CVE-Index</h3>
+  <p>
+    Der Agent meldet ein beobachtetes Inventar über winget, Chocolatey, Scoop und die
+    Uninstall-Einträge. Ein <strong>selbst gehosteter CVE-Index</strong> gleicht es mit der
+    öffentlichen CVE-Liste (cvelistV5) und dem CISA-Katalog bekannter ausgenutzter Schwachstellen ab,
+    mit einem Offline-Bundle für abgeschottete Umgebungen. Eine Karte pro Produkt führt zu «Deploy
+    fix», das die korrigierte Version pro getippter Bestätigung um einen Ring befördert. Audit-Trail,
+    Katalog-Evidenz und Flotteninventar lassen sich als signierte Bundles exportieren und offline
+    prüfen.
+  </p>
+
+  <h3>Control-Plane-Stack</h3>
+  <table>
+    <thead><tr><th>Schicht</th><th>Wahl</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Installer-Shim</strong></td><td>.NET Native AOT, Apache-2.0</td></tr>
+      <tr><td><strong>Endpoint-Agent</strong></td><td>.NET, aktualisiert sich über dieselben Rings; wählt nur hinaus</td></tr>
+      <tr><td><strong>Server</strong></td><td>Linux-Container mit PostgreSQL 18; Row-Level-Security und ein Audit-Log, das nur Einfügen erlaubt, binden die Plattform selbst</td></tr>
+      <tr><td><strong>Detonation</strong></td><td>Ein Broker auf dem Hyper-V- oder Proxmox-Host des Betreibers, gRPC über gegenseitiges TLS; VM-Grösse und Parallelität pro Broker</td></tr>
+      <tr><td><strong>Formate</strong></td><td>in-toto Statement v1 in DSSE, CycloneDX, ECDSA P-256; ein optionaler Sigstore-Rekor-Eintrag, standardmässig aus</td></tr>
+      <tr><td><strong>Release-Signierung</strong></td><td>cosign-signierte Images; Authenticode-signierte Agent- und Broker-MSIs</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Betriebsarten</h3>
+
+  <AttestreeTopologyDiagram />
+
+  <p>
+    Attestree ist Open-Core. Der Installer-Shim und sein IPC-Vertrag stehen unter Apache-2.0; die
+    Plattform ist Closed Source, und die Lizenzgrenze wird im Build durchgesetzt. Die <strong>Community Edition</strong> ist bis 200 Endpunkte kostenlos, selbst gehostet auf Docker
+    Compose ohne Cloud-Abhängigkeit und im Early Access. Kommerziell gibt es eine <strong>dedizierte Instanz</strong> im eigenen Azure-Abonnement des Kunden, bereitgestellt und
+    aktualisiert durch Attestree. Ein geteiltes Multi-Tenant-SaaS gibt es bewusst nicht.
+  </p>
+
+  <h3>Öffentliche Eingangstür</h3>
+  <p>Die Website unter attestree.com ist eine separate, vollständig öffentliche Oberfläche:</p>
+  <table>
+    <thead><tr><th>Schicht</th><th>Wahl</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Framework</strong></td><td>Astro mit Tailwind und MDX, statische Ausgabe, OG-Bilder zur Build-Zeit</td></tr>
+      <tr><td><strong>Hosting</strong></td><td>Cloudflare Pages, mit Preview-Deploy pro Pull Request</td></tr>
+      <tr><td><strong>Demo</strong></td><td>Eine anklickbare, nur lesende Kopie der laufenden Konsole mit geführter Tour, aufgenommen in der Community Edition mit einer Test-Flotte</td></tr>
+      <tr><td><strong>Changelog</strong></td><td>Ein öffentlicher Changelog für jedes Release, gespiegelt ins Community-Edition-Repository</td></tr>
+      <tr><td><strong>Warteliste</strong></td><td>Eine Same-Origin Cloudflare Pages Function mit D1 in einer EU-Jurisdiktion und Turnstile-Verifikation</td></tr>
+      <tr><td><strong>Build-Sicherheit</strong></td><td>SHA-gepinnte Actions, ein Token mit minimalen Rechten, committetes Lockfile, Dependabot, ein <code>npm audit</code>-Gate und <code>security.txt</code></td></tr>
+    </tbody>
+  </table>
 </DocLayout>
