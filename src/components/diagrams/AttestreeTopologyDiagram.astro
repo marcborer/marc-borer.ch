@@ -1,105 +1,95 @@
 ---
-// Two ways to run Attestree: the self-hosted Community Edition and the
-// dedicated instance in the customer's own Azure subscription. Both use the
-// same agent, broker and sandbox. Grounded in attestree.com (architecture,
-// dedicated-instance drawing, pricing).
+// Two ways to run Attestree, compared row by row: what differs between the
+// self-hosted Community Edition and the dedicated instance in the customer's
+// own Azure subscription, and what both share. Grounded in attestree.com.
 import type { Lang } from '../../i18n/utils';
+import DiagramIcon from './DiagramIcon.astro';
 
 const lang = (Astro.currentLocale || 'de') as Lang;
 const copy = {
   de: {
-    aria: 'Zwei Betriebsarten: Community Edition auf einem eigenen Server und dedizierte Instanz im eigenen Azure-Abonnement; Agent, Broker und Sandbox sind in beiden gleich',
-    ce: 'COMMUNITY EDITION · SELBST GEHOSTET, KOSTENLOS',
-    ceBox: 'Ein Server · Docker Compose',
-    ceChips: [['Plattform-Container', false], ['PostgreSQL 18', false], ['Caddy-TLS · optional', true], ['Broker-Port · optional', true]],
-    ceLines: ['bis 200 Endpunkte · lokale Konten, 4 Rollen, TOTP', 'ohne Cloud-Abhängigkeit · Early Access'],
-    di: 'DEDIZIERTE INSTANZ · EIGENES AZURE-ABONNEMENT',
-    diBox: 'Eine Ressourcengruppe',
-    diChips: [['Container App · Plattform', false], ['Postgres Flexible Server', false], ['Key Vault · Schlüssel', false], ['Storage · Installer-Bytes', false], ['Log Analytics', false], ['Managed Identities', false]],
-    diLines: ['Entra-ID-SSO · Schlüssel im eigenen Key Vault', 'Bereitstellung und Upgrades durch Attestree'],
-    same: 'IN BEIDEN GLEICH',
-    shared: [
-      ['Detonation-Host · Hyper-V oder Proxmox', 'im eigenen Netz · Broker wählt hinaus'],
-      ['Windows-Endpunkte', 'derselbe Agent und Shim · kein offener Port'],
+    claim: 'Die beiden Betriebsarten unterscheiden sich darin, wo der Server läuft, wo die Schlüssel liegen und wer ihn betreibt. Agent, Broker und Sandbox sind in beiden dieselben.',
+    ce: ['Community Edition', 'selbst gehostet · kostenlos'],
+    di: ['Dedizierte Instanz', 'im eigenen Azure-Abonnement'],
+    rows: [
+      ['LÄUFT AUF', 'einem Server · Docker Compose', 'einer Ressourcengruppe · Container App'],
+      ['DATENBANK', 'PostgreSQL 18 im Container', 'Postgres Flexible Server'],
+      ['SCHLÜSSEL', 'Schlüsseldatei auf dem Server', 'Key Vault im eigenen Abonnement'],
+      ['ANMELDUNG', 'lokale Konten · 4 Rollen · TOTP', 'Entra-ID-SSO'],
+      ['BETRIEB', 'durch Sie · bis 200 Endpunkte', 'durch Attestree, inkl. Upgrades'],
     ],
+    same: 'IN BEIDEN GLEICH',
+    shared: [['Agent + Shim', 'auf jedem Endpunkt'], ['Broker + Sandbox', 'Hyper-V oder Proxmox'], ['Eingezäunter Feed', 'signiertes Audit']],
   },
   en: {
-    aria: 'Two ways to run it: Community Edition on your own server and a dedicated instance in your own Azure subscription; agent, broker and sandbox are the same in both',
-    ce: 'COMMUNITY EDITION · SELF-HOSTED, FREE',
-    ceBox: 'One server · Docker Compose',
-    ceChips: [['Platform container', false], ['PostgreSQL 18', false], ['Caddy TLS · optional', true], ['Broker port · optional', true]],
-    ceLines: ['up to 200 endpoints · local accounts, 4 roles, TOTP', 'no cloud dependency · early access'],
-    di: 'DEDICATED INSTANCE · YOUR AZURE SUBSCRIPTION',
-    diBox: 'One resource group',
-    diChips: [['Container app · platform', false], ['Postgres Flexible Server', false], ['Key Vault · signing keys', false], ['Storage · installer bytes', false], ['Log Analytics', false], ['Managed identities', false]],
-    diLines: ['Entra ID SSO · signing keys in your Key Vault', 'deployed and upgraded by Attestree'],
-    same: 'THE SAME IN BOTH',
-    shared: [
-      ['Detonation host · Hyper-V or Proxmox', 'on your network · broker dials out'],
-      ['Windows endpoints', 'same agent and shim · no inbound port'],
+    claim: 'The two ways to run it differ in where the server runs, where the keys live and who operates it. The agent, the broker and the sandbox are the same in both.',
+    ce: ['Community Edition', 'self-hosted · free'],
+    di: ['Dedicated instance', 'in your own Azure subscription'],
+    rows: [
+      ['RUNS ON', 'one server · Docker Compose', 'one resource group · Container App'],
+      ['DATABASE', 'PostgreSQL 18 in a container', 'Postgres Flexible Server'],
+      ['SIGNING KEYS', 'key file on the server', 'Key Vault in your subscription'],
+      ['SIGN-IN', 'local accounts · 4 roles · TOTP', 'Entra ID SSO'],
+      ['OPERATED BY', 'you · up to 200 endpoints', 'Attestree, upgrades included'],
     ],
+    same: 'THE SAME IN BOTH',
+    shared: [['Agent + shim', 'on every endpoint'], ['Broker + sandbox', 'Hyper-V or Proxmox'], ['Fenced feed', 'signed audit']],
   },
 }[lang === 'en' ? 'en' : 'de'];
 
-const ceChips = copy.ceChips.map(([label, dashed], i) => ({ label: label as string, dashed: dashed as boolean, x: 56 + (i % 2) * 162, y: 84 + Math.floor(i / 2) * 44 }));
-const diChips = copy.diChips.map(([label], i) => ({ label: label as string, x: 444 + (i % 2) * 162, y: 84 + Math.floor(i / 2) * 36 }));
+const col = { label: 32, ce: 184, di: 488, w: 288 };
+const rows = copy.rows.map((r, i) => ({ label: r[0], ce: r[1], di: r[2], y: 96 + i * 44 }));
+const shared = copy.shared.map((s, i) => ({ title: s[0], sub: s[1], x: 40 + i * 248, icon: (['monitor', 'vm', 'server'] as const)[i] }));
 ---
 
-<div class="diagram attestree-diagram">
-  <svg viewBox="0 0 800 384" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.aria}>
-    <title>{copy.aria}</title>
-    <defs>
-      <marker id="topo-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-        <path d="M0 0L10 5L0 10z" fill="var(--accent)" />
-      </marker>
-    </defs>
+<figure class="diagram attestree-diagram">
+  <svg viewBox="0 0 800 432" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.claim}>
+    <!-- column heads -->
+    <DiagramIcon name="server" x={col.ce} y={24} />
+    <text x={col.ce + 32} y="36" fill="var(--ink)" font-size="13" font-weight="600">{copy.ce[0]}</text>
+    <text x={col.ce + 32} y="52" fill="var(--muted)" font-size="11">{copy.ce[1]}</text>
+    <DiagramIcon name="cloud" x={col.di} y={24} />
+    <text x={col.di + 32} y="36" fill="var(--ink)" font-size="13" font-weight="600">{copy.di[0]}</text>
+    <text x={col.di + 32} y="52" fill="var(--muted)" font-size="11">{copy.di[1]}</text>
+    <line x1={col.ce} y1="72" x2={col.ce + col.w} y2="72" stroke="var(--accent)" stroke-width="2" />
+    <line x1={col.di} y1="72" x2={col.di + col.w} y2="72" stroke="var(--accent)" stroke-width="2" />
 
-    <!-- Community Edition -->
-    <rect x="24" y="16" width="364" height="236" rx="6" fill="none" stroke="var(--hairline-strong)" />
-    <text class="dg-mono" x="40" y="36" fill="var(--accent)" font-size="10" font-weight="600">{copy.ce}</text>
-    <rect x="40" y="50" width="332" height="140" rx="4" fill="var(--accent-wash)" stroke="var(--accent)" stroke-width="1.25" />
-    <text x="56" y="70" fill="var(--ink)" font-size="11.5" font-weight="600">{copy.ceBox}</text>
-    {ceChips.map((chip) => (
+    <!-- rows: what differs -->
+    {rows.map((r) => (
       <g>
-        <rect x={chip.x} y={chip.y} width="152" height="34" rx="4" fill="var(--surface)" stroke="var(--hairline-strong)" stroke-dasharray={chip.dashed ? '3 3' : undefined} />
-        <text x={chip.x + 76} y={chip.y + 21} text-anchor="middle" fill="var(--ink)" font-size="10.5">{chip.label}</text>
+        <text class="dg-mono" x={col.label} y={r.y + 21} fill="var(--muted)" font-size="10" font-weight="600">{r.label}</text>
+        <rect x={col.ce} y={r.y} width={col.w} height="32" rx="6" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <text x={col.ce + 14} y={r.y + 21} fill="var(--ink-2)" font-size="11.5">{r.ce}</text>
+        <rect x={col.di} y={r.y} width={col.w} height="32" rx="6" fill="var(--accent-wash)" stroke="var(--accent)" stroke-opacity="0.5" />
+        <text x={col.di + 14} y={r.y + 21} fill="var(--ink-2)" font-size="11.5">{r.di}</text>
       </g>
     ))}
-    <text x="40" y="214" fill="var(--muted)" font-size="10.5">{copy.ceLines[0]}</text>
-    <text x="40" y="230" fill="var(--muted)" font-size="10.5">{copy.ceLines[1]}</text>
 
-    <!-- Dedicated instance -->
-    <rect x="412" y="16" width="364" height="236" rx="6" fill="none" stroke="var(--hairline-strong)" />
-    <text class="dg-mono" x="428" y="36" fill="var(--accent)" font-size="10" font-weight="600">{copy.di}</text>
-    <rect x="428" y="50" width="332" height="140" rx="4" fill="var(--accent-wash)" stroke="var(--accent)" stroke-width="1.25" />
-    <text x="444" y="70" fill="var(--ink)" font-size="11.5" font-weight="600">{copy.diBox}</text>
-    {diChips.map((chip) => (
+    <!-- what both share -->
+    <rect x="24" y="332" width="752" height="84" rx="10" fill="var(--surface-2)" stroke="var(--hairline)" />
+    <text class="dg-mono" x="40" y="352" fill="var(--muted)" font-size="10" font-weight="600">{copy.same}</text>
+    {shared.map((s) => (
       <g>
-        <rect x={chip.x} y={chip.y} width="152" height="28" rx="4" fill="var(--surface)" stroke="var(--hairline-strong)" />
-        <text x={chip.x + 76} y={chip.y + 18} text-anchor="middle" fill="var(--ink)" font-size="10.5">{chip.label}</text>
-      </g>
-    ))}
-    <text x="428" y="214" fill="var(--muted)" font-size="10.5">{copy.diLines[0]}</text>
-    <text x="428" y="230" fill="var(--muted)" font-size="10.5">{copy.diLines[1]}</text>
-
-    <!-- Shared -->
-    <line x1="206" y1="252" x2="206" y2="290" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#topo-arrow)" />
-    <line x1="594" y1="252" x2="594" y2="290" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#topo-arrow)" />
-    <text class="dg-mono" x="400" y="276" text-anchor="middle" fill="var(--muted)" font-size="10" font-weight="600">{copy.same}</text>
-    <rect x="24" y="292" width="752" height="76" rx="6" fill="var(--surface-2)" stroke="var(--hairline-strong)" />
-    {copy.shared.map((item, i) => (
-      <g>
-        <rect x={40 + i * 368} y="306" width="352" height="48" rx="4" fill="var(--surface)" stroke="var(--hairline-strong)" />
-        <text x={56 + i * 368} y="325" fill="var(--ink)" font-size="11.5" font-weight="600">{item[0]}</text>
-        <text x={56 + i * 368} y="341" fill="var(--muted)" font-size="10.5">{item[1]}</text>
+        <rect x={s.x} y="362" width="232" height="42" rx="6" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <DiagramIcon name={s.icon} x={s.x + 12} y={372} size={20} />
+        <text x={s.x + 42} y="379" fill="var(--ink)" font-size="12" font-weight="600">{s.title}</text>
+        <text x={s.x + 42} y="395" fill="var(--muted)" font-size="10.5">{s.sub}</text>
       </g>
     ))}
   </svg>
-</div>
+  <figcaption class="diagram-caption">{copy.claim}</figcaption>
+</figure>
 
 <style>
+  .attestree-diagram .diagram-caption {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    max-width: 64ch;
+  }
+
   .attestree-diagram svg text.dg-mono {
     font-family: var(--font-mono);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
   }
 </style>
