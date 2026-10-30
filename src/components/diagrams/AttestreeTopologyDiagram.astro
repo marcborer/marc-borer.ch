@@ -1,0 +1,105 @@
+---
+// Two ways to run Attestree: the self-hosted Community Edition and the
+// dedicated instance in the customer's own Azure subscription. Both use the
+// same agent, broker and sandbox. Grounded in attestree.com (architecture,
+// dedicated-instance drawing, pricing).
+import type { Lang } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const copy = {
+  de: {
+    aria: 'Zwei Betriebsarten: Community Edition auf einem eigenen Server und dedizierte Instanz im eigenen Azure-Abonnement; Agent, Broker und Sandbox sind in beiden gleich',
+    ce: 'COMMUNITY EDITION · SELBST GEHOSTET, KOSTENLOS',
+    ceBox: 'Ein Server · Docker Compose',
+    ceChips: [['Plattform-Container', false], ['PostgreSQL 18', false], ['Caddy-TLS · optional', true], ['Broker-Port · optional', true]],
+    ceLines: ['bis 200 Endpunkte · lokale Konten, 4 Rollen, TOTP', 'ohne Cloud-Abhängigkeit · Early Access'],
+    di: 'DEDIZIERTE INSTANZ · EIGENES AZURE-ABONNEMENT',
+    diBox: 'Eine Ressourcengruppe',
+    diChips: [['Container App · Plattform', false], ['Postgres Flexible Server', false], ['Key Vault · Schlüssel', false], ['Storage · Installer-Bytes', false], ['Log Analytics', false], ['Managed Identities', false]],
+    diLines: ['Entra-ID-SSO · Schlüssel im eigenen Key Vault', 'Bereitstellung und Upgrades durch Attestree'],
+    same: 'IN BEIDEN GLEICH',
+    shared: [
+      ['Detonation-Host · Hyper-V oder Proxmox', 'im eigenen Netz · Broker wählt hinaus'],
+      ['Windows-Endpunkte', 'derselbe Agent und Shim · kein offener Port'],
+    ],
+  },
+  en: {
+    aria: 'Two ways to run it: Community Edition on your own server and a dedicated instance in your own Azure subscription; agent, broker and sandbox are the same in both',
+    ce: 'COMMUNITY EDITION · SELF-HOSTED, FREE',
+    ceBox: 'One server · Docker Compose',
+    ceChips: [['Platform container', false], ['PostgreSQL 18', false], ['Caddy TLS · optional', true], ['Broker port · optional', true]],
+    ceLines: ['up to 200 endpoints · local accounts, 4 roles, TOTP', 'no cloud dependency · early access'],
+    di: 'DEDICATED INSTANCE · YOUR AZURE SUBSCRIPTION',
+    diBox: 'One resource group',
+    diChips: [['Container app · platform', false], ['Postgres Flexible Server', false], ['Key Vault · signing keys', false], ['Storage · installer bytes', false], ['Log Analytics', false], ['Managed identities', false]],
+    diLines: ['Entra ID SSO · signing keys in your Key Vault', 'deployed and upgraded by Attestree'],
+    same: 'THE SAME IN BOTH',
+    shared: [
+      ['Detonation host · Hyper-V or Proxmox', 'on your network · broker dials out'],
+      ['Windows endpoints', 'same agent and shim · no inbound port'],
+    ],
+  },
+}[lang === 'en' ? 'en' : 'de'];
+
+const ceChips = copy.ceChips.map(([label, dashed], i) => ({ label: label as string, dashed: dashed as boolean, x: 56 + (i % 2) * 162, y: 84 + Math.floor(i / 2) * 44 }));
+const diChips = copy.diChips.map(([label], i) => ({ label: label as string, x: 444 + (i % 2) * 162, y: 84 + Math.floor(i / 2) * 36 }));
+---
+
+<div class="diagram attestree-diagram">
+  <svg viewBox="0 0 800 384" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.aria}>
+    <title>{copy.aria}</title>
+    <defs>
+      <marker id="topo-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="var(--accent)" />
+      </marker>
+    </defs>
+
+    <!-- Community Edition -->
+    <rect x="24" y="16" width="364" height="236" rx="6" fill="none" stroke="var(--hairline-strong)" />
+    <text class="dg-mono" x="40" y="36" fill="var(--accent)" font-size="10" font-weight="600">{copy.ce}</text>
+    <rect x="40" y="50" width="332" height="140" rx="4" fill="var(--accent-wash)" stroke="var(--accent)" stroke-width="1.25" />
+    <text x="56" y="70" fill="var(--ink)" font-size="11.5" font-weight="600">{copy.ceBox}</text>
+    {ceChips.map((chip) => (
+      <g>
+        <rect x={chip.x} y={chip.y} width="152" height="34" rx="4" fill="var(--surface)" stroke="var(--hairline-strong)" stroke-dasharray={chip.dashed ? '3 3' : undefined} />
+        <text x={chip.x + 76} y={chip.y + 21} text-anchor="middle" fill="var(--ink)" font-size="10.5">{chip.label}</text>
+      </g>
+    ))}
+    <text x="40" y="214" fill="var(--muted)" font-size="10.5">{copy.ceLines[0]}</text>
+    <text x="40" y="230" fill="var(--muted)" font-size="10.5">{copy.ceLines[1]}</text>
+
+    <!-- Dedicated instance -->
+    <rect x="412" y="16" width="364" height="236" rx="6" fill="none" stroke="var(--hairline-strong)" />
+    <text class="dg-mono" x="428" y="36" fill="var(--accent)" font-size="10" font-weight="600">{copy.di}</text>
+    <rect x="428" y="50" width="332" height="140" rx="4" fill="var(--accent-wash)" stroke="var(--accent)" stroke-width="1.25" />
+    <text x="444" y="70" fill="var(--ink)" font-size="11.5" font-weight="600">{copy.diBox}</text>
+    {diChips.map((chip) => (
+      <g>
+        <rect x={chip.x} y={chip.y} width="152" height="28" rx="4" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <text x={chip.x + 76} y={chip.y + 18} text-anchor="middle" fill="var(--ink)" font-size="10.5">{chip.label}</text>
+      </g>
+    ))}
+    <text x="428" y="214" fill="var(--muted)" font-size="10.5">{copy.diLines[0]}</text>
+    <text x="428" y="230" fill="var(--muted)" font-size="10.5">{copy.diLines[1]}</text>
+
+    <!-- Shared -->
+    <line x1="206" y1="252" x2="206" y2="290" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#topo-arrow)" />
+    <line x1="594" y1="252" x2="594" y2="290" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#topo-arrow)" />
+    <text class="dg-mono" x="400" y="276" text-anchor="middle" fill="var(--muted)" font-size="10" font-weight="600">{copy.same}</text>
+    <rect x="24" y="292" width="752" height="76" rx="6" fill="var(--surface-2)" stroke="var(--hairline-strong)" />
+    {copy.shared.map((item, i) => (
+      <g>
+        <rect x={40 + i * 368} y="306" width="352" height="48" rx="4" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <text x={56 + i * 368} y="325" fill="var(--ink)" font-size="11.5" font-weight="600">{item[0]}</text>
+        <text x={56 + i * 368} y="341" fill="var(--muted)" font-size="10.5">{item[1]}</text>
+      </g>
+    ))}
+  </svg>
+</div>
+
+<style>
+  .attestree-diagram svg text.dg-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+</style>

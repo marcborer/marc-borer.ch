@@ -1,0 +1,140 @@
+---
+// Groups decide what, rings decide which version, windows decide when.
+// Rollback returns a ring to its one armed predecessor. Grounded in
+// attestree.com (groups, rings, maintenance windows, freezes, CVE deadline).
+import type { Lang } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || 'de') as Lang;
+const copy = {
+  de: {
+    aria: 'Groups bestimmen die Apps, Rings die Version, Wartungsfenster und Freezes den Zeitpunkt; Rollback führt auf den gesicherten Vorgänger',
+    groups: 'GROUPS BESTIMMEN WAS',
+    groupList: [
+      ['Basis', '7-Zip · Firefox · Notepad++'],
+      ['Entwicklung', 'Git · VS Code · jq (Scoop)'],
+      ['Büro', 'Acrobat Reader · Zoom'],
+    ],
+    endpoint: ['PC-017 in Basis + Entwicklung', 'erhält die Vereinigung: 6 Apps'],
+    rings: 'RINGS BESTIMMEN WELCHE VERSION',
+    example: 'Beispiel: Firefox',
+    armed: 'Vorgänger für Rollback',
+    promote: 'nächste Beförderung: signiertes Audit-Ereignis',
+    time: 'FENSTER UND FREEZES BESTIMMEN WANN',
+    days: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+    window: 'Fenster',
+    freeze: 'Freeze',
+    cve: 'CVE-Fix',
+    cveDays: 'max. 3 Tage',
+    cveNote: 'Critical- oder KEV-Fix: durch jedes Fenster und jeden Freeze, standardmässig innert 3 Tagen',
+  },
+  en: {
+    aria: 'Groups decide the apps, rings the version, maintenance windows and freezes the time; rollback returns to the armed predecessor',
+    groups: 'GROUPS DECIDE WHAT',
+    groupList: [
+      ['Base', '7-Zip · Firefox · Notepad++'],
+      ['Development', 'Git · VS Code · jq (Scoop)'],
+      ['Office', 'Acrobat Reader · Zoom'],
+    ],
+    endpoint: ['PC-017 in Base + Development', 'gets the union: 6 apps'],
+    rings: 'RINGS DECIDE WHICH VERSION',
+    example: 'example: Firefox',
+    armed: 'predecessor for rollback',
+    promote: 'next promotion: a signed audit event',
+    time: 'WINDOWS AND FREEZES DECIDE WHEN',
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    window: 'window',
+    freeze: 'freeze',
+    cve: 'CVE fix',
+    cveDays: 'max. 3 days',
+    cveNote: 'Critical or KEV fix: through any window and freeze, within 3 days by default',
+  },
+}[lang === 'en' ? 'en' : 'de'];
+
+const groups = copy.groupList.map((g, i) => ({ name: g[0], apps: g[1], y: 56 + i * 48, member: i < 2 }));
+const lanes = ['canary', 'pilot', 'broad', 'all'].map((name, i) => ({ name, y: 72 + i * 46, version: i < 2 ? 'v2' : 'v1' }));
+const dayW = 88;
+const days = copy.days.map((label, i) => ({ label, x: 152 + i * dayW, frozen: i === 3 || i === 4 }));
+const freeze = { x: 152 + 3 * dayW, w: 2 * dayW };
+const cve = { x1: 152 + 1 * dayW + 10, x2: 152 + 4 * dayW + 10 };
+---
+
+<div class="diagram attestree-diagram">
+  <svg viewBox="0 0 800 432" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.aria}>
+    <title>{copy.aria}</title>
+    <defs>
+      <marker id="rings-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="var(--accent)" />
+      </marker>
+      <marker id="rings-arrow-signal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="var(--signal)" />
+      </marker>
+    </defs>
+
+    <!-- Groups -->
+    <rect x="24" y="16" width="276" height="244" rx="6" fill="none" stroke="var(--hairline-strong)" />
+    <text class="dg-mono" x="40" y="36" fill="var(--accent)" font-size="10" font-weight="600">{copy.groups}</text>
+    {groups.map((g) => (
+      <g>
+        <rect x="52" y={g.y} width="232" height="38" rx="4" fill={g.member ? 'var(--accent-wash)' : 'none'} stroke={g.member ? 'var(--accent)' : 'var(--hairline-strong)'} stroke-width={g.member ? 1.25 : 1} />
+        <text x="64" y={g.y + 16} fill="var(--ink)" font-size="11.5" font-weight="600">{g.name}</text>
+        <text x="64" y={g.y + 30} fill="var(--muted)" font-size="10.5">{g.apps}</text>
+        {g.member && <path d={`M52 ${g.y + 19} H40 V222 H50`} fill="none" stroke="var(--accent)" stroke-width="1.25" marker-end="url(#rings-arrow)" />}
+      </g>
+    ))}
+    <rect x="52" y="204" width="232" height="40" rx="4" fill="var(--surface-2)" stroke="var(--hairline-strong)" />
+    <text x="64" y="220" fill="var(--ink)" font-size="11" font-weight="600">{copy.endpoint[0]}</text>
+    <text x="64" y="235" fill="var(--muted)" font-size="10.5">{copy.endpoint[1]}</text>
+
+    <!-- Rings -->
+    <rect x="316" y="16" width="460" height="244" rx="6" fill="none" stroke="var(--hairline-strong)" />
+    <text class="dg-mono" x="332" y="36" fill="var(--accent)" font-size="10" font-weight="600">{copy.rings}</text>
+    <text class="dg-mono" x="760" y="36" text-anchor="end" fill="var(--muted)" font-size="10">{copy.example}</text>
+    {lanes.map((lane, i) => (
+      <g>
+        <rect x="332" y={lane.y - 12} width="72" height="24" rx="12" fill={i === 0 ? 'var(--accent-wash)' : 'none'} stroke="var(--accent)" stroke-opacity={1 - i * 0.2} stroke-width="1.25" />
+        <text class="dg-mono" x="368" y={lane.y + 4} text-anchor="middle" fill="var(--ink)" font-size="10.5">{lane.name}</text>
+        <line x1="412" y1={lane.y} x2="760" y2={lane.y} stroke="var(--hairline)" />
+        <rect x="430" y={lane.y - 12} width="52" height="24" rx="4" fill={lane.version === 'v2' ? 'var(--accent)' : 'var(--surface)'} stroke={lane.version === 'v2' ? 'var(--accent)' : 'var(--hairline-strong)'} />
+        <text class="dg-mono" x="456" y={lane.y + 4} text-anchor="middle" fill={lane.version === 'v2' ? 'var(--accent-ink)' : 'var(--ink)'} font-size="10.5" font-weight="600">{lane.version}</text>
+      </g>
+    ))}
+    <!-- the armed predecessor on the rings that already run v2: rollback is one step back to it -->
+    {lanes.filter((lane) => lane.version === 'v2').map((lane) => (
+      <g>
+        <rect x="492" y={lane.y - 12} width="40" height="24" rx="4" fill="var(--signal-wash)" stroke="var(--signal)" stroke-dasharray="3 3" />
+        <text class="dg-mono" x="512" y={lane.y + 4} text-anchor="middle" fill="var(--signal)" font-size="10.5">v1</text>
+      </g>
+    ))}
+    <text x="544" y="58" fill="var(--signal)" font-size="10.5">{copy.armed}</text>
+    <!-- the next promotion -->
+    <line x1="456" y1="130" x2="456" y2="150" stroke="var(--accent)" stroke-width="1.25" stroke-dasharray="3 3" marker-end="url(#rings-arrow)" />
+    <text x="470" y="144" fill="var(--muted)" font-size="10.5">{copy.promote}</text>
+
+    <!-- Time -->
+    <rect x="24" y="280" width="752" height="136" rx="6" fill="none" stroke="var(--hairline-strong)" />
+    <text class="dg-mono" x="40" y="300" fill="var(--accent)" font-size="10" font-weight="600">{copy.time}</text>
+    {days.map((d) => (
+      <g>
+        <line x1={d.x} y1="312" x2={d.x} y2="398" stroke="var(--hairline)" />
+        <text class="dg-mono" x={d.x + 6} y="322" fill="var(--muted)" font-size="10">{d.label}</text>
+        <rect x={d.x + 52} y="334" width="30" height="18" rx="3" fill="var(--accent-wash)" stroke="var(--accent)" stroke-width="1" opacity={d.frozen ? 0.35 : 1} />
+      </g>
+    ))}
+    <line x1={152 + 7 * dayW} y1="312" x2={152 + 7 * dayW} y2="398" stroke="var(--hairline)" />
+    <text class="dg-mono" x="40" y="347" fill="var(--muted)" font-size="10">{copy.window}</text>
+    <rect x={freeze.x} y="330" width={freeze.w} height="26" rx="3" fill="var(--signal-wash)" stroke="var(--signal)" stroke-dasharray="4 3" />
+    <text class="dg-mono" x={freeze.x + 10} y="347" fill="var(--signal)" font-size="10" font-weight="600">{copy.freeze}</text>
+    <text class="dg-mono" x="40" y="381" fill="var(--muted)" font-size="10">{copy.cve}</text>
+    <circle cx={cve.x1} cy="377" r="3.5" fill="var(--accent)" />
+    <line x1={cve.x1 + 4} y1="377" x2={cve.x2} y2="377" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#rings-arrow)" />
+    <text x={cve.x2 + 10} y="381" fill="var(--ink)" font-size="10.5">{copy.cveDays}</text>
+    <text x="152" y="406" fill="var(--muted)" font-size="10.5">{copy.cveNote}</text>
+  </svg>
+</div>
+
+<style>
+  .attestree-diagram svg text.dg-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+</style>
