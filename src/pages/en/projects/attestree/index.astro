@@ -87,6 +87,11 @@ const projectSchema = JSON.stringify({
         package that has not been admitted, the feed declines cleanly and records the demand, so what
         to admit next is measured pull rather than guesswork.
       </p>
+      <p>
+        Attestree replaces the third-party app-patching tool and sits beside the device manager:
+        Intune, ConfigMgr or an RMM keep Windows Update, drivers, device settings, compliance and
+        enrollment, and nothing is handed between the two.
+      </p>
     </section>
 
     <AttestreeDiagram />
@@ -109,8 +114,10 @@ const projectSchema = JSON.stringify({
         It records what the deployment observed; it is not SLSA build provenance, because Attestree
         does not build the vendor’s installer. winget, Chocolatey and Scoop are attested today;
         Chocolatey and Scoop need a Hyper-V detonation host, and their upstream reads stay off until an
-        operator allows that egress. Your own apps can be added through the API so far; cached MSIs
-        with generated MST transforms, npm and pip are on the roadmap.
+        operator allows that egress. Your own apps are partly built: prefixes, their private sources and CI pipelines are managed in
+        the console, installers arrive by upload or from a pipeline that signs in with its own OIDC token
+        and are attested like any other version, but no endpoint installs one yet. Cached MSIs with
+        generated MST transforms, npm and pip are on the roadmap.
       </p>
 
       <h3>Fenced feed, groups × rings</h3>
@@ -184,8 +191,10 @@ const projectSchema = JSON.stringify({
           The installer shim and its IPC contract are Apache-2.0; the platform is closed source. The
           licence boundary is enforced mechanically in the build, so closed-source code cannot be
           relicensed by accident. The free Community Edition self-hosts on Docker Compose, ships as
-          Sigstore-cosign-signed images and is in early access. Commercially there is a dedicated
-          instance in the customer’s own Azure subscription, deliberately no shared multi-tenant SaaS.
+          Sigstore-cosign-signed images and is in early access. It runs on the customer’s own server, so
+          no vendor sits between them and their fleet. Commercially there is a dedicated instance in
+          the customer’s own Azure subscription, operated by Attestree, deliberately no shared
+          multi-tenant SaaS.
         </p>
       </div>
     </section>

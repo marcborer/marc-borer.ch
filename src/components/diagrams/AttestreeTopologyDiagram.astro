@@ -8,11 +8,12 @@ import DiagramIcon from './DiagramIcon.astro';
 const lang = (Astro.currentLocale || 'de') as Lang;
 const copy = {
   de: {
-    claim: 'Die beiden Betriebsarten unterscheiden sich darin, wo der Server läuft, wo die Schlüssel liegen und wer ihn betreibt. Agent, Broker und Sandbox sind in beiden dieselben.',
+    claim: 'Die beiden Betriebsarten unterscheiden sich darin, wo der Server läuft, wie er erreichbar ist, wo die Schlüssel liegen und wer ihn betreibt. Bei der Community Edition steht kein Anbieter zwischen Ihnen und Ihrer Flotte; die dedizierte Instanz betreibt Attestree. Agent, Broker und Sandbox sind in beiden dieselben.',
     ce: ['Community Edition', 'selbst gehostet · kostenlos'],
     di: ['Dedizierte Instanz', 'im eigenen Azure-Abonnement'],
     rows: [
       ['LÄUFT AUF', 'einem Server · Docker Compose', 'einer Ressourcengruppe · Container App'],
+      ['NETZ', 'Ihr Netz · TLS via Caddy oder Proxy', 'öffentlich, oder intern via VPN/Gateway'],
       ['DATENBANK', 'PostgreSQL 18 im Container', 'Postgres Flexible Server'],
       ['SCHLÜSSEL', 'Schlüsseldatei auf dem Server', 'Key Vault im eigenen Abonnement'],
       ['ANMELDUNG', 'lokale Konten · 4 Rollen · TOTP', 'Entra-ID-SSO'],
@@ -22,11 +23,12 @@ const copy = {
     shared: [['Agent + Shim', 'auf jedem Endpunkt'], ['Broker + Sandbox', 'Hyper-V oder Proxmox'], ['Eingezäunter Feed', 'signiertes Audit']],
   },
   en: {
-    claim: 'The two ways to run it differ in where the server runs, where the keys live and who operates it. The agent, the broker and the sandbox are the same in both.',
+    claim: 'The two ways to run it differ in where the server runs, how it is reached, where the keys live and who operates it. On Community Edition no vendor sits between you and your fleet; the dedicated instance is operated by Attestree. The agent, the broker and the sandbox are the same in both.',
     ce: ['Community Edition', 'self-hosted · free'],
     di: ['Dedicated instance', 'in your own Azure subscription'],
     rows: [
       ['RUNS ON', 'one server · Docker Compose', 'one resource group · Container App'],
+      ['NETWORK', 'your network · TLS via Caddy or proxy', 'public, or internal via VPN or gateway'],
       ['DATABASE', 'PostgreSQL 18 in a container', 'Postgres Flexible Server'],
       ['SIGNING KEYS', 'key file on the server', 'Key Vault in your subscription'],
       ['SIGN-IN', 'local accounts · 4 roles · TOTP', 'Entra ID SSO'],
@@ -43,7 +45,7 @@ const shared = copy.shared.map((s, i) => ({ title: s[0], sub: s[1], x: 40 + i * 
 ---
 
 <figure class="diagram attestree-diagram">
-  <svg viewBox="0 0 800 432" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.claim}>
+  <svg viewBox="0 0 800 476" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={copy.claim}>
     <!-- column heads -->
     <DiagramIcon name="server" x={col.ce} y={24} />
     <text x={col.ce + 32} y="36" fill="var(--ink)" font-size="13" font-weight="600">{copy.ce[0]}</text>
@@ -66,14 +68,14 @@ const shared = copy.shared.map((s, i) => ({ title: s[0], sub: s[1], x: 40 + i * 
     ))}
 
     <!-- what both share -->
-    <rect x="24" y="332" width="752" height="84" rx="10" fill="var(--surface-2)" stroke="var(--hairline)" />
-    <text class="dg-mono" x="40" y="352" fill="var(--muted)" font-size="10" font-weight="600">{copy.same}</text>
+    <rect x="24" y="376" width="752" height="84" rx="10" fill="var(--surface-2)" stroke="var(--hairline)" />
+    <text class="dg-mono" x="40" y="396" fill="var(--muted)" font-size="10" font-weight="600">{copy.same}</text>
     {shared.map((s) => (
       <g>
-        <rect x={s.x} y="362" width="232" height="42" rx="6" fill="var(--surface)" stroke="var(--hairline-strong)" />
-        <DiagramIcon name={s.icon} x={s.x + 12} y={372} size={20} />
-        <text x={s.x + 42} y="379" fill="var(--ink)" font-size="12" font-weight="600">{s.title}</text>
-        <text x={s.x + 42} y="395" fill="var(--muted)" font-size="10.5">{s.sub}</text>
+        <rect x={s.x} y="406" width="232" height="42" rx="6" fill="var(--surface)" stroke="var(--hairline-strong)" />
+        <DiagramIcon name={s.icon} x={s.x + 12} y={416} size={20} />
+        <text x={s.x + 42} y="423" fill="var(--ink)" font-size="12" font-weight="600">{s.title}</text>
+        <text x={s.x + 42} y="439" fill="var(--muted)" font-size="10.5">{s.sub}</text>
       </g>
     ))}
   </svg>

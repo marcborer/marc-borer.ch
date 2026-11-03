@@ -28,8 +28,10 @@ const nav = docNavs['attestree'];
     Jede Version durchläuft das Gate, bevor sie in den Katalog gelangt: heute winget, Chocolatey und
     Scoop. Chocolatey und Scoop werden mit der Installation des jeweiligen Managers getestet,
     brauchen einen Hyper-V-Detonation-Host, und ihre Upstream-Abrufe bleiben aus, bis ein Operator
-    diesen Egress freigibt. Eigene Apps lassen sich bisher über die API aufnehmen;
-    zwischengespeicherte MSIs mit generierten MST-Transforms, npm und pip stehen auf der Roadmap.
+    diesen Egress freigibt. Eigene Apps sind im Aufbau: Präfixe, ihre privaten Quellen und CI-Pipelines werden in der Konsole
+    verwaltet, Installer kommen per Upload oder aus einer Pipeline mit eigenem OIDC-Token und werden
+    wie jede andere Version attestiert, nur installiert sie noch kein Endpunkt. Zwischengespeicherte
+    MSIs mit generierten MST-Transforms, npm und pip stehen auf der Roadmap.
   </p>
   <table>
     <thead><tr><th>Stufe</th><th>Aufgabe</th></tr></thead>
@@ -99,7 +101,7 @@ const nav = docNavs['attestree'];
     <thead><tr><th>Schicht</th><th>Wahl</th></tr></thead>
     <tbody>
       <tr><td><strong>Installer-Shim</strong></td><td>.NET Native AOT, Apache-2.0</td></tr>
-      <tr><td><strong>Endpoint-Agent</strong></td><td>.NET, aktualisiert sich über dieselben Rings; wählt nur hinaus</td></tr>
+      <tr><td><strong>Endpoint-Agent</strong></td><td>.NET, aktualisiert sich über dieselben Rings; baut nur ausgehende Verbindungen auf und signiert seine Audit-Spans mit dem eigenen, enrollten Schlüssel, im TPM, wo die Maschine ein nutzbares hat</td></tr>
       <tr><td><strong>Server</strong></td><td>Linux-Container mit PostgreSQL 18; Row-Level-Security und ein Audit-Log, das nur Einfügen erlaubt, binden die Plattform selbst</td></tr>
       <tr><td><strong>Detonation</strong></td><td>Ein Broker auf dem Hyper-V- oder Proxmox-Host des Betreibers, gRPC über gegenseitiges TLS; VM-Grösse und Parallelität pro Broker</td></tr>
       <tr><td><strong>Formate</strong></td><td>in-toto Statement v1 in DSSE, CycloneDX, ECDSA P-256; ein optionaler Sigstore-Rekor-Eintrag, standardmässig aus</td></tr>
@@ -114,8 +116,11 @@ const nav = docNavs['attestree'];
   <p>
     Attestree ist Open-Core. Der Installer-Shim und sein IPC-Vertrag stehen unter Apache-2.0; die
     Plattform ist Closed Source, und die Lizenzgrenze wird im Build durchgesetzt. Die <strong>Community Edition</strong> ist bis 200 Endpunkte kostenlos, selbst gehostet auf Docker
-    Compose ohne Cloud-Abhängigkeit und im Early Access. Kommerziell gibt es eine <strong>dedizierte Instanz</strong> im eigenen Azure-Abonnement des Kunden, bereitgestellt und
-    aktualisiert durch Attestree. Ein geteiltes Multi-Tenant-SaaS gibt es bewusst nicht.
+    Compose ohne Cloud-Abhängigkeit und im Early Access. Sie läuft auf dem eigenen Server des Kunden, damit steht kein Anbieter zwischen ihm und seiner
+    Flotte. Kommerziell gibt es eine <strong>dedizierte Instanz</strong> im eigenen Azure-Abonnement des Kunden, bereitgestellt,
+    aktualisiert und betrieben durch Attestree. Sie läuft im externen Modus, unter dem Hostnamen des
+    Kunden über das Internet, oder im internen Modus, in dem sie nichts im Internet veröffentlicht und
+    über Peering, VPN oder ein Gateway erreichbar ist. Ein geteiltes Multi-Tenant-SaaS gibt es bewusst nicht.
   </p>
 
   <h3>Öffentliche Eingangstür</h3>
@@ -127,6 +132,8 @@ const nav = docNavs['attestree'];
       <tr><td><strong>Hosting</strong></td><td>Cloudflare Pages, mit Preview-Deploy pro Pull Request</td></tr>
       <tr><td><strong>Demo</strong></td><td>Eine anklickbare, nur lesende Kopie der laufenden Konsole mit geführter Tour, aufgenommen in der Community Edition mit einer Test-Flotte</td></tr>
       <tr><td><strong>Changelog</strong></td><td>Ein öffentlicher Changelog für jedes Release, gespiegelt ins Community-Edition-Repository</td></tr>
+      <tr><td><strong>Trust</strong></td><td>Eine Trust-Seite, die jedes Versprechen mit dem Referenzdokument dahinter verlinkt; jedes Dokument endet damit, was Attestree nicht tut</td></tr>
+      <tr><td><strong>Spezifikationen</strong></td><td>Die Prädikate der signierten Statements als versionierte Spezifikationen: Detonation-Attestierung, Evidenz-Bundle, Inventar und der Golden-Image-Build</td></tr>
       <tr><td><strong>Warteliste</strong></td><td>Eine Same-Origin Cloudflare Pages Function mit D1 in einer EU-Jurisdiktion und Turnstile-Verifikation</td></tr>
       <tr><td><strong>Build-Sicherheit</strong></td><td>SHA-gepinnte Actions, ein Token mit minimalen Rechten, committetes Lockfile, Dependabot, ein <code>npm audit</code>-Gate und <code>security.txt</code></td></tr>
     </tbody>
