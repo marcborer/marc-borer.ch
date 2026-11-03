@@ -38,6 +38,7 @@ Das schliesst die Lücke, die der Status quo offenlässt: Wenn ein Artefakt ausg
 - **Eingezäunte Endpunkte**: Der Agent bindet Endpunkte an diese Quelle; ein normales `winget install` löst gegen den freigegebenen Katalog auf, nicht gegen das öffentliche Repository.
 - **Hash-gepinnt**: Endpunkte installieren nur exakt den freigegebenen SHA-256.
 - **Chocolatey und Scoop**: kommen nur als Bytes vom Server und nur auf Endpunkte, deren Groups die App nennen.
+- **Eigene Apps, im Aufbau**: Ein beanspruchtes Paket-ID-Präfix wird nur aus seiner privaten Quelle gelesen, nie aus dem öffentlichen Katalog. Quellen und CI-Pipelines (GitHub, GitHub Enterprise Server, Azure DevOps) werden in der Konsole verwaltet; Installer kommen per Upload oder aus einer Pipeline mit eigenem OIDC-Token und werden wie jede andere Version attestiert. Noch installiert sie kein Endpunkt.
 
 ---
 
@@ -88,11 +89,11 @@ Attestree ist Open-Core, mit einer bewussten Lizenzgrenze.
 | **Installer-Shim + IPC-Vertrag** | Apache-2.0 (Open Source) |
 | **Plattform-Control-Plane** | Closed-Source, kommerziell |
 | **Community Edition** | Kostenloser, selbst gehosteter Docker-Compose-Stack ohne Cloud-Abhängigkeit; Sigstore-cosign-signierte Images; Early Access |
-| **Kommerzielle Topologie** | Eine dedizierte Instanz im eigenen Azure-Abonnement des Kunden, bereitgestellt und aktualisiert durch Attestree; kein geteiltes Multi-Tenant-SaaS |
+| **Kommerzielle Topologie** | Eine dedizierte Instanz im eigenen Azure-Abonnement des Kunden, bereitgestellt, aktualisiert und betrieben durch Attestree, im externen oder internen Netzmodus; kein geteiltes Multi-Tenant-SaaS |
 
 Die Lizenzgrenze wird mechanisch im Build durchgesetzt, sodass Closed-Source-Code nicht versehentlich umlizenziert werden kann. Ein `git mv` eines Projekts zwischen dem offenen und dem geschlossenen Baum lässt den Build fehlschlagen, statt seine Lizenz still zu ändern.
 
-Die Community Edition ist für den Betrieb gebaut, nicht nur für die Demo:
+Die Community Edition läuft auf dem eigenen Server des Kunden, damit steht kein Anbieter zwischen ihm und seiner Flotte. Sie ist für den Betrieb gebaut, nicht nur für die Demo:
 
 - **Konten**: vier richtliniengestützte Rollen, TOTP-Zwei-Faktor und ein Break-Glass-Recovery-CLI. SSO ist in jeder kommerziellen Stufe enthalten und kein Upsell.
 - **Enrollment**: Setup-Token beim ersten Start und Enrollment-Tokens, die aus der URL erzeugt werden, die Agents tatsächlich verwenden.
@@ -102,7 +103,7 @@ Die Community Edition ist für den Betrieb gebaut, nicht nur für die Demo:
 
 ## Marketing-Website
 
-Die öffentliche Website unter attestree.com präsentiert Produktseiten, Käufersegmente, Compliance-Zuordnungen (etwa NIS2), Research-Essays, praktische Anleitungen, etwa zum Einzäunen einer Flotte auf eine private winget-Quelle, einen öffentlichen Changelog, eine anklickbare, nur lesende Demo der Konsole und eine Warteliste.
+Die öffentliche Website unter attestree.com präsentiert Produktseiten, Käufersegmente, Compliance-Zuordnungen (etwa NIS2), eine Produktseite pro Paketmanager, eine Trust-Seite, die jedes Versprechen mit seinem Referenzdokument verlinkt, Vergleiche, veröffentlichte Spezifikationen für jedes signierte Prädikat, Research-Essays, praktische Anleitungen, etwa zum Einzäunen einer Flotte auf eine private winget-Quelle, einen öffentlichen Changelog, eine anklickbare, nur lesende Demo der Konsole und eine Warteliste.
 
 - **Statischer Astro-Build** mit Tailwind + MDX, deployt auf Cloudflare Pages (Preview-Deploy pro PR), mit zur Build-Zeit generierten OG-Bildern, Structured Data und `llms.txt`.
 - **Warteliste** läuft als Same-Origin Cloudflare Pages Function mit D1 in einer EU-Jurisdiktion, mit gehärteter Turnstile-Verifikation und dokumentierter Datenverarbeitung.

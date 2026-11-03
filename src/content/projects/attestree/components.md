@@ -38,6 +38,7 @@ This closes the gap the status quo leaves open: when an artifact ships because "
 - **Fenced endpoints**: the agent locks endpoints to that source; a normal `winget install` resolves against the approved catalog, not the public repository.
 - **Hash-pinned**: endpoints install only the exact SHA-256 that was approved.
 - **Chocolatey and Scoop**: served only from bytes the server holds, and only to endpoints whose groups name the app.
+- **Own apps, partly built**: a claimed package-id prefix is read only from its private source, never from the public catalog. Sources and CI pipelines (GitHub, GitHub Enterprise Server, Azure DevOps) are managed in the console; installers arrive by upload or from a pipeline that signs in with its own OIDC token and are attested like any other version. No endpoint installs one yet.
 
 ---
 
@@ -88,11 +89,11 @@ Attestree is open-core, with a deliberate license boundary.
 | **Installer shim + IPC contract** | Apache-2.0 (open source) |
 | **Platform control plane** | Closed-source, commercial |
 | **Community edition** | Free, self-hosted Docker Compose stack with no cloud dependency; Sigstore-cosign signed images; early access |
-| **Commercial topology** | A dedicated instance in the customer's own Azure subscription, deployed and upgraded by Attestree; no shared multi-tenant SaaS |
+| **Commercial topology** | A dedicated instance in the customer's own Azure subscription, deployed, upgraded and operated by Attestree, in external or internal network mode; no shared multi-tenant SaaS |
 
 The license boundary is enforced mechanically in the build, so closed-source code cannot be relicensed by accident. A `git mv` of a project between the open and closed trees fails the build rather than quietly changing its license.
 
-The community edition is built to be operated, not just demoed:
+The community edition runs on the customer's own server, so no vendor sits between them and their fleet. It is built to be operated, not just demoed:
 
 - **Accounts**: four policy-enforced roles, TOTP two-factor, and a break-glass recovery CLI. SSO is included in every commercial tier rather than sold as an upsell.
 - **Enrollment**: first-run setup token and enrollment tokens minted from the URL agents will actually use.
@@ -102,7 +103,7 @@ The community edition is built to be operated, not just demoed:
 
 ## Marketing Site
 
-The public site at attestree.com presents product pages, buyer segments, compliance mappings (for example NIS2), research essays, practical guides such as locking a fleet to a private winget source, a public changelog, a clickable read-only demo of the console, and a waitlist.
+The public site at attestree.com presents product pages, buyer segments, compliance mappings (for example NIS2), a product page per package manager, a trust page that links every promise to its reference doc, comparisons, published specifications for each signed predicate, research essays, practical guides such as locking a fleet to a private winget source, a public changelog, a clickable read-only demo of the console, and a waitlist.
 
 - **Static Astro** build with Tailwind + MDX, deployed to Cloudflare Pages (preview deploy per PR), with build-time OG images, structured data, and `llms.txt`.
 - **Waitlist** runs as a same-origin Cloudflare Pages Function backed by D1 in an EU jurisdiction, with hardened Turnstile verification and documented data-handling.

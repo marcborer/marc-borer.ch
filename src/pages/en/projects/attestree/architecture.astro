@@ -27,9 +27,10 @@ const nav = docNavs['attestree'];
   <p>
     Every version passes the gate before it enters the catalog: winget, Chocolatey and Scoop today.
     Chocolatey and Scoop are tested with the manager’s own install, need a Hyper-V detonation host,
-    and their upstream reads stay off until an operator allows that egress. Your own apps can be
-    added through the API so far; cached MSIs with generated MST transforms, npm and pip are on the
-    roadmap.
+    and their upstream reads stay off until an operator allows that egress. Your own apps are partly built: prefixes, their private sources and CI pipelines are managed in
+    the console, installers arrive by upload or from a pipeline that signs in with its own OIDC token
+    and are attested like any other version, but no endpoint installs one yet. Cached MSIs with
+    generated MST transforms, npm and pip are on the roadmap.
   </p>
   <table>
     <thead><tr><th>Stage</th><th>Responsibility</th></tr></thead>
@@ -96,7 +97,7 @@ const nav = docNavs['attestree'];
     <thead><tr><th>Layer</th><th>Choice</th></tr></thead>
     <tbody>
       <tr><td><strong>Installer shim</strong></td><td>.NET Native AOT, Apache-2.0</td></tr>
-      <tr><td><strong>Endpoint agent</strong></td><td>.NET, self-updating through the same rings; dials out only</td></tr>
+      <tr><td><strong>Endpoint agent</strong></td><td>.NET, self-updating through the same rings; dials out only, and signs its own audit spans with its enrolled key, in the TPM where the machine has a usable one</td></tr>
       <tr><td><strong>Server</strong></td><td>Linux container with PostgreSQL 18; row-level security and an insert-only audit log bind the platform itself</td></tr>
       <tr><td><strong>Detonation</strong></td><td>A broker on the operator’s Hyper-V or Proxmox host, gRPC over mutual TLS; VM size and concurrency set per broker</td></tr>
       <tr><td><strong>Formats</strong></td><td>in-toto Statement v1 in DSSE, CycloneDX, ECDSA P-256; an optional Sigstore Rekor entry, off by default</td></tr>
@@ -111,8 +112,11 @@ const nav = docNavs['attestree'];
   <p>
     Attestree ships as open-core. The installer shim and its IPC contract are Apache-2.0; the
     platform is closed source, and the licence boundary is enforced in the build. The <strong>Community Edition</strong> is free up to 200 endpoints, self-hosted on Docker Compose
-    with no cloud dependency, and in early access. Commercially there is a <strong>dedicated instance</strong> in the customer’s own Azure subscription, deployed and
-    upgraded by Attestree. There is deliberately no shared multi-tenant SaaS.
+    with no cloud dependency, and in early access. It runs on the customer’s own server, so no vendor sits between them and their fleet.
+    Commercially there is a <strong>dedicated instance</strong> in the customer’s own Azure subscription, deployed,
+    upgraded and operated by Attestree. It runs in external mode, on the customer’s hostname over the
+    internet, or in internal mode, where it publishes nothing on the internet and is reached over
+    peering, VPN or a gateway. There is deliberately no shared multi-tenant SaaS.
   </p>
 
   <h3>Public front door</h3>
@@ -124,6 +128,8 @@ const nav = docNavs['attestree'];
       <tr><td><strong>Hosting</strong></td><td>Cloudflare Pages, with a preview deploy per pull request</td></tr>
       <tr><td><strong>Demo</strong></td><td>A clickable, read-only copy of the running console with a guided tour, captured from the Community Edition against a seeded test fleet</td></tr>
       <tr><td><strong>Changelog</strong></td><td>One public changelog for every release, mirrored to the Community Edition repository</td></tr>
+      <tr><td><strong>Trust</strong></td><td>A trust page that links every promise to the reference doc behind it, each doc ending with what Attestree does not do</td></tr>
+      <tr><td><strong>Specifications</strong></td><td>The predicates of the signed statements published as versioned specs: detonation attestation, evidence bundle, inventory and the golden-image build</td></tr>
       <tr><td><strong>Waitlist</strong></td><td>A same-origin Cloudflare Pages Function backed by D1 in an EU jurisdiction, with Turnstile verification</td></tr>
       <tr><td><strong>Build security</strong></td><td>SHA-pinned actions, a least-privilege token, a committed lockfile, Dependabot, an <code>npm audit</code> gate and <code>security.txt</code></td></tr>
     </tbody>
