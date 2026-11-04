@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import DocSidebar from '../components/DocSidebar.astro';
+import { getLangFromUrl, getLocalePath } from '../i18n/utils';
 
 interface NavChild {
   label: string;
@@ -23,9 +24,19 @@ interface Props {
   sidebarItems: NavItem[];
   /** Apply the markdown prose styles (sub-pages rendered from .md). */
   prose?: boolean;
+  /** The prose page's h1; defaults to the active sidebar item's label (e.g. "Architecture"). */
+  heading?: string;
 }
 
 const { title, description, ogImage, sidebarTitle, sidebarItems, prose = false } = Astro.props;
+
+// Prose sub-pages start at h2 in their source, so the layout supplies the page's single h1.
+const lang = getLangFromUrl(Astro.url);
+const currentPath = Astro.url.pathname.replace(/\/$/, '');
+const activeItem = sidebarItems
+  .flatMap((item) => item.children ?? [item])
+  .find((item) => item.href && getLocalePath(item.href, lang) === currentPath);
+const heading = Astro.props.heading ?? activeItem?.label;
 ---
 
 <BaseLayout title={title} description={description} ogImage={ogImage}>
@@ -34,6 +45,12 @@ const { title, description, ogImage, sidebarTitle, sidebarItems, prose = false }
     <div class="doc-container container">
       <DocSidebar title={sidebarTitle} items={sidebarItems} />
       <main class:list={['doc-content', { prose }]} id="main-content">
+        {prose && heading && (
+          <header class="doc-head">
+            <span class="eyebrow">{sidebarTitle}</span>
+            <h1>{heading}</h1>
+          </header>
+        )}
         <slot />
       </main>
     </div>
@@ -64,6 +81,21 @@ const { title, description, ogImage, sidebarTitle, sidebarItems, prose = false }
 
   .doc-content.prose {
     padding-top: var(--space-4);
+  }
+
+  .doc-head {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .doc-content.prose .doc-head h1 {
+    font-size: var(--text-3xl);
+    margin-bottom: 0;
+  }
+
+  /* The first section heading keeps its hairline as the divider below the page head. */
+  .doc-head + :global(h2) {
+    margin-top: var(--space-8);
   }
 
   @media (max-width: 860px) {
