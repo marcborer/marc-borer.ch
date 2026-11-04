@@ -8,7 +8,7 @@ The case studies prove depth but answer no question anyone types into a search b
 
 | Goal | What an article does for it |
 |------|-----------------------------|
-| Senior architecture role | Shows judgement on real decisions, in a form a hiring manager can read in five minutes |
+| Senior architecture role (never stated on the site) | Shows judgement on real decisions, in a form a hiring manager can read in five minutes |
 | Advisory work | Answers the question an IT lead has before calling someone ("how do we do X without an outage?") |
 | Attestree early access | Explains the problem Attestree solves in general terms, then points to attestree.com |
 
@@ -47,7 +47,7 @@ The mix is three searchable, one definition and one shareable piece, close to th
 - **Buyer stage:** consideration → implementation
 - **Adds (hypothesis):** the decision order and why: telephony first, mailboxes second, to build confidence on the smaller change. Also covered: Direct Routing over Calling Plan for cost, number portability and the existing SBC; the IVR fix through media bypass and early media; SIP trunk provider evaluation around number-porting risk; SPF, DKIM and DMARC during coexistence. 300+ mailboxes with no service interruption. Source: `src/content/projects/cloud-infrastructure/architecture.md`.
 - **Swiss angle:** number porting and SIP trunks in Switzerland. **[NEED: what you can say publicly about providers and porting without naming the employer's contracts]**
-- **CTA:** advisory and role.
+- **CTA:** advisory; the author box links the case studies and the CV.
 
 ### 3 · Attest at ingest: what an observed SBOM is
 - **Working titles:** "Attest at ingest: was eine beobachtete SBOM ist" / "Observed vs declared SBOM: checking Windows software before it rolls out"
@@ -63,7 +63,7 @@ The mix is three searchable, one definition and one shareable piece, close to th
 - **Type:** shareable opinion, built from principle 04 with three examples: the Exchange bridge architecture, hybrid identity with HR-triggered on- and offboarding, and the staged MFA move to the cloud (Password Hash Sync first, MFA routed per staged group).
 - **Adds (hypothesis):** most writing treats hybrid as a phase on the way to cloud-only. This one argues the opposite from projects that were run that way on purpose.
 - **Distribution:** LinkedIn first; it is the piece most likely to be shared.
-- **CTA:** role.
+- **CTA:** none beyond the author box (case studies, CV). No "open to a role" line: the employer reads the site.
 
 ### 5 · Detecting password spraying: correlating lockouts and failed sign-ins in the Elastic Stack
 - **Working titles:** "Password Spraying erkennen: Kontosperren und Fehlanmeldungen korrelieren" / "Spotting password spraying by correlating lockouts and failed logons"

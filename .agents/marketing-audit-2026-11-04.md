@@ -35,7 +35,7 @@ The static audit now reports no broken hreflang target and one `<h1>` on every p
 | 2 | Correct the hosting service in the privacy policy | "Cloudflare Workers" in `/datenschutz/` and `/en/privacy/` §3; revision date moved to November 2026 |
 | 3 | Email in the hero | "E-Mail schreiben" / "Write an email" button beside the CV button |
 | 4 | Link "Now: Attestree" | The spec-strip value links to the Attestree case study |
-| 5 | Say what you are open to | A senior architecture role, advisory work, Attestree early access for IT teams: contact page intro, homepage contact band and contact page description |
+| 5 | Say what you are open to | Advisory work and Attestree early access for IT teams: contact page intro, homepage contact band and contact page description. A role is deliberately not mentioned, because the employer can read the site |
 | 6 | Plan an article section | `.agents/content-plan-2026-11.md` (plan only) |
 | 8 | Freshness | "Stand" / "Last revised" with month and year in each case study's sidebar, from `src/data/case-study-revisions.json` |
 | — | Shorter descriptions | Homepage and the Attestree and options-gex pages trimmed to about 160 characters, wording kept |

@@ -12,6 +12,7 @@
 - **Two languages, German first.** German (Swiss usage: `ss`, never `ß`) is the default at `/`; English lives under `/en/`. Every copy change lands in both, and the four translated slugs (`/kompetenzen/` ↔ `/en/skills/`, `/grundsaetze/` ↔ `/en/principles/`, `/impressum/` ↔ `/en/legal-notice/`, `/datenschutz/` ↔ `/en/privacy/`) go through `routeMap` in `src/i18n/utils.ts`.
 - **No tracking beyond Cloudflare Web Analytics.** It is cookieless and the site has no consent banner; anything that sets a cookie, adds a pixel or fingerprints a visitor breaks the privacy policy (`/datenschutz/`) and needs one. Conversion tracking here means counting `mailto:` and CV clicks in Cloudflare, nothing more.
 - **AI crawlers: search yes, training no.** `public/robots.txt` allows search and answer engines and blocks training-only crawlers (`Content-Signal: search=yes, ai-input=yes, ai-train=no`). Keep that split. `Google-Extended` is allowed on purpose: it also governs Gemini app grounding, and citations in Gemini were judged worth more than that one opt-out.
+- **Never say publicly that Marc is looking for a role.** His employer can read the site. The role goal is served by the evidence (case studies, CV), never by copy such as "open to a new role". Contact copy names advisory work and Attestree early access only (owner decision, 2026-11-04).
 - **No invented proof.** No testimonials, logos, awards or numbers that are not already on the site or in the CV.
 
 ## Product Overview
@@ -20,7 +21,7 @@
 **What it does:** The site is Marc's professional profile and portfolio. It shows how he designs and runs business-critical Microsoft infrastructure (hybrid identity, Exchange Online and Teams, Intune and endpoint lifecycle, SIEM) and how he built Attestree, an app-patching control plane that attests every winget, Chocolatey and Scoop version before it rolls out in rings. Five case studies, each with an architecture and a component page, carry the evidence.
 **Product category:** Personal site of a senior infrastructure / systems architect (searched as: "ICT Systems Architect Schweiz", "Microsoft 365 Architekt", "Hybrid Identity Architect", "Intune endpoint lifecycle", "Marc Borer"), plus the founder story behind Attestree (software supply chain security, app patching for Windows fleets).
 **Product type:** Personal professional site / portfolio (not a services storefront; there is no offer, price or booking page).
-**Business model:** None on the site itself. It wins three things: a senior architecture role, advisory work, and IT teams for Attestree's early access (owner decision, 2026-11-04).
+**Business model:** None on the site itself. It wins three things: a senior architecture role, advisory work, and IT teams for Attestree's early access (owner decision, 2026-11-04). Only the last two are stated publicly; see the hard constraint below.
 
 ## Target Audience
 
@@ -81,7 +82,7 @@ For Attestree: positioning against patch-management and scanning tools belongs t
 
 | Objection | Response |
 |-----------|----------|
-| "Is he still available, now that he is building Attestree?" | Yes, and the contact copy says so: open to a senior architecture role and to advisory work; IT teams can get early access to Attestree. |
+| "Is he still available, now that he is building Attestree?" | For advisory work, yes, and the contact copy says so; IT teams can get early access to Attestree. Availability for a role is never stated on the site. |
 | "Industrial company, not our industry." | The work is industry-neutral Microsoft infrastructure at a stated scale (180 employees, 300+ mailboxes, 500+ devices); the decisions transfer. |
 | "Mostly one employer since 2019." | Architecture ownership across messaging, identity, endpoints and security at that employer, plus a SaaS platform before it and a product of his own since 2026. |
 
@@ -147,7 +148,7 @@ For Attestree: positioning against patch-management and scanning tools belongs t
 
 ## Goals
 
-**Business goal:** Win (1) a senior architecture role, (2) advisory work on Microsoft infrastructure, hybrid identity and software supply chains, and (3) IT teams for Attestree's early access. Owner decision, 2026-11-04; all three are open at once.
+**Business goal:** Win (1) a senior architecture role, (2) advisory work on Microsoft infrastructure, hybrid identity and software supply chains, and (3) IT teams for Attestree's early access. Owner decision, 2026-11-04; all three are open at once, but only (2) and (3) appear in the copy.
 **Conversion action:** An email to mb@marc-borer.ch (hero button, contact band, contact page). Secondary: CV PDF download, the Attestree case study and attestree.com ("Get early access"), LinkedIn connection.
 **Current metrics:** Unknown here; Cloudflare Web Analytics holds visits and referrers.
 
@@ -160,7 +161,7 @@ Not applicable: the site runs no ads.
 
 | Date | Learning | Evidence | Applies to | Status |
 |------|----------|----------|------------|--------|
-| 2026-11-04 | The site states what Marc is open to: a senior architecture role, advisory work, Attestree early access for IT teams | Owner decision | copywriting, cro, content-strategy | active |
+| 2026-11-04 | Contact copy names advisory work and Attestree early access; it never says Marc is open to a role, because his employer can read the site | Owner decision (#29) | copywriting, cro, content-strategy, social | active |
 | 2026-11-04 | `Google-Extended` is allowed so Gemini can cite the site; the other training crawlers stay blocked | Owner decision; `robots.txt` comment | ai-seo | active |
 | 2026-10 | Attestree copy is limited to what attestree.com states publicly | Owner decision (`README.md`, `llms.txt`) | copywriting, copy-editing, ai-seo, social | active |
 | 2026-10 | AI answer engines may read and cite the site; training crawlers are blocked | Owner decision (`robots.txt`, PR #23) | ai-seo, seo-audit | active |
@@ -175,5 +176,5 @@ Not applicable: the site runs no ads.
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
-- v2 (2026-11-04) — Goals set by the owner (role, advisory, Attestree early access); objection on availability answered; Google-Extended decision and contact goal logged in Learnings; open questions updated for the article plan.
+- v2 (2026-11-04) — Goals set by the owner (role, advisory, Attestree early access), with the role goal kept off the public copy as a hard constraint; objection on availability answered; Google-Extended decision and contact goal logged in Learnings; open questions updated for the article plan.
 - v1 (2026-11-04) — Initial context, auto-drafted from the site with the marketingskills `product-marketing` skill; inferences marked [confirm].
