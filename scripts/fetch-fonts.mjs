@@ -9,6 +9,7 @@
  */
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { createHash } from 'crypto';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -16,6 +17,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const FONTS_DIR = join(ROOT, 'public', 'fonts');
 const CSS_OUTPUT = join(ROOT, 'src', 'styles', 'fonts.css');
+// The preload hrefs BaseLayout renders, written with fonts.css so the two always agree.
+const PRELOAD_OUTPUT = join(ROOT, 'src', 'data', 'font-preloads.json');
 
 // ---- Font configuration ----
 const FONTS = [
@@ -26,6 +29,13 @@ const FONTS = [
 
 // Only ship the subsets the site renders (German + English copy).
 const SUBSETS = new Set(['latin', 'latin-ext']);
+
+// Faces to preload: the display and body text above the fold. For a static family the
+// regular (400) file is preloaded; a variable family has one file per subset.
+const PRELOAD = [
+  { family: 'Archivo', subset: 'latin' },
+  { family: 'IBM Plex Sans', subset: 'latin' },
+];
 
 const CHROME_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -60,25 +70,27 @@ function parseFontFaces(css) {
   return faces;
 }
 
-function buildFilename(family, subset, srcUrl) {
-  // A variable font serves every weight from one file; static families serve one file per weight.
-  // Key the filename on the source URL's hash so static weights do not overwrite each other.
-  const id = srcUrl.split('/').pop().replace(/\.woff2$/, '').slice(-8);
+function buildFilename(family, subset, bytes) {
+  // Name each file by a hash of its bytes. Google Fonts answers with two URL formats
+  // (/s/<family>/<version>/<id>.woff2 and /l/font?kit=…&v=…), so a name taken from the URL
+  // changed with the format and could carry '&' and '='. The bytes give the same name for the
+  // same font whatever the URL, a new name when the font changes (/fonts/* is cached as
+  // immutable), and one file per static weight.
+  const id = createHash('sha256').update(bytes).digest('hex').slice(0, 8);
   return `${family.toLowerCase().replace(/ /g, '-')}-${subset}-${id}.woff2`;
 }
 
-async function downloadFont(url, destPath) {
+async function downloadFont(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to download ${url}: ${res.status}`);
-  const buffer = Buffer.from(await res.arrayBuffer());
-  writeFileSync(destPath, buffer);
+  return Buffer.from(await res.arrayBuffer());
 }
 
-function generateCSS(faces) {
+function generateCSS(faces, filenames) {
   // Group by file: a variable font carries a weight range; static faces carry one weight each.
   const groups = new Map();
   for (const face of faces) {
-    const filename = buildFilename(face.family, face.subset, face.srcUrl);
+    const filename = filenames.get(face.srcUrl);
     if (!groups.has(filename)) {
       groups.set(filename, { ...face, filename, weights: new Set() });
     }
@@ -103,6 +115,15 @@ function generateCSS(faces) {
   }
 
   return css;
+}
+
+function preloadHrefs(faces, filenames) {
+  return PRELOAD.map(({ family, subset }) => {
+    const candidates = faces.filter((f) => f.family === family && f.subset === subset);
+    const face = candidates.find((f) => f.weight.split(/\s+/).includes('400')) ?? candidates[0];
+    if (!face) throw new Error(`[fonts] No ${family} ${subset} face to preload.`);
+    return `/fonts/${filenames.get(face.srcUrl)}`;
+  });
 }
 
 async function main() {
@@ -130,26 +151,31 @@ async function main() {
 
   mkdirSync(FONTS_DIR, { recursive: true });
 
-  const downloaded = new Set();
+  // Download every distinct file first; the names come from the bytes. If any download fails,
+  // keep the committed fonts.css and preload list as they are rather than write a mix.
+  const filenames = new Map();
   for (const face of faces) {
-    const filename = buildFilename(face.family, face.subset, face.srcUrl);
-    if (downloaded.has(filename)) continue;
-    downloaded.add(filename);
-
-    const destPath = join(FONTS_DIR, filename);
+    if (filenames.has(face.srcUrl)) continue;
+    let bytes;
     try {
-      await downloadFont(face.srcUrl, destPath);
-      console.log(`[fonts]   ✓ ${filename}`);
+      bytes = await downloadFont(face.srcUrl);
     } catch (err) {
-      console.warn(`[fonts]   ✗ ${filename}: ${err.message}`);
-      if (existsSync(destPath)) {
-        console.log(`[fonts]     Using existing file as fallback.`);
-      }
+      console.warn(`[fonts]   ✗ ${face.family} ${face.subset}: ${err.message}`);
+      console.log('[fonts] Using existing fonts as fallback.');
+      return;
     }
+    const filename = buildFilename(face.family, face.subset, bytes);
+    const destPath = join(FONTS_DIR, filename);
+    if (!existsSync(destPath)) writeFileSync(destPath, bytes);
+    filenames.set(face.srcUrl, filename);
+    console.log(`[fonts]   ✓ ${filename}`);
   }
 
-  writeFileSync(CSS_OUTPUT, generateCSS(faces));
+  writeFileSync(CSS_OUTPUT, generateCSS(faces, filenames));
   console.log(`[fonts] Generated ${CSS_OUTPUT.replace(ROOT, '')}`);
+
+  writeFileSync(PRELOAD_OUTPUT, JSON.stringify(preloadHrefs(faces, filenames), null, 2) + '\n');
+  console.log(`[fonts] Generated ${PRELOAD_OUTPUT.replace(ROOT, '')}`);
   console.log('[fonts] Done.');
 }
 
