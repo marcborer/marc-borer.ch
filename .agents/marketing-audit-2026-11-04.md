@@ -27,7 +27,20 @@ What will grow reach from here is content and presence, not more technical fixes
 
 The static audit now reports no broken hreflang target and one `<h1>` on every page except `404.html`, which deliberately carries one per language.
 
-## Your decisions (not changed)
+## Decisions, 2026-11-04 (follow-up PR)
+
+| # | Decision | Done |
+|---|----------|------|
+| 1 | Allow `Google-Extended` so Gemini can cite the site | Removed from the blocked list in `robots.txt`, with the reason in a comment. If Cloudflare's AI Crawl Control blocks it at the edge, allow it there too |
+| 2 | Correct the hosting service in the privacy policy | "Cloudflare Workers" in `/datenschutz/` and `/en/privacy/` §3; revision date moved to November 2026 |
+| 3 | Email in the hero | "E-Mail schreiben" / "Write an email" button beside the CV button |
+| 4 | Link "Now: Attestree" | The spec-strip value links to the Attestree case study |
+| 5 | Say what you are open to | A senior architecture role, advisory work, Attestree early access for IT teams: contact page intro, homepage contact band and contact page description |
+| 6 | Plan an article section | `.agents/content-plan-2026-11.md` (plan only) |
+| 8 | Freshness | "Stand" / "Last revised" with month and year in each case study's sidebar, from `src/data/case-study-revisions.json` |
+| — | Shorter descriptions | Homepage and the Attestree and options-gex pages trimmed to about 160 characters, wording kept |
+
+## Your decisions (as raised in the audit)
 
 ### 1. `Google-Extended` also blocks Gemini grounding (ai-seo)
 `robots.txt` says the per-bot blocks cover "training-only" crawlers, and the top of the file says AI assistants answering a question may read and cite the site. `Google-Extended` is not training-only: per Google it also governs **grounding in the Gemini app** (it does not affect Google Search or AI Overviews). As written, Gemini may not cite the site when answering a question. Either keep the block on purpose and correct the comment, or drop `Google-Extended` from the list if citations in Gemini matter more than the training opt-out.

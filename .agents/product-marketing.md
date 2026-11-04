@@ -1,6 +1,6 @@
 # Product Marketing Context
 
-**Document version:** v1
+**Document version:** v2
 **Last updated:** 2026-11-04
 
 > Read by every skill in `.claude/skills/` before it writes or audits anything for marc-borer.ch.
@@ -11,7 +11,7 @@
 - **Attestree claims stop at attestree.com.** Copy about Attestree says only what [attestree.com](https://attestree.com) states publicly (`README.md`, `public/llms.txt`). No roadmap, customer, pricing or performance claims beyond it.
 - **Two languages, German first.** German (Swiss usage: `ss`, never `ß`) is the default at `/`; English lives under `/en/`. Every copy change lands in both, and the four translated slugs (`/kompetenzen/` ↔ `/en/skills/`, `/grundsaetze/` ↔ `/en/principles/`, `/impressum/` ↔ `/en/legal-notice/`, `/datenschutz/` ↔ `/en/privacy/`) go through `routeMap` in `src/i18n/utils.ts`.
 - **No tracking beyond Cloudflare Web Analytics.** It is cookieless and the site has no consent banner; anything that sets a cookie, adds a pixel or fingerprints a visitor breaks the privacy policy (`/datenschutz/`) and needs one. Conversion tracking here means counting `mailto:` and CV clicks in Cloudflare, nothing more.
-- **AI crawlers: search yes, training no.** `public/robots.txt` allows search and answer engines and blocks training-only crawlers (`Content-Signal: search=yes, ai-input=yes, ai-train=no`). Keep that split.
+- **AI crawlers: search yes, training no.** `public/robots.txt` allows search and answer engines and blocks training-only crawlers (`Content-Signal: search=yes, ai-input=yes, ai-train=no`). Keep that split. `Google-Extended` is allowed on purpose: it also governs Gemini app grounding, and citations in Gemini were judged worth more than that one opt-out.
 - **No invented proof.** No testimonials, logos, awards or numbers that are not already on the site or in the CV.
 
 ## Product Overview
@@ -20,7 +20,7 @@
 **What it does:** The site is Marc's professional profile and portfolio. It shows how he designs and runs business-critical Microsoft infrastructure (hybrid identity, Exchange Online and Teams, Intune and endpoint lifecycle, SIEM) and how he built Attestree, an app-patching control plane that attests every winget, Chocolatey and Scoop version before it rolls out in rings. Five case studies, each with an architecture and a component page, carry the evidence.
 **Product category:** Personal site of a senior infrastructure / systems architect (searched as: "ICT Systems Architect Schweiz", "Microsoft 365 Architekt", "Hybrid Identity Architect", "Intune endpoint lifecycle", "Marc Borer"), plus the founder story behind Attestree (software supply chain security, app patching for Windows fleets).
 **Product type:** Personal professional site / portfolio (not a services storefront; there is no offer, price or booking page).
-**Business model:** None on the site itself. It supports Marc's career and Attestree's credibility. **[confirm]** whether it should also win advisory or consulting work.
+**Business model:** None on the site itself. It wins three things: a senior architecture role, advisory work, and IT teams for Attestree's early access (owner decision, 2026-11-04).
 
 ## Target Audience
 
@@ -81,7 +81,7 @@ For Attestree: positioning against patch-management and scanning tools belongs t
 
 | Objection | Response |
 |-----------|----------|
-| "Is he still available, now that he is building Attestree?" **[confirm]** | Say plainly what he is open to (see open questions); the site does not say today. |
+| "Is he still available, now that he is building Attestree?" | Yes, and the contact copy says so: open to a senior architecture role and to advisory work; IT teams can get early access to Attestree. |
 | "Industrial company, not our industry." | The work is industry-neutral Microsoft infrastructure at a stated scale (180 employees, 300+ mailboxes, 500+ devices); the decisions transfer. |
 | "Mostly one employer since 2019." | Architecture ownership across messaging, identity, endpoints and security at that employer, plus a SaaS platform before it and a product of his own since 2026. |
 
@@ -147,8 +147,8 @@ For Attestree: positioning against patch-management and scanning tools belongs t
 
 ## Goals
 
-**Business goal [confirm]:** Be found and trusted by the right people for senior architecture conversations, and lend credibility to Attestree.
-**Conversion action:** An email to mb@marc-borer.ch. Secondary: CV PDF download, visit to attestree.com, LinkedIn connection.
+**Business goal:** Win (1) a senior architecture role, (2) advisory work on Microsoft infrastructure, hybrid identity and software supply chains, and (3) IT teams for Attestree's early access. Owner decision, 2026-11-04; all three are open at once.
+**Conversion action:** An email to mb@marc-borer.ch (hero button, contact band, contact page). Secondary: CV PDF download, the Attestree case study and attestree.com ("Get early access"), LinkedIn connection.
 **Current metrics:** Unknown here; Cloudflare Web Analytics holds visits and referrers.
 
 ## Paid Ads (optional)
@@ -160,17 +160,20 @@ Not applicable: the site runs no ads.
 
 | Date | Learning | Evidence | Applies to | Status |
 |------|----------|----------|------------|--------|
+| 2026-11-04 | The site states what Marc is open to: a senior architecture role, advisory work, Attestree early access for IT teams | Owner decision | copywriting, cro, content-strategy | active |
+| 2026-11-04 | `Google-Extended` is allowed so Gemini can cite the site; the other training crawlers stay blocked | Owner decision; `robots.txt` comment | ai-seo | active |
 | 2026-10 | Attestree copy is limited to what attestree.com states publicly | Owner decision (`README.md`, `llms.txt`) | copywriting, copy-editing, ai-seo, social | active |
 | 2026-10 | AI answer engines may read and cite the site; training crawlers are blocked | Owner decision (`robots.txt`, PR #23) | ai-seo, seo-audit | active |
 
 ## Open questions
 
-1. What should the site win right now: a role, advisory work, Attestree design partners, or credibility only?
-2. Which audience comes first when they conflict: employers or Attestree prospects?
+1. Which audience comes first when they conflict: employers, advisory clients or Attestree prospects?
+2. Does CTC Analytics AG need to approve articles about work done there?
 3. May LinkedIn recommendations or client quotes be used as testimonials?
 4. Which search phrases matter (German first?), and is Search Console set up for `marc-borer.ch`?
-5. Is a writing outlet (articles on rollout rings, hybrid identity, attestation) wanted? It would be the strongest lever for search and AI citations.
+5. The article plan (`.agents/content-plan-2026-11.md`) has three [NEED] items: ring soak times and stop criteria, what can be said about SIP providers and porting, and how much SIEM detection logic is safe to publish.
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v2 (2026-11-04) — Goals set by the owner (role, advisory, Attestree early access); objection on availability answered; Google-Extended decision and contact goal logged in Learnings; open questions updated for the article plan.
 - v1 (2026-11-04) — Initial context, auto-drafted from the site with the marketingskills `product-marketing` skill; inferences marked [confirm].

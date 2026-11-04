@@ -11,8 +11,8 @@ interface Props {
 const lang = (Astro.currentLocale || 'de') as Lang;
 
 const defaultDescription = lang === 'de'
-  ? 'Marc Borer, Senior ICT Systems Architect in Breitenbach: Hybrid Identity, Microsoft 365, Endpoint-Lifecycle und mit Attestree attestierte Software-Verteilung für Windows-Flotten.'
-  : 'Marc Borer, Senior ICT Systems Architect in Breitenbach, Switzerland: hybrid identity, Microsoft 365, endpoint lifecycle and, with Attestree, attested software delivery for Windows fleets.';
+  ? 'Senior ICT Systems Architect in Breitenbach: Hybrid Identity, Microsoft 365, Endpoint-Lifecycle und mit Attestree attestierte Software für Windows-Flotten.'
+  : 'Senior ICT Systems Architect in Switzerland: hybrid identity, Microsoft 365, endpoint lifecycle and, with Attestree, attested software for Windows fleets.';
 
 const { title, description = defaultDescription, ogImage } = Astro.props;
 // Cloudflare Web Analytics: Cloudflare injects the beacon for proxied sites; set

@@ -10,10 +10,12 @@ User-agent: *
 Content-Signal: search=yes, ai-input=yes, ai-train=no, use=reference
 Allow: /
 
-# Training crawlers (each vendor's documented training-only user agent)
+# Training crawlers (each vendor's documented training-only user agent).
+# Google-Extended is left out on purpose: besides Gemini training it also
+# controls grounding in the Gemini app, so blocking it would stop Gemini from
+# citing this site when it answers a question. Citations win that trade-off.
 User-agent: GPTBot
 User-agent: ClaudeBot
-User-agent: Google-Extended
 User-agent: CCBot
 User-agent: Applebot-Extended
 User-agent: Bytespider
