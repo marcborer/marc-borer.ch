@@ -30,7 +30,11 @@ Case-study copy for Attestree is kept to what [attestree.com](https://attestree.
 ## SEO & Web Standards
 
 - XML sitemap via `@astrojs/sitemap`, per-page canonical, hreflang alternates (asymmetric slugs supported)
-- JSON-LD (Person + WebSite), per-page OG images (1200×630), unique meta descriptions, `robots.txt`
+- JSON-LD (ProfilePage + Person + WebSite, linked by `@id`), per-page OG images (1200×630), unique meta descriptions, `robots.txt`, `llms.txt`
+
+## Marketing
+
+Twelve marketing skills from [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) (SEO, AI search, schema, copy, CRO, content, PR, social) are installed in `.claude/skills/` for Claude Code; see `.claude/skills/README.md`. They all read `.agents/product-marketing.md`, the site's positioning, audience, voice and constraints. The latest audit is `.agents/marketing-audit-2026-11-04.md`.
 
 ## Accessibility
 

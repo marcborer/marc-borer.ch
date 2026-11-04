@@ -6,8 +6,9 @@ dist/
 #docs
 docs/
 
-#claude
-.claude/
+#claude: local settings stay out; the project skills in .claude/skills/ are committed
+.claude/*
+!.claude/skills/
 
 # dependencies
 node_modules/
