@@ -72,6 +72,17 @@ One-time setup in the Cloudflare dashboard (Workers & Pages → the `marc-borer-
 2. Settings → Domains & Routes: add `marc-borer.ch` and `www.marc-borer.ch` (the zone must be on Cloudflare DNS; keep the Microsoft 365 mail records DNS-only), then a redirect rule `www` → apex.
 3. Web Analytics: enable it for the Worker if the dashboard offers it, or create a Web Analytics site and set its token as the build variable `PUBLIC_CF_BEACON_TOKEN` (Settings → Build → Variables) so the build renders the beacon itself.
 
+## Security
+
+Report a vulnerability to mb@marc-borer.ch; scope and details are in [`SECURITY.md`](SECURITY.md). The same contact is served at [`/.well-known/security.txt`](https://marc-borer.ch/.well-known/security.txt) (RFC 9116). Its `Expires` date is **2027-11-01**: move it a year ahead before then (`public/.well-known/security.txt`).
+
+## License
+
+- **Code:** MIT. This covers the components, layouts and templates as code, the styles, the scripts and the configuration.
+- **Content:** © Marc Borer, all rights reserved. This covers the text in both languages, the case studies, the diagrams and the images.
+
+The split and the exact paths are in [`LICENSE`](LICENSE). The self-hosted fonts are under the SIL Open Font License 1.1 ([`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)), and the marketing skills under MIT (`.claude/skills/LICENSE-marketingskills`).
+
 [![CI](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml)
 
 Site: [marc-borer.ch](https://marc-borer.ch)
