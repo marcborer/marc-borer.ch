@@ -56,7 +56,7 @@ npm run preview
 
 ### Fonts
 
-`scripts/fetch-fonts.mjs` downloads the families configured at the top of the file from Google Fonts into `public/fonts/` and writes `src/styles/fonts.css`. It runs before every build and falls back to the committed files when offline.
+`scripts/fetch-fonts.mjs` downloads the families configured at the top of the file from Google Fonts into `public/fonts/` and writes `src/styles/fonts.css` and `src/data/font-preloads.json`, the preload links `BaseLayout.astro` renders. Each file is named by a hash of its bytes, so the names stay the same whichever URL format Google Fonts answers with and change only when a font does (`/fonts/*` is cached as immutable). It runs before every build and falls back to the committed files when offline or when any download fails.
 
 ### Open Graph images
 
