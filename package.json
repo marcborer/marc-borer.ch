@@ -2,6 +2,8 @@
   "name": "marc-borer.ch",
   "type": "module",
   "version": "0.0.1",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
