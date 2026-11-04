@@ -25,6 +25,10 @@ const cvHref = lang === 'de'
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>
         {t('hero.cta.cv')}
       </a>
+      <a href="mailto:mb@marc-borer.ch" class="btn btn--ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m4 7 8 6 8-6"/></svg>
+        {t('section.writeEmail')}
+      </a>
     </div>
   </div>
 
@@ -45,7 +49,7 @@ const cvHref = lang === 'de'
   </div>
   <div>
     <dt>{t('spec.now')}</dt>
-    <dd>{t('spec.now.value')}</dd>
+    <dd><a href={getRelativeLocaleUrl(lang, '/projects/attestree/')} class="spec-link">{t('spec.now.value')}</a></dd>
   </div>
   <div>
     <dt>{t('spec.since')}</dt>
@@ -113,6 +117,17 @@ const cvHref = lang === 'de'
 
   .hero-spec {
     margin-bottom: var(--space-4);
+  }
+
+  .spec-link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 0.2em;
+  }
+
+  .spec-link:hover {
+    color: var(--accent);
   }
 
   @media (max-width: 900px) {
