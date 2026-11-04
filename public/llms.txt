@@ -13,6 +13,8 @@ Marc Borer designs and runs business-critical Microsoft infrastructure (hybrid i
 - Attestree case study: https://marc-borer.ch/projects/attestree/ with architecture and component pages below it
 - Enterprise cloud and hybrid infrastructure case study: https://marc-borer.ch/projects/cloud-infrastructure/
 - Enterprise SaaS platform CI/CD case study: https://marc-borer.ch/projects/cicd-automation/
+- SmallCapTrader (algorithmic trading platform) case study: https://marc-borer.ch/projects/smallcaptrader/
+- options-gex (gamma-exposure research engine for options trading) case study: https://marc-borer.ch/projects/options-gex/
 - Skills: https://marc-borer.ch/kompetenzen/ (English: https://marc-borer.ch/en/skills/)
 - Career: https://marc-borer.ch/experience/ (English: https://marc-borer.ch/en/experience/)
 - Principles: https://marc-borer.ch/grundsaetze/ (English: https://marc-borer.ch/en/principles/)

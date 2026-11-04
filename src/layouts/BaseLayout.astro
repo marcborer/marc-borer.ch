@@ -24,12 +24,19 @@ const resolvedOgImage = ogImage
 const canonicalUrl = Astro.url.href;
 const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '/en/' || Astro.url.pathname === '/en';
 
-const personSchema = {
-  "@context": "https://schema.org",
+// One Person and one WebSite node, referenced by @id from every page and from the
+// case studies' "author", so search engines and assistants resolve them as one entity.
+const siteUrl = 'https://marc-borer.ch';
+const personId = `${siteUrl}/#person`;
+const websiteId = `${siteUrl}/#website`;
+
+const person = {
   "@type": "Person",
+  "@id": personId,
   "name": "Marc Borer",
   "jobTitle": "Senior ICT Systems Architect",
-  "url": "https://marc-borer.ch",
+  "description": defaultDescription,
+  "url": siteUrl,
   "email": "mailto:mb@marc-borer.ch",
   "address": {
     "@type": "PostalAddress",
@@ -38,10 +45,14 @@ const personSchema = {
     "postalCode": "4226",
     "addressCountry": "CH"
   },
+  "worksFor": [
+    { "@type": "Organization", "name": "CTC Analytics AG" },
+    { "@type": "Organization", "name": "Attestree", "url": "https://attestree.com" }
+  ],
+  "knowsLanguage": ["de", "en"],
   "sameAs": [
     "https://github.com/marcborer",
-    "https://linkedin.com/in/marc-b-6780ab5a/",
-    "https://attestree.com"
+    "https://linkedin.com/in/marc-b-6780ab5a/"
   ],
   "knowsAbout": [
     "Enterprise Architecture",
@@ -60,13 +71,39 @@ const personSchema = {
   ]
 };
 
-const websiteSchema = {
-  "@context": "https://schema.org",
+const website = {
   "@type": "WebSite",
+  "@id": websiteId,
   "name": "Marc Borer — Senior ICT Systems Architect",
-  "url": "https://marc-borer.ch",
-  "inLanguage": ["de-CH", "en"]
+  "url": siteUrl,
+  "inLanguage": ["de-CH", "en"],
+  "publisher": { "@id": personId }
 };
+
+// The homepage is the profile page about the person; every other page carries the
+// WebSite node with a named reference to the person.
+const structuredData = isHomepage
+  ? {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ProfilePage",
+          "@id": `${canonicalUrl}#profilepage`,
+          "url": canonicalUrl,
+          "name": title,
+          "inLanguage": lang === 'de' ? 'de-CH' : 'en',
+          "isPartOf": { "@id": websiteId },
+          "mainEntity": { "@id": personId }
+        },
+        person,
+        website
+      ]
+    }
+  : {
+      "@context": "https://schema.org",
+      ...website,
+      "publisher": { "@type": "Person", "@id": personId, "name": "Marc Borer", "url": siteUrl }
+    };
 ---
 
 <!doctype html>
@@ -123,10 +160,7 @@ const websiteSchema = {
 
     <link rel="canonical" href={canonicalUrl} />
     <HreflangLinks />
-    {isHomepage && (
-      <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
-    )}
-    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <slot name="head" />
     {beaconToken && (
       <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: beaconToken })}></script>

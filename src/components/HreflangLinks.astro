@@ -27,4 +27,5 @@ if (currentLocale !== 'de' && currentPath.startsWith(`/${currentLocale}`)) {
     />
   );
 })}
-<link rel="alternate" hreflang="x-default" href={`${siteUrl}${getRelativeLocaleUrl('de', basePath)}`} />
+{/* x-default is the German page; translate the slug, since /en/skills/ is /kompetenzen/ in German, not /skills/. */}
+<link rel="alternate" hreflang="x-default" href={`${siteUrl}${getRelativeLocaleUrl('de', getTranslatedPath(basePath, currentLocale, 'de'))}`} />
