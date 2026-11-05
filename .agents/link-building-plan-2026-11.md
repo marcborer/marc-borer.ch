@@ -56,12 +56,41 @@ Search for `"Marc Borer" -site:marc-borer.ch` and `"Attestree" "Marc Borer"`, an
 
 **Talks:** speaker pages at meetups and community days link to the speaker's site. They're editorial, relevant and Swiss, which is exactly what Bing is asking for.
 
-- **Candidates (to research):** Swiss Microsoft 365 / Intune / endpoint-management user groups and community days, Swiss Azure meetups, and security meetups in Basel and Zurich.
-- **Pick by:** a recent event, a speaker page with bios, an audience of IT leads.
+- **Venues (researched 2026-11-05):**
+
+  | Venue | Next date | Call for speakers | Fit |
+  |-------|-----------|-------------------|-----|
+  | [Workplace & Security Ninja User Group Switzerland](https://sessionize.com/wpninja-ug-ch/) | 3 Dec 2026, Microsoft Schweiz, The Circle, Kloten | **Open until 26 Nov 2026, 23:59 CET** | Intune and endpoint management: the best fit, and the first to submit to |
+  | Workplace Ninja Summit (Baden, CH) | September each year | Usually spring, on Sessionize; the 2026 call is closed | The large European endpoint conference; submit in 2027 |
+  | [Experts Live Switzerland](https://sessionize.com/ELCH26) (Welle7, Bern) | Autumn 2027 | 2026's ran 1 Feb – 31 Mar; expect the same window | Microsoft cloud, security, modern workplace |
+  | [Microsoft 365 Community Schweiz](https://www.meetup.com/m365switzerland) (Bern) | Irregular; last listed Oct 2025 | Ask the organisers | Exchange Online and Teams Direct Routing talk |
+  | [Security Ninjas CH](https://sessionize.com/securityninjasch) | Check the page | Sessionize | The "attest at ingest" talk |
+
+  No Basel-based Microsoft 365 or Intune user group turned up in the search.
 - **Talk topics** come straight from the case studies:
   - "Rollout rings for Windows fleets: what a BIOS update taught us"
   - "Teams Direct Routing migration without an outage"
-  - "Attest at ingest: checking software before it reaches the fleet" (Attestree claims only as attestree.com states them)
+  - "Attest at ingest: checking software before it reaches the fleet" (Attestree claims only as attestree.com states them; a community stage wants the concept, not a product pitch)
+
+**Session for the Workplace Ninja user group** (Sessionize submission draft, for Marc to adjust and submit). It's about Attestree, his own company, so no employer approval is needed. Every product statement comes from attestree.com's `llms.txt` (2026-11-05). User groups reject sales pitches, so it teaches the technique, with Attestree as the worked example:
+
+> **Title:** Attest at ingest: checking Windows apps before they reach the fleet
+>
+> **Description:** CVE scanners report after install: by the time a finding shows up in a dashboard, the app is already running on every endpoint. This session moves the check to ingest, before any endpoint installs a new version:
+>
+> - **Detonate:** each new winget version runs in a disposable sandbox VM, and its footprint is recorded.
+> - **Record:** Syft builds a CycloneDX SBOM of what the installer put on disk, and an attestation is recorded against the installer's SHA-256.
+> - **Sign:** the verdict becomes a signed in-toto statement that you can verify offline.
+> - **Serve:** by default, only an attested version is served, from your own winget source, pinned to that hash.
+> - **Roll out:** it reaches the fleet ring by ring: canary, pilot, broad, all.
+>
+> We walk through the pipeline with Attestree, the platform I build (its Community Edition is free up to 200 endpoints, in early access), and look at which parts carry over to any fleet: rings, a fenced winget source, and checking a signed statement yourself.
+>
+> **Level:** 300 · **Format:** session, 45 minutes · **Language:** German or English
+
+Before submitting, Marc checks the statements against the current attestree.com (the product changes daily). The Sessionize speaker profile links to https://marc-borer.ch, and the group asks speakers to join its LinkedIn group.
+
+The BIOS-rings talk from the cloud-infrastructure case study stays an option for later, once CTC Analytics agrees.
 
 **Podcasts:** hand off to the `public-relations` skill (podcast guest prep).
 
@@ -81,7 +110,7 @@ Write for editorial sites that IT leads read: endpoint-management and Microsoft 
 | GitHub `marcborer` | `/` | Marc | Profile website field | Unknown; an identity signal more than a citation source |
 | LinkedIn | `/` | Marc | Website field, custom URL | LinkedIn is among the most-cited domains for professional queries (`ai-seo` LinkedIn reference) |
 | CV PDFs | `/` | Marc | Header link | n/a |
-| Swiss M365/endpoint user group (TBD) | `/projects/cloud-infrastructure/` | Organisers | Talk on Teams Direct Routing or rollout rings | Event pages are rarely cited, but they are relevant editorial links |
+| Workplace & Security Ninja User Group CH (3 Dec 2026, call closes 26 Nov) | `/projects/attestree/` | Sessionize submission | Attest at ingest, with Attestree as the example (draft above) | Event and speaker pages are rarely cited, but they are relevant Swiss editorial links |
 
 ## 5. Outreach drafts (for approval, not sent)
 
