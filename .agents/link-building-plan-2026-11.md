@@ -22,7 +22,7 @@ Made with the `link-building` skill, with `.agents/product-marketing.md` as cont
 | Page | Wins | Queries / prompts |
 |------|------|-------------------|
 | `/` and `/en/` | Name searches; "who is Marc Borer" in assistants | "Marc Borer", "Marc Borer Attestree", "Marc Borer ICT" |
-| `/projects/attestree/` | The founder story behind Attestree | "who builds Attestree", "attested app patching Windows" |
+| `/projects/attestree/` | Attestree, Marc's independent research and open-core project | "who builds Attestree", "attested app patching Windows" |
 | `/projects/cloud-infrastructure/` | Advisory work | "Teams Direct Routing Migration Schweiz", "Hybrid Identity Architekt" |
 
 ## 2. Assets
@@ -45,7 +45,7 @@ Most of these links are `nofollow` and pass little ranking credit. They matter a
 | **attestree.com/about/**, "Who builds it" | Names "Marc Borer" with no link; the page has no outbound links | Link "Marc Borer" to https://marc-borer.ch/. In attestree.com's `Person` or `Organization` JSON-LD, add `sameAs: https://marc-borer.ch/` for the founder. This is the highest-relevance link available, and it's an unlinked mention on his own site. |
 | **GitHub profile** (`marcborer`) | No name, website, bio or location set | Name "Marc Borer"; website https://marc-borer.ch; location "Breitenbach, Switzerland"; bio = the site's one-liner. Optionally a profile README repo (`marcborer/marcborer`) with a short intro and the link. |
 | **GitHub org** (`attestree`) | No website or description | Website https://attestree.com, plus a one-line description. |
-| **LinkedIn** | URL `/in/marc-b-6780ab5a/` | Custom URL with the name; website field → marc-borer.ch; headline and About consistent with the site. Then update `sameAs` in `src/layouts/BaseLayout.astro`. |
+| **LinkedIn** | URL `/in/marc-b-6780ab5a/` | **No changes** (owner decision, 2026-11-05). The profile stays as it is; `sameAs` and the CV keep the current URL. |
 | **CV PDFs** (`marcborer/cv`) | Linked from the site | Put https://marc-borer.ch in the CV header, so every copy sent points back. |
 
 ### B. Unlinked mention reclamation (monthly, 10 minutes)
@@ -106,9 +106,9 @@ Write for editorial sites that IT leads read: endpoint-management and Microsoft 
 
 | Target | Page | Contact | Angle | Cited by engines? |
 |--------|------|---------|-------|-------------------|
-| attestree.com/about/ | `/` | Marc | Founder link on his own product site | Assistants already read attestree.com (its `llms.txt`) |
+| attestree.com/about/ | `/` | Marc | Link from his project's own site (live since attestree-site#219) | Assistants already read attestree.com (its `llms.txt`) |
 | GitHub `marcborer` | `/` | Marc | Profile website field | Unknown; an identity signal more than a citation source |
-| LinkedIn | `/` | Marc | Website field, custom URL | LinkedIn is among the most-cited domains for professional queries (`ai-seo` LinkedIn reference) |
+| ~~LinkedIn~~ | — | — | No profile changes (owner decision, 2026-11-05) | — |
 | CV PDFs | `/` | Marc | Header link | n/a |
 | Workplace & Security Ninja User Group CH (3 Dec 2026, call closes 26 Nov) | `/projects/attestree/` | Sessionize submission | Attest at ingest, with Attestree as the example (draft above) | Event and speaker pages are rarely cited, but they are relevant Swiss editorial links |
 
@@ -145,7 +145,7 @@ Before sending, Marc confirms the details are public (the content plan's [NEED] 
 
 | Metric | Where | 30 days | 90 days |
 |--------|-------|---------|---------|
-| Owned links live (attestree.com, GitHub ×2, LinkedIn, CV) | Manual check | 5 of 5 | 5 of 5 |
+| Owned links live (attestree.com, GitHub profile and org, CV) | Manual check | 4 of 4 | 4 of 4 |
 | Referring domains | Search Console → Links; Bing Site Explorer | Baseline recorded | +3 relevant editorial (talk/community/article) |
 | Indexed pages | Search Console → Pages; Bing Site Explorer | ≥ 20 of 46 | ≥ 30 of 46 |
 | Name query | Google/Bing "Marc Borer" | — | marc-borer.ch on page one |

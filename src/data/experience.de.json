@@ -1,8 +1,8 @@
 [
   {
     "date": "2026 — heute",
-    "kind": "Eigenes Unternehmen",
-    "title": "Gründer und Architekt, Attestree",
+    "kind": "Eigenes Projekt",
+    "title": "Unabhängiges Forschungs- & Open-Core-Projekt",
     "company": "Attestree, Breitenbach",
     "description": [
       "Konzeption und Umsetzung einer Deployment-Control-Plane für Windows-Flotten: Pakete werden beim Ingest in einer Sandbox detoniert, mit einer beobachteten SBOM versehen und als signiertes in-toto-Statement attestiert, bevor sie über einen eingezäunten winget-Feed ring-basiert ausgerollt werden",
