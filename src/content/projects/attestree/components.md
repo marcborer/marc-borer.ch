@@ -1,6 +1,6 @@
 ---
 title: Component Reference
-description: Attestree key components — ingest evidence, attestation, fenced feed, groups × rings, update pipeline, CVE index, and the open-core edition
+description: "Attestree key components: ingest evidence, attestation, fenced feed, groups × rings, update pipeline, CVE index, and the open-core edition"
 ---
 
 ## Ingest Evidence

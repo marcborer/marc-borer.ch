@@ -32,9 +32,10 @@ function isActive(href: string): boolean {
 }
 
 // When this case study's content was last revised (src/data/case-study-revisions.json),
-// shown like the footer stamp. Update the date when the case study's content changes.
+// shown like the footer stamp. Move "revised" when the content changes, not for copy edits;
+// DocLayout's TechArticle JSON-LD reads the same dates.
 const slug = currentPath.match(/\/projects\/([^/]+)/)?.[1] as keyof typeof revisions | undefined;
-const revised = slug ? revisions[slug] : undefined;
+const revised = slug ? revisions[slug]?.revised : undefined;
 const revisedLabel = revised
   ? new Intl.DateTimeFormat(lang === 'de' ? 'de-CH' : 'en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(revised))
   : undefined;

@@ -20,6 +20,10 @@ Marc Borer designs and runs business-critical Microsoft infrastructure (hybrid i
 - Principles: https://marc-borer.ch/grundsaetze/ (English: https://marc-borer.ch/en/principles/)
 - Contact: https://marc-borer.ch/contact/ (English: https://marc-borer.ch/en/contact/)
 
+## Full text
+
+- Every English page in one file: https://marc-borer.ch/llms-full.txt
+
 ## CV
 
 - German: https://github.com/marcborer/cv/releases/latest/download/Lebenslauf-Marc-Borer-DE.pdf

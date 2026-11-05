@@ -162,6 +162,9 @@ const structuredData = isHomepage
     </script>
 
     <link rel="canonical" href={canonicalUrl} />
+    <!-- Site overview and full text for assistants (public/llms.txt, scripts/llms-full.mjs) -->
+    <link rel="alternate" type="text/markdown" title="llms.txt" href="/llms.txt" />
+    <link rel="alternate" type="text/markdown" title="llms-full.txt" href="/llms-full.txt" />
     <HreflangLinks />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <slot name="head" />
