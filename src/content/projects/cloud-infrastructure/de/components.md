@@ -1,6 +1,6 @@
 ---
 title: Komponentenreferenz
-description: Intune Config-as-Code, BIOS-Compliance, MFA-Migration, Partner-Portal und E-Mail-Archivierungsautomatisierung
+description: "Intune-Konfiguration als Code, automatisierte BIOS- und Compliance-Plattform, gestaffelte MFA-Migration in die Cloud, Partnerportal und E-Mail-Archivierung."
 ---
 
 ## Intune Configuration-as-Code

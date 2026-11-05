@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: SaaS platform CI/CD pipeline architecture and deployment flow
+description: "Architecture of a SaaS CI/CD pipeline: the Bamboo deployment flow, five QA environments through staging to cloud production, and the layered Ansible codebase."
 ---
 
 ## Pipeline Architecture

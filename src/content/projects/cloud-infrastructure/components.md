@@ -1,6 +1,6 @@
 ---
 title: Component Reference
-description: Intune Config-as-Code, BIOS compliance, MFA migration, partner portal, and email archive automation
+description: "Intune configuration as code, an automated BIOS and compliance platform, a staged MFA migration to the cloud, a partner portal and automated email archiving."
 ---
 
 ## Intune Configuration-as-Code
