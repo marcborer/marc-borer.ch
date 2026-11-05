@@ -31,6 +31,11 @@ Case-study copy for Attestree is kept to what [attestree.com](https://attestree.
 
 - XML sitemap via `@astrojs/sitemap`, per-page canonical, hreflang alternates (asymmetric slugs supported)
 - JSON-LD (ProfilePage + Person + WebSite, linked by `@id`), per-page OG images (1200×630), unique meta descriptions, `robots.txt`, `llms.txt`
+- [IndexNow](https://www.indexnow.org/) key `ab16d2a2fe205b649b3f5d9e876f429e`, served at `/ab16d2a2fe205b649b3f5d9e876f429e.txt` (`public/`). It proves to Bing, Yandex and the other IndexNow engines that a URL submission comes from the site owner. The key is public by design; to rotate it, replace the file and its name. To announce changed pages after a deploy:
+
+  ```bash
+  curl -sS -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' -d '{"host":"marc-borer.ch","key":"ab16d2a2fe205b649b3f5d9e876f429e","keyLocation":"https://marc-borer.ch/ab16d2a2fe205b649b3f5d9e876f429e.txt","urlList":["https://marc-borer.ch/","https://marc-borer.ch/en/"]}'
+  ```
 
 ## Marketing
 
