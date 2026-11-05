@@ -5,7 +5,7 @@ description: SmallCapTrader system architecture and deployment modes
 
 ## System Architecture
 
-SmallCapTrader follows Clean Architecture with Domain-Driven Design and supports dual-mode deployment — monolithic for development and sharded microservices for production.
+SmallCapTrader follows Clean Architecture with Domain-Driven Design and supports dual-mode deployment: monolithic for development, sharded microservices for production.
 
 ### Monolithic Mode
 
@@ -103,6 +103,6 @@ Stream Router ─── parses trades/bars
 | Mode | Command | Use Case |
 |------|---------|----------|
 | **Development** | `docker compose --profile dev up` | Hot reload, single process |
-| **Production** | `docker compose --profile prod up` | Optimized monolithic |
+| **Production** | `docker compose --profile prod up` | Optimised monolithic |
 | **Sharded** | `docker compose --profile sharded up` | Horizontal scaling (8 containers) |
 | **Full Stack** | `docker compose --profile full up` | + Prometheus, Grafana, Jaeger |

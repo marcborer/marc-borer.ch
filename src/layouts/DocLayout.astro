@@ -3,7 +3,9 @@ import BaseLayout from './BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import DocSidebar from '../components/DocSidebar.astro';
-import { getLangFromUrl, getLocalePath } from '../i18n/utils';
+import { getLangFromUrl, getLocalePath, useTranslations } from '../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import revisions from '../data/case-study-revisions.json';
 
 interface NavChild {
   label: string;
@@ -37,9 +39,53 @@ const activeItem = sidebarItems
   .flatMap((item) => item.children ?? [item])
   .find((item) => item.href && getLocalePath(item.href, lang) === currentPath);
 const heading = Astro.props.heading ?? activeItem?.label;
+
+// Every page of a case study shares its project's OG image unless it passes its own.
+const siteUrl = 'https://marc-borer.ch';
+const slug = currentPath.match(/\/projects\/([^/]+)/)?.[1] as keyof typeof revisions | undefined;
+const dates = slug ? revisions[slug] : undefined;
+const pageOgImage = ogImage ?? (slug ? `/og/${slug}.png` : undefined);
+
+// JSON-LD: the page as a TechArticle by the site's Person (same @id as BaseLayout), with the
+// dates the sidebar shows, and its place in the site as a BreadcrumbList.
+const t = useTranslations(lang);
+const pageUrl = Astro.url.href;
+const author = { '@type': 'Person', '@id': `${siteUrl}/#person`, name: 'Marc Borer', url: siteUrl };
+const overview = sidebarItems[0]?.href;
+const crumbs = [
+  { name: t('nav.home'), url: `${siteUrl}${getRelativeLocaleUrl(lang, '/')}` },
+  { name: t('nav.projects'), url: `${siteUrl}${getRelativeLocaleUrl(lang, '/projects/')}` },
+  ...(overview ? [{ name: sidebarTitle, url: `${siteUrl}${getLocalePath(overview, lang)}/` }] : []),
+  ...(prose && heading ? [{ name: heading, url: pageUrl }] : []),
+];
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TechArticle',
+      '@id': `${pageUrl}#article`,
+      headline: title,
+      ...(description ? { description } : {}),
+      url: pageUrl,
+      inLanguage: lang === 'de' ? 'de-CH' : 'en',
+      ...(pageOgImage ? { image: `${siteUrl}${pageOgImage}` } : {}),
+      ...(dates ? { datePublished: dates.published, dateModified: dates.revised } : {}),
+      author,
+      publisher: author,
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: c.url })),
+    },
+  ],
+};
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage}>
+<BaseLayout title={title} description={description} ogImage={pageOgImage}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(articleSchema)} />
   <div class="page">
     <Nav />
     <div class="doc-container container">

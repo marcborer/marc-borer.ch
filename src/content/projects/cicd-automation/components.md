@@ -10,7 +10,7 @@ description: Key components of the SaaS platform CI/CD pipeline
 Entry point for all deployments, invoked by the CI/CD platform. Handles:
 
 - Parsing environment parameters (platform target, version, options)
-- Git repository synchronization
+- Git repository synchronisation
 - Ansible playbook invocation with proper inventory and vault credentials
 - Uptime monitoring pause/resume via API
 - Error handling and deployment status reporting
@@ -116,11 +116,11 @@ Cloud-side snapshot management via the Python API client:
 
 ### Test Execution Flow
 
-1. **Customer provisioning** — Automated creation of test tenants with unique credentials
-2. **Test data generation** — Sample assets, metadata, and user accounts populated
-3. **xUnit runners** — C#/.NET test suites executed against the deployed environment
-4. **Result collection** — Test results aggregated and reported to the CI/CD platform
-5. **Cleanup** — Environment state preserved or reset based on test outcome
+1. **Customer provisioning**: Automated creation of test tenants with unique credentials
+2. **Test data generation**: Sample assets, metadata, and user accounts populated
+3. **xUnit runners**: C#/.NET test suites executed against the deployed environment
+4. **Result collection**: Test results aggregated and reported to the CI/CD platform
+5. **Cleanup**: Environment state preserved or reset based on test outcome
 
 ### Test Environments
 
@@ -133,13 +133,13 @@ Cloud-side snapshot management via the Python API client:
 
 ### Credential Management
 
-- **Ansible Vault** — Encrypted YAML files for passwords, API keys, certificates
-- **Kerberos keytabs** — Service account authentication for AD-joined services
-- **SSL certificates** — Managed via vault, deployed to HAProxy and application servers
-- **WinRM HTTPS** — Encrypted remote management for Windows hosts
+- **Ansible Vault**: Encrypted YAML files for passwords, API keys, certificates
+- **Kerberos keytabs**: Service account authentication for AD-joined services
+- **SSL certificates**: Managed via vault, deployed to HAProxy and application servers
+- **WinRM HTTPS**: Encrypted remote management for Windows hosts
 
 ### Network Security
 
-- **SELinux policies** — Custom policies for Linux services
-- **Firewall rules** — Per-role iptables configuration
-- **CIFS/SMB** — Authenticated file sharing with AD credentials
+- **SELinux policies**: Custom policies for Linux services
+- **Firewall rules**: Per-role iptables configuration
+- **CIFS/SMB**: Authenticated file sharing with AD credentials
