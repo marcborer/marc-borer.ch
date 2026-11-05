@@ -1,6 +1,6 @@
 ---
 title: Component Reference
-description: Key components of the SaaS platform CI/CD pipeline
+description: "Components of a SaaS CI/CD pipeline: Bamboo deploy orchestration, Graphite and Grafana metrics, Ansible roles, Hyper-V and cloud snapshots, test automation."
 ---
 
 ## Core Orchestration

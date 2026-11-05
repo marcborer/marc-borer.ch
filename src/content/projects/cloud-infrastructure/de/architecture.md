@@ -1,6 +1,6 @@
 ---
 title: Architektur
-description: Exchange & Teams Migration, Hybrid Identity und SIEM — Architekturentscheidungen und Systemdesign
+description: "Architekturentscheidungen zur Migration auf Exchange Online und Teams Direct Routing, Hybrid Identity mit HR-gesteuertem Lifecycle und zentralem SIEM."
 ---
 
 ## Exchange Online & Teams Migration

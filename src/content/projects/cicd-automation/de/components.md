@@ -1,6 +1,6 @@
 ---
 title: Komponentenreferenz
-description: Schlüsselkomponenten der SaaS-Plattform CI/CD-Pipeline
+description: "Komponenten einer SaaS-CI/CD-Pipeline: Bamboo-Orchestrierung, Metriken in Graphite und Grafana, Ansible-Roles, Hyper-V- und Cloud-Snapshots, Testautomatisierung."
 ---
 
 ## Kern-Orchestrierung
