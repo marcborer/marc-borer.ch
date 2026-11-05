@@ -31,10 +31,20 @@ Case-study copy for Attestree is kept to what [attestree.com](https://attestree.
 
 - XML sitemap via `@astrojs/sitemap`, per-page canonical, hreflang alternates (asymmetric slugs supported)
 - JSON-LD (ProfilePage + Person + WebSite, linked by `@id`), per-page OG images (1200×630), unique meta descriptions, `robots.txt`, `llms.txt`
-- [IndexNow](https://www.indexnow.org/) key `ab16d2a2fe205b649b3f5d9e876f429e`, served at `/ab16d2a2fe205b649b3f5d9e876f429e.txt` (`public/`). It proves to Bing, Yandex and the other IndexNow engines that a URL submission comes from the site owner. The key is public by design; to rotate it, replace the file and its name. To announce changed pages after a deploy:
+- [IndexNow](https://www.indexnow.org/) key `ab16d2a2fe205b649b3f5d9e876f429e`, served at `/ab16d2a2fe205b649b3f5d9e876f429e.txt` (`public/`). It proves to Bing, Yandex and the other IndexNow engines that a URL submission comes from the site owner. The key is public by design; to rotate it, replace the file and its name.
+
+  Submission is automatic. After every push to `main`, `.github/workflows/indexnow.yml` takes four steps:
+
+  1. It builds the commit before and after the push.
+  2. It finds the pages whose HTML changed, ignoring the generator tag and the hashed `/_astro/` names. Pages that left the sitemap count too.
+  3. It waits until `/version.txt`, the commit the live site was built from, reports the push.
+  4. It submits those URLs (`scripts/indexnow.mjs`). A push that changes no page submits nothing. If the deploy doesn't land within 15 minutes, the run fails.
+
+  To submit every page by hand, for example after rotating the key:
 
   ```bash
-  curl -sS -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' -d '{"host":"marc-borer.ch","key":"ab16d2a2fe205b649b3f5d9e876f429e","keyLocation":"https://marc-borer.ch/ab16d2a2fe205b649b3f5d9e876f429e.txt","urlList":["https://marc-borer.ch/","https://marc-borer.ch/en/"]}'
+  npm run build
+  node scripts/indexnow.mjs --new dist
   ```
 
 ## Marketing
