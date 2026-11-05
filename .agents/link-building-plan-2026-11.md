@@ -56,12 +56,37 @@ Search for `"Marc Borer" -site:marc-borer.ch` and `"Attestree" "Marc Borer"`, an
 
 **Talks:** speaker pages at meetups and community days link to the speaker's site. They're editorial, relevant and Swiss, which is exactly what Bing is asking for.
 
-- **Candidates (to research):** Swiss Microsoft 365 / Intune / endpoint-management user groups and community days, Swiss Azure meetups, and security meetups in Basel and Zurich.
-- **Pick by:** a recent event, a speaker page with bios, an audience of IT leads.
+- **Venues (researched 2026-11-05):**
+
+  | Venue | Next date | Call for speakers | Fit |
+  |-------|-----------|-------------------|-----|
+  | [Workplace & Security Ninja User Group Switzerland](https://sessionize.com/wpninja-ug-ch/) | 3 Dec 2026, Microsoft Schweiz, The Circle, Kloten | **Open until 26 Nov 2026, 23:59 CET** | Intune and endpoint management: the best fit, and the first to submit to |
+  | Workplace Ninja Summit (Baden, CH) | September each year | Usually spring, on Sessionize; the 2026 call is closed | The large European endpoint conference; submit in 2027 |
+  | [Experts Live Switzerland](https://sessionize.com/ELCH26) (Welle7, Bern) | Autumn 2027 | 2026's ran 1 Feb – 31 Mar; expect the same window | Microsoft cloud, security, modern workplace |
+  | [Microsoft 365 Community Schweiz](https://www.meetup.com/m365switzerland) (Bern) | Irregular; last listed Oct 2025 | Ask the organisers | Exchange Online and Teams Direct Routing talk |
+  | [Security Ninjas CH](https://sessionize.com/securityninjasch) | Check the page | Sessionize | The "attest at ingest" talk |
+
+  No Basel-based Microsoft 365 or Intune user group turned up in the search.
 - **Talk topics** come straight from the case studies:
   - "Rollout rings for Windows fleets: what a BIOS update taught us"
   - "Teams Direct Routing migration without an outage"
-  - "Attest at ingest: checking software before it reaches the fleet" (Attestree claims only as attestree.com states them)
+  - "Attest at ingest: checking software before it reaches the fleet" (Attestree claims only as attestree.com states them; a community stage wants the concept, not a product pitch)
+
+**Session for the Workplace Ninja user group** (Sessionize submission draft, for Marc to adjust and submit; every fact is in `src/content/projects/cloud-infrastructure/components.md`):
+
+> **Title:** Rollout rings for BIOS updates: an automated BIOS and compliance lifecycle with Intune
+>
+> **Description:** BIOS updates are the fleet change nobody wants to do by hand and nobody wants to push to everyone at once. For a fleet of more than 500 Intune-managed devices, I turned them into a pipeline with three parts:
+>
+> - **Inventory:** Proactive Remediations collect hardware and application inventory every day and send it through an Azure Function and the Logs Ingestion API into Log Analytics.
+> - **Packaging:** an Azure Automation runbook reads the OEM catalogs for the current BIOS versions, and Win32 packages are generated automatically, with BitLocker suspended and resumed around the flash.
+> - **Rollout:** dynamic groups take each update through canary, pilot and broad, supersedence is handled through Graph, and Azure Monitor workbooks show the fleet's compliance at a glance.
+>
+> This session walks through the architecture, how the rings are cut and when a version moves on, and the trade-offs behind each piece.
+>
+> **Level:** 300 · **Format:** session, 45 minutes · **Language:** German or English
+
+Before submitting, Marc fills in the ring timings and promotion criteria (the content plan's [NEED] item) and confirms the talk is fine with his employer. The Sessionize speaker profile links to https://marc-borer.ch, and the group asks speakers to join its LinkedIn group.
 
 **Podcasts:** hand off to the `public-relations` skill (podcast guest prep).
 
@@ -81,7 +106,7 @@ Write for editorial sites that IT leads read: endpoint-management and Microsoft 
 | GitHub `marcborer` | `/` | Marc | Profile website field | Unknown; an identity signal more than a citation source |
 | LinkedIn | `/` | Marc | Website field, custom URL | LinkedIn is among the most-cited domains for professional queries (`ai-seo` LinkedIn reference) |
 | CV PDFs | `/` | Marc | Header link | n/a |
-| Swiss M365/endpoint user group (TBD) | `/projects/cloud-infrastructure/` | Organisers | Talk on Teams Direct Routing or rollout rings | Event pages are rarely cited, but they are relevant editorial links |
+| Workplace & Security Ninja User Group CH (3 Dec 2026, call closes 26 Nov) | `/projects/cloud-infrastructure/` | Sessionize submission | Rollout rings for BIOS updates (draft above) | Event and speaker pages are rarely cited, but they are relevant Swiss editorial links |
 
 ## 5. Outreach drafts (for approval, not sent)
 
