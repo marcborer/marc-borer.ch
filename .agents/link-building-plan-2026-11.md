@@ -42,7 +42,7 @@ Most of these links are `nofollow` and pass little ranking credit. They matter a
 
 | Where | Today (checked 2026-11-05) | Change |
 |-------|----------------------------|--------|
-| **attestree.com/about/**, "Who builds it" | **Done 2026-11-05** (attestree-site#219). Named "Marc Borer" with no link; the page had no outbound links | Link "Marc Borer" to https://marc-borer.ch/. In attestree.com's `Person` or `Organization` JSON-LD, add `sameAs: https://marc-borer.ch/` for the founder. This is the highest-relevance link available, and it's an unlinked mention on his own site. |
+| **attestree.com/about/**, "Who builds it" | **Done 2026-11-05** (attestree-site#219). Named "Marc Borer" with no link; the page had no outbound links | Link "Marc Borer" to https://marc-borer.ch/. In attestree.com's `Person` or `Organization` JSON-LD, add `sameAs: https://marc-borer.ch/` to Marc's entry. This is the highest-relevance link available, and it's an unlinked mention on attestree.com. |
 | **GitHub profile** (`marcborer`) | **Done 2026-11-05.** Before: name "Marc Borer", location "Basel", company "@attestree", no bio or website. | Bio "Senior ICT Systems Architect: hybrid identity, Microsoft 365, endpoint lifecycle. Building Attestree, an independent research & open-core project."; website https://marc-borer.ch. Name, location and company unchanged. Applied in Marc's browser with his approval. |
 | **GitHub org** (`attestree`) | **Done 2026-11-05.** The website was already https://attestree.com. | Description: attestree.com's one-liner ("Self-hosted third-party patch management for Windows, built on winget, that attests every app version before it ships."). |
 | **LinkedIn** | URL `/in/marc-b-6780ab5a/` | **No changes** (owner decision, 2026-11-05). The profile stays as it is; `sameAs` and the CV keep the current URL. |
@@ -72,7 +72,7 @@ Search for `"Marc Borer" -site:marc-borer.ch` and `"Attestree" "Marc Borer"`, an
   - "Teams Direct Routing migration without an outage"
   - "Attest at ingest: checking software before it reaches the fleet" (Attestree claims only as attestree.com states them; a community stage wants the concept, not a product pitch)
 
-**Session for the Workplace Ninja user group** (Sessionize submission draft, for Marc to adjust and submit). It's about Attestree, his own company, so no employer approval is needed. Every product statement comes from attestree.com's `llms.txt` (2026-11-05). User groups reject sales pitches, so it teaches the technique, with Attestree as the worked example:
+**Session for the Workplace Ninja user group** (Sessionize submission draft, for Marc to adjust and submit). It's about Attestree, Marc's independent research & open-core project. Every product statement comes from attestree.com's `llms.txt` (2026-11-05). User groups reject sales pitches, so it teaches the technique, with Attestree as the worked example:
 
 > **Title:** Attest at ingest: checking Windows apps before they reach the fleet
 >
