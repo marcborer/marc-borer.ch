@@ -16,6 +16,7 @@ const projectSchema = JSON.stringify({
   "description": "Gamma-exposure research engine for options trading: pulls historical option chains, computes GEX locally, and backtests level-driven trading rules behind a statistical go-live gate.",
   "author": {
     "@type": "Person",
+    "@id": "https://marc-borer.ch/#person",
     "name": "Marc Borer",
     "url": "https://marc-borer.ch"
   },
@@ -24,7 +25,7 @@ const projectSchema = JSON.stringify({
 });
 ---
 
-<DocLayout title="options-gex — GEX-Driven Options Trading Research Engine" description="Gamma-exposure research engine: pulls historical option chains, computes GEX locally, evaluates level-driven rules, and backtests them behind a multi-condition statistical go-live gate." ogImage="/og/options-gex.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="options-gex — GEX-Driven Options Trading Research Engine" description="Gamma-exposure research engine: pulls historical option chains, computes GEX locally and backtests level-driven rules behind a statistical go-live gate." ogImage="/og/options-gex.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href="/en/projects/" class="back-link">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> Back to Projects
@@ -42,11 +43,11 @@ const projectSchema = JSON.stringify({
     <section class="case-section">
       <h2>Problem</h2>
       <p>
-        Dealer gamma positioning shapes intraday price behaviour around key strike levels — the
+        Dealer gamma positioning shapes intraday price behaviour around key strike levels: the
         call wall, the put wall, and the gamma flip. Retail tools either don't expose GEX at all or
         compute it opaquely behind a paywall, with values you can neither audit nor backtest. There
         is no self-hosted pipeline that pulls raw option chains, computes GEX transparently, and
-        rigorously tests whether GEX-derived rules beat naive baselines — before any capital is at
+        rigorously tests whether GEX-derived rules beat naive baselines before any capital is at
         risk.
       </p>
     </section>
@@ -57,7 +58,7 @@ const projectSchema = JSON.stringify({
         A Python research stack built on a <strong>falsification-first</strong> premise: pull
         historical option chains (Alpaca), compute GEX locally (with a risk-free rate from FRED),
         reconstruct point-in-time snapshots, evaluate level-driven entry and exit rules, backtest
-        against baseline controls, run single-parameter sweeps for stability — and a six-condition
+        against baseline controls, run single-parameter sweeps for stability, plus a six-condition
         gate that must pass on every target ticker before Phase 2 (live execution) is even unlocked.
       </p>
     </section>
@@ -76,14 +77,14 @@ const projectSchema = JSON.stringify({
       <h3>Pipeline</h3>
       <p>
         Option chains and the risk-free rate feed snapshot reconstruction, then GEX computation,
-        then signal rules, then the backtest engine with baselines and a parameter sweep — and
+        then signal rules, then the backtest engine with baselines and a parameter sweep, and
         finally the go-live gate, which emits a per-condition verdict.
       </p>
 
       <h3>Storage</h3>
       <ul class="feature-list">
-        <li><strong>SQLite</strong> — local research store for Phase 1 snapshots and runs</li>
-        <li><strong>PostgreSQL</strong> — Phase 2 operational store; schema managed with Alembic (no auto-migrate)</li>
+        <li><strong>SQLite</strong>: local research store for Phase 1 snapshots and runs</li>
+        <li><strong>PostgreSQL</strong>: Phase 2 operational store; schema managed with Alembic (no auto-migrate)</li>
       </ul>
     </section>
 
@@ -103,8 +104,8 @@ const projectSchema = JSON.stringify({
       <div class="decision">
         <h3>Transparent local GEX computation</h3>
         <p>
-          Call wall, put wall, gamma flip, and normalized GEX are computed locally from open
-          interest — no opaque vendor numbers. A calibration step compares against external
+          Call wall, put wall, gamma flip, and normalised GEX are computed locally from open
+          interest, without opaque vendor numbers. A calibration step compares against external
           reference observations and warns on drift.
         </p>
       </div>
@@ -121,7 +122,7 @@ const projectSchema = JSON.stringify({
         <h3>Credentials encrypted at rest</h3>
         <p>
           Phase 2 stores credentials encrypted with a master key that itself lives in an
-          age-encrypted file managed through SOPS — with a paper-backed DR recipient. A logging
+          age-encrypted file managed through SOPS, with a paper-backed DR recipient. A logging
           filter masks loaded credentials, and pre-commit hooks block committing secrets, databases,
           or notebook outputs.
         </p>

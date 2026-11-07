@@ -1,0 +1,62 @@
+marc-borer.ch is published under two sets of terms: one for the code and
+one for the content. Third-party files keep their own licenses (part 3).
+
+
+1. CODE: MIT LICENSE
+
+The source code in this repository is licensed under the MIT License
+below: the Astro components, layouts and page templates as code, the
+styles, the scripts and the configuration.
+
+Copyright (c) 2026 Marc Borer
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+2. CONTENT: ALL RIGHTS RESERVED
+
+Copyright (c) 2026 Marc Borer. All rights reserved.
+
+The site's written and visual content is not covered by the MIT License,
+including where it sits inside a code file:
+
+- the text of every page in German and English: the case studies, the
+  principles, the skills, the career and the contact details
+  (src/content/, src/data/, src/i18n/ui.ts and the prose in src/pages/
+  and src/components/)
+- the diagrams (src/components/diagrams/), the rollout-ring drawing
+  (src/components/RingMark.astro), public/favicon.svg and the Open Graph
+  images (public/og/)
+- public/llms.txt and the documents in .agents/
+
+You may read it, link to it and quote it as copyright law allows, naming
+the source. Any other use needs written permission: mb@marc-borer.ch.
+
+Neither part licenses the names "Marc Borer" or "Attestree".
+
+
+3. THIRD-PARTY FILES
+
+- public/fonts/: Archivo, IBM Plex Sans and IBM Plex Mono, under the SIL
+  Open Font License 1.1. Copyright notices and the license text are in
+  THIRD-PARTY-NOTICES.md.
+- .claude/skills/: skills from coreyhaines31/marketingskills, MIT License,
+  Copyright (c) 2025 Corey Haines; see .claude/skills/LICENSE-marketingskills.
+- npm dependencies (package.json) are under their own licenses. They build
+  the site and are not shipped in it.

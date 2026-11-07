@@ -24,6 +24,7 @@ const projectSchema = JSON.stringify({
   "description": "Control Plane für App-Patching auf Windows-Flotten, die jede winget-, Chocolatey- und Scoop-Version beim Ingest attestiert: Sandbox-Detonation, beobachtete SBOM und signiertes in-toto-Statement, bevor sie ring-basiert ausgerollt wird.",
   "author": {
     "@type": "Person",
+    "@id": "https://marc-borer.ch/#person",
     "name": "Marc Borer",
     "url": "https://marc-borer.ch"
   },
@@ -32,7 +33,7 @@ const projectSchema = JSON.stringify({
 });
 ---
 
-<DocLayout title="Attestree — Attestiertes App-Patching für Windows-Flotten" description="Fallstudie Attestree: eine Control Plane für App-Patching, die jede winget-, Chocolatey- und Scoop-Version beim Ingest detoniert, mit einer beobachteten SBOM versieht und signiert, bevor sie in Rings ausgerollt wird." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="Attestree — Attestiertes App-Patching für Windows-Flotten" description="Attestree: Control Plane für App-Patching, die jede winget-, Chocolatey- und Scoop-Version beim Ingest detoniert, mit beobachteter SBOM versieht und signiert." ogImage="/og/attestree.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> {t('projects.backToProjects')}
@@ -45,7 +46,7 @@ const projectSchema = JSON.stringify({
         {tech.map((name) => <TechBadge name={name} />)}
       </div>
       <p class="case-meta">
-        <span>{t('projects.role')}: Gründer, Architektur und Umsetzung</span>
+        <span>{t('projects.role')}: Architektur und Umsetzung</span>
         <span>{t('projects.period')}: 2026 – heute</span>
         <span>{t('projects.site')}: <a href="https://attestree.com" target="_blank" rel="noopener noreferrer">attestree.com</a></span>
         <span>Demo: <a href="https://attestree.com/demo/" target="_blank" rel="noopener noreferrer">die Konsole, nur lesend</a></span>

@@ -22,6 +22,7 @@ const projectSchema = JSON.stringify({
   "description": "Gamma-Exposure-Research-Engine für den Optionshandel: lädt historische Optionsketten, berechnet GEX lokal und backtestet level-basierte Handelsregeln hinter einem statistischen Go-Live-Gate.",
   "author": {
     "@type": "Person",
+    "@id": "https://marc-borer.ch/#person",
     "name": "Marc Borer",
     "url": "https://marc-borer.ch"
   },
@@ -30,7 +31,7 @@ const projectSchema = JSON.stringify({
 });
 ---
 
-<DocLayout title="options-gex — GEX-getriebene Research-Engine für den Optionshandel" description="Gamma-Exposure-Research-Engine: lädt historische Optionsketten, berechnet GEX lokal, evaluiert level-basierte Regeln und backtestet sie hinter einem mehrstufigen statistischen Go-Live-Gate." ogImage="/og/options-gex.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
+<DocLayout title="options-gex — GEX-getriebene Research-Engine für den Optionshandel" description="Gamma-Exposure-Research-Engine: lädt historische Optionsketten, berechnet GEX lokal und backtestet level-basierte Regeln hinter einem statistischen Go-Live-Gate." ogImage="/og/options-gex.png" sidebarTitle={nav.title} sidebarItems={nav.items}>
   <article class="case-study">
     <a href={getRelativeLocaleUrl(lang, '/projects/')} class="back-link">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> {t('projects.backToProjects')}

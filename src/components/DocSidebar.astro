@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, getLocalePath, useTranslations } from '../i18n/utils';
+import revisions from '../data/case-study-revisions.json';
 
 interface NavChild {
   label: string;
@@ -29,6 +30,15 @@ function localize(href: string): string {
 function isActive(href: string): boolean {
   return currentPath === localize(href);
 }
+
+// When this case study's content was last revised (src/data/case-study-revisions.json),
+// shown like the footer stamp. Move "revised" when the content changes, not for copy edits;
+// DocLayout's TechArticle JSON-LD reads the same dates.
+const slug = currentPath.match(/\/projects\/([^/]+)/)?.[1] as keyof typeof revisions | undefined;
+const revised = slug ? revisions[slug]?.revised : undefined;
+const revisedLabel = revised
+  ? new Intl.DateTimeFormat(lang === 'de' ? 'de-CH' : 'en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(revised))
+  : undefined;
 ---
 
 <aside class="doc-sidebar">
@@ -67,6 +77,9 @@ function isActive(href: string): boolean {
         )
       )}
     </ul>
+    {revised && (
+      <p class="doc-nav-revised">{t('doc.revised')}: <time datetime={revised}>{revisedLabel}</time></p>
+    )}
   </nav>
 </aside>
 
@@ -122,6 +135,15 @@ function isActive(href: string): boolean {
     border-left-color: var(--accent);
   }
 
+  .doc-nav-revised {
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: var(--rule) solid var(--hairline);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+
   .doc-nav-group-label {
     display: block;
     padding: var(--space-3) 0 var(--space-1);
@@ -147,6 +169,12 @@ function isActive(href: string): boolean {
       border-bottom: none;
       padding-bottom: 0;
       margin-bottom: 0;
+    }
+
+    .doc-nav-revised {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
     }
 
     .doc-nav-list {

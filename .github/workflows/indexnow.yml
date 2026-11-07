@@ -1,0 +1,53 @@
+name: IndexNow
+
+# After a push to main, tell IndexNow (Bing, Yandex and the other participating engines)
+# which pages changed. Workers Builds deploys the push; this workflow builds the commit
+# before and after it, diffs the pages, waits until marc-borer.ch/version.txt reports the
+# pushed commit, then submits the changed URLs. See scripts/indexnow.mjs.
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+# Queue rather than cancel, so a quick second push does not drop the first one's pages.
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      BEFORE: ${{ github.event.before }}
+      AFTER: ${{ github.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # Without a previous build the script treats every page as changed, so a failure
+      # here costs a larger submission, not the run.
+      - name: Build the commit before the push
+        continue-on-error: true
+        run: |
+          case "$BEFORE" in ''|0000000000000000000000000000000000000000) echo "No previous commit."; exit 0;; esac
+          git worktree add --detach ../before "$BEFORE"
+          cd ../before
+          npm ci
+          npm run build
+      - name: Build the pushed commit
+        run: |
+          npm ci
+          npm run build
+      - name: Submit changed pages
+        run: node scripts/indexnow.mjs --new dist --old ../before/dist --sha "$AFTER"

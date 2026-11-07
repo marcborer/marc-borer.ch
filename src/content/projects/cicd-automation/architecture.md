@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: SaaS platform CI/CD pipeline architecture and deployment flow
+description: "Architecture of a SaaS CI/CD pipeline: the Bamboo deployment flow, five QA environments through staging to cloud production, and the layered Ansible codebase."
 ---
 
 ## Pipeline Architecture
@@ -9,19 +9,19 @@ The deployment pipeline follows a multi-stage orchestration pattern triggered by
 
 ### Deployment Flow
 
-1. **CI/CD Trigger** — Orchestration script receives environment parameters (QA, Dev, Staging, Test, Production)
-2. **Repository Sync** — Git pull of the Ansible repository to ensure latest playbooks
-3. **Monitoring Pause** — Uptime monitoring API pauses checks during deployment windows
-4. **VM Provisioning** — Python API client manages VM lifecycle: start, stop, clone, snapshot
-5. **Health Checks** — Wait for SSH (Linux) and RDP (Windows) availability before proceeding
-6. **Snapshot Restore** — Hyper-V snapshot restoration for clean environment state
-7. **Linux Configuration** — Ansible playbooks configure Elasticsearch, Redis, RabbitMQ, HAProxy
-8. **Windows Configuration** — Ansible playbooks deploy application services, rendering engines, monitoring agents
-9. **Customer Provisioning** — Automated tenant creation with per-environment credentials
-10. **Test Execution** — xUnit test runners with automated test data generation
-11. **Result Collection** — Test results aggregated and reported back to the CI/CD platform
-12. **Metrics Push** — Deployment timing data sent to Graphite via netcat for Grafana dashboards
-13. **Monitoring Resume** — Uptime monitoring re-enabled
+1. **CI/CD Trigger**: Orchestration script receives environment parameters (QA, Dev, Staging, Test, Production)
+2. **Repository Sync**: Git pull of the Ansible repository to ensure latest playbooks
+3. **Monitoring Pause**: Uptime monitoring API pauses checks during deployment windows
+4. **VM Provisioning**: Python API client manages VM lifecycle: start, stop, clone, snapshot
+5. **Health Checks**: Wait for SSH (Linux) and RDP (Windows) availability before proceeding
+6. **Snapshot Restore**: Hyper-V snapshot restoration for clean environment state
+7. **Linux Configuration**: Ansible playbooks configure Elasticsearch, Redis, RabbitMQ, HAProxy
+8. **Windows Configuration**: Ansible playbooks deploy application services, rendering engines, monitoring agents
+9. **Customer Provisioning**: Automated tenant creation with per-environment credentials
+10. **Test Execution**: xUnit test runners with automated test data generation
+11. **Result Collection**: Test results aggregated and reported back to the CI/CD platform
+12. **Metrics Push**: Deployment timing data sent to Graphite via netcat for Grafana dashboards
+13. **Monitoring Resume**: Uptime monitoring re-enabled
 
 ### Environment Topology
 
@@ -31,7 +31,7 @@ Each deployment environment runs a multi-tier architecture:
 |------|-----------|------------|
 | **Load Balancer** | HAProxy + Keepalived | VRRP-based HA, SSL termination |
 | **Application** | Platform services (11+ microservices) | Windows, IIS |
-| **Search** | Elasticsearch cluster (3+ nodes) | Kibana for visualization |
+| **Search** | Elasticsearch cluster (3+ nodes) | Kibana for visualisation |
 | **Cache** | Redis instances | Multiple databases per environment |
 | **Messaging** | RabbitMQ | Multi-node clusters |
 | **Workflow** | Apache Camunda | BPMN process engine |
@@ -51,13 +51,13 @@ Each deployment environment runs a multi-tier architecture:
 
 ### Ansible Architecture
 
-The infrastructure is organized as a layered Ansible codebase:
+The infrastructure is organised as a layered Ansible codebase:
 
-- **Inventories** — Per-environment host definitions
-- **Group Variables** — Environment-specific configuration (ports, credentials, feature flags)
-- **Roles (30+)** — Reusable infrastructure components (elasticsearch, redis, haproxy, application services, etc.)
-- **Playbooks** — Orchestration combining roles for each environment
-- **Vault** — Encrypted secrets (SSL certificates, credentials, Kerberos keytabs)
+- **Inventories**: Per-environment host definitions
+- **Group Variables**: Environment-specific configuration (ports, credentials, feature flags)
+- **Roles (30+)**: Reusable infrastructure components (elasticsearch, redis, haproxy, application services, etc.)
+- **Playbooks**: Orchestration combining roles for each environment
+- **Vault**: Encrypted secrets (SSL certificates, credentials, Kerberos keytabs)
 
 ### Execution Configuration
 

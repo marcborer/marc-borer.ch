@@ -1,6 +1,6 @@
 ---
 title: Architektur
-description: SaaS-Plattform CI/CD-Pipeline-Architektur und Deployment-Ablauf
+description: "Architektur einer SaaS-CI/CD-Pipeline: Deployment-Ablauf in Bamboo, fünf QA-Umgebungen über Staging bis zur Cloud-Produktion, geschichtete Ansible-Codebasis."
 ---
 
 ## Pipeline-Architektur

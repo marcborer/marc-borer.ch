@@ -1,8 +1,8 @@
 [
   {
     "date": "2026 — present",
-    "kind": "Own company",
-    "title": "Founder and Architect, Attestree",
+    "kind": "Own project",
+    "title": "Independent research & open-core project",
     "company": "Attestree, Breitenbach",
     "description": [
       "Designed and built a deployment control plane for Windows fleets: packages are detonated in a sandbox at ingest, given an observed SBOM and attested with a signed in-toto statement before they roll out in rings from a fenced winget feed",

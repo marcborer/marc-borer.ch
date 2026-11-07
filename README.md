@@ -30,7 +30,26 @@ Case-study copy for Attestree is kept to what [attestree.com](https://attestree.
 ## SEO & Web Standards
 
 - XML sitemap via `@astrojs/sitemap`, per-page canonical, hreflang alternates (asymmetric slugs supported)
-- JSON-LD (Person + WebSite), per-page OG images (1200×630), unique meta descriptions, `robots.txt`
+- JSON-LD (ProfilePage + Person + WebSite, linked by `@id`), per-page OG images (1200×630), unique meta descriptions, `robots.txt`, `llms.txt`
+- [IndexNow](https://www.indexnow.org/) key `ab16d2a2fe205b649b3f5d9e876f429e`, served at `/ab16d2a2fe205b649b3f5d9e876f429e.txt` (`public/`). It proves to Bing, Yandex and the other IndexNow engines that a URL submission comes from the site owner. The key is public by design; to rotate it, replace the file and its name.
+
+  Submission is automatic. After every push to `main`, `.github/workflows/indexnow.yml` takes four steps:
+
+  1. It builds the commit before and after the push.
+  2. It finds the pages whose HTML changed, ignoring the generator tag and the hashed `/_astro/` names. Pages that left the sitemap count too.
+  3. It waits until `/version.txt`, the commit the live site was built from, reports the push.
+  4. It submits those URLs (`scripts/indexnow.mjs`). A push that changes no page submits nothing. If the deploy doesn't land within 15 minutes, the run fails.
+
+  To submit every page by hand, for example after rotating the key:
+
+  ```bash
+  npm run build
+  node scripts/indexnow.mjs --new dist
+  ```
+
+## Marketing
+
+Twelve marketing skills from [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) (SEO, AI search, schema, copy, CRO, content, PR, social) are installed in `.claude/skills/` for Claude Code; see `.claude/skills/README.md`. They all read `.agents/product-marketing.md`, the site's positioning, audience, voice and constraints. The latest audit is `.agents/marketing-audit-2026-11-04.md`.
 
 ## Accessibility
 
@@ -52,7 +71,7 @@ npm run preview
 
 ### Fonts
 
-`scripts/fetch-fonts.mjs` downloads the families configured at the top of the file from Google Fonts into `public/fonts/` and writes `src/styles/fonts.css`. It runs before every build and falls back to the committed files when offline.
+`scripts/fetch-fonts.mjs` downloads the families configured at the top of the file from Google Fonts into `public/fonts/` and writes `src/styles/fonts.css` and `src/data/font-preloads.json`, the preload links `BaseLayout.astro` renders. Each file is named by a hash of its bytes, so the names stay the same whichever URL format Google Fonts answers with and change only when a font does (`/fonts/*` is cached as immutable). It runs before every build and falls back to the committed files when offline or when any download fails.
 
 ### Open Graph images
 
@@ -67,6 +86,17 @@ One-time setup in the Cloudflare dashboard (Workers & Pages → the `marc-borer-
 1. Settings → Build: repository `marcborer/marc-borer.ch`, production branch `main`, build command `npm run build`, deploy command `npx wrangler deploy`, root `/`. Node comes from `.nvmrc`.
 2. Settings → Domains & Routes: add `marc-borer.ch` and `www.marc-borer.ch` (the zone must be on Cloudflare DNS; keep the Microsoft 365 mail records DNS-only), then a redirect rule `www` → apex.
 3. Web Analytics: enable it for the Worker if the dashboard offers it, or create a Web Analytics site and set its token as the build variable `PUBLIC_CF_BEACON_TOKEN` (Settings → Build → Variables) so the build renders the beacon itself.
+
+## Security
+
+Report a vulnerability to mb@marc-borer.ch; scope and details are in [`SECURITY.md`](SECURITY.md). The same contact is served at [`/.well-known/security.txt`](https://marc-borer.ch/.well-known/security.txt) (RFC 9116). Its `Expires` date is **2027-11-01**: move it a year ahead before then (`public/.well-known/security.txt`).
+
+## License
+
+- **Code:** MIT. This covers the components, layouts and templates as code, the styles, the scripts and the configuration.
+- **Content:** © Marc Borer, all rights reserved. This covers the text in both languages, the case studies, the diagrams and the images.
+
+The split and the exact paths are in [`LICENSE`](LICENSE). The self-hosted fonts are under the SIL Open Font License 1.1 ([`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)), and the marketing skills under MIT (`.claude/skills/LICENSE-marketingskills`).
 
 [![CI](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/marcborer/marc-borer.ch/actions/workflows/ci.yml)
 

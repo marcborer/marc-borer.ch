@@ -16,6 +16,7 @@ const projectSchema = JSON.stringify({
   "description": "Full-stack algorithmic trading platform for small-cap stocks with automated strategy discovery, multi-broker execution, and real-time market analysis.",
   "author": {
     "@type": "Person",
+    "@id": "https://marc-borer.ch/#person",
     "name": "Marc Borer",
     "url": "https://marc-borer.ch"
   },
@@ -47,7 +48,7 @@ const projectSchema = JSON.stringify({
         sophisticated multi-strategy signal arbitration, and reliable execution across brokers.
         Existing retail platforms either offer only basic indicators with manual order entry,
         or lock advanced features behind institutional pricing. There is no self-hosted,
-        full-featured platform that handles the entire pipeline — from market data streaming
+        full-featured platform that handles the entire pipeline, from market data streaming
         through automated strategy discovery to live execution at scale.
       </p>
     </section>
@@ -61,8 +62,8 @@ const projectSchema = JSON.stringify({
         and volume-driven patterns, a strategy fingerprinting subsystem that profiles what existing
         strategies catch and directs rule mining toward the gaps, an automated rule-mining engine
         that discovers and promotes new strategies to live trading, backtesting with parameter
-        optimization, multi-broker execution across Alpaca and Interactive Brokers, and a production
-        correctness layer covering reconnect behavior, trade-accounting, and historical pricing fidelity.
+        optimisation, multi-broker execution across Alpaca and Interactive Brokers, and a production
+        correctness layer covering reconnect behaviour, trade-accounting, and historical pricing fidelity.
       </p>
     </section>
 
@@ -71,8 +72,8 @@ const projectSchema = JSON.stringify({
     <section class="case-section">
       <h2>Architecture</h2>
       <p>
-        Clean Architecture with Domain-Driven Design, supporting dual-mode deployment — monolithic
-        for development and sharded microservices for production. The same codebase switches between
+        Clean Architecture with Domain-Driven Design, supporting dual-mode deployment: monolithic
+        for development, sharded microservices for production. The same codebase switches between
         modes via a configuration flag without code changes.
       </p>
 
@@ -95,9 +96,9 @@ const projectSchema = JSON.stringify({
 
       <h3>Data Layer</h3>
       <ul class="feature-list">
-        <li><strong>PostgreSQL + asyncpg</strong> — Relational domain data: trades, positions, orders, strategy configs, discovered rules</li>
-        <li><strong>QuestDB</strong> — High-throughput time-series: tick data, OHLCV bars (InfluxDB Line Protocol ingestion)</li>
-        <li><strong>Redis</strong> — Caching, pub/sub for shard communication, real-time state</li>
+        <li><strong>PostgreSQL + asyncpg</strong>: Relational domain data: trades, positions, orders, strategy configs, discovered rules</li>
+        <li><strong>QuestDB</strong>: High-throughput time-series: tick data, OHLCV bars (InfluxDB Line Protocol ingestion)</li>
+        <li><strong>Redis</strong>: Caching, pub/sub for shard communication, real-time state</li>
       </ul>
     </section>
 
@@ -105,16 +106,16 @@ const projectSchema = JSON.stringify({
       <h2>Trading Strategies</h2>
       <p>Multiple built-in strategies spanning different market conditions and detection types:</p>
       <ul class="feature-list">
-        <li><strong>Momentum Detection</strong> — Real-time identification of fast-moving and slow-moving stocks using volume and price regime analysis</li>
-        <li><strong>Pullback Entries</strong> — Multiple pullback-based strategies for entering running stocks at favorable prices</li>
-        <li><strong>Breakout Patterns</strong> — Volume-confirmed breakout strategies across consolidation, range, and trend setups</li>
-        <li><strong>Mean-Reversion</strong> — Strategies targeting key technical levels for support/reclaim entries</li>
-        <li><strong>Discovered Rules</strong> — Auto-mined strategies from the rule-mining engine, promoted to live trading after validation</li>
+        <li><strong>Momentum Detection</strong>: Real-time identification of fast-moving and slow-moving stocks using volume and price regime analysis</li>
+        <li><strong>Pullback Entries</strong>: Multiple pullback-based strategies for entering running stocks at favourable prices</li>
+        <li><strong>Breakout Patterns</strong>: Volume-confirmed breakout strategies across consolidation, range, and trend setups</li>
+        <li><strong>Mean-Reversion</strong>: Strategies targeting key technical levels for support/reclaim entries</li>
+        <li><strong>Discovered Rules</strong>: Auto-mined strategies from the rule-mining engine, promoted to live trading after validation</li>
       </ul>
       <p>
         Each strategy includes configurable risk parameters, signal confidence scoring, priority-based
         arbitration when multiple strategies fire simultaneously on the same symbol, and detection-type
-        filtering so strategies only activate on matching stock behavior (fast-moving, slow-moving, or both).
+        filtering so strategies only activate on matching stock behaviour (fast-moving, slow-moving, or both).
       </p>
     </section>
 
@@ -140,11 +141,11 @@ const projectSchema = JSON.stringify({
           that the beam search then refines. Condition screening covers price-based indicators,
           temporal flags, and trajectory-aware derivative conditions that capture how indicator
           values change over time. The engine combines top performers into multi-condition rules,
-          optimizes exit parameters via grid search, and explores multi-phase temporal patterns.
+          optimises exit parameters via grid search, and explores multi-phase temporal patterns.
           Fast-mover replay gating during mining ensures the discovery universe reflects what live
-          detection would surface, and carry-mode simulation evaluates multi-day holding behavior
-          end-to-end. Dual validation modes — time-series split with walk-forward cross-validation
-          and reproducible random split — cover temporal and i.i.d. integrity. Beyond aggregate P&L,
+          detection would surface, and carry-mode simulation evaluates multi-day holding behaviour
+          end-to-end. Dual validation modes (time-series split with walk-forward cross-validation
+          and reproducible random split) cover temporal and i.i.d. integrity. Beyond aggregate P&L,
           an exit-quality scoring mode weighs P&L, drawdown, hold efficiency, exit type quality, and
           peak-to-exit giveback, with a scoring-mode selector for P&L-centric or exit-quality-centric
           evaluation. Rules that pass validation are promoted to live trading with per-rule exit
@@ -167,7 +168,7 @@ const projectSchema = JSON.stringify({
           A distributed backtesting layer that sweeps parameter combinations across all strategies and
           compares results across arbitrary multi-day date ranges in a single operation. Backtest and
           rule-mining workloads are fully offloaded to dedicated workers via Redis work queues, with
-          per-date data pre-caching and a finalize queue that aggregates results asynchronously so the
+          per-date data pre-caching and a finalise queue that aggregates results asynchronously so the
           API process stays lightweight. Tick data replay from QuestDB enables high-fidelity simulation
           against historical market conditions, cross-day aggregation surfaces strategy consistency and
           parameter stability, and best-performing configurations can be promoted to live trading in one
@@ -178,9 +179,9 @@ const projectSchema = JSON.stringify({
       <div class="decision">
         <h3>Unified Exit Engine</h3>
         <p>
-          Centralized exit logic handling stop loss, trailing stops, scaled profit targets, and
+          Centralised exit logic handling stop loss, trailing stops, scaled profit targets, and
           time-based exits. Each strategy and promoted rule can define its own exit configuration,
-          enabling fine-grained risk management without global fallback behavior.
+          enabling fine-grained risk management without global fallback behaviour.
         </p>
       </div>
 
@@ -209,11 +210,11 @@ const projectSchema = JSON.stringify({
       <div class="decision">
         <h3>Observability Stack</h3>
         <p>
-          Ephemeral workers — shards, backtest workers, rule-mining workers — expose the same
+          Ephemeral workers (shards, backtest workers, rule-mining workers) expose the same
           metrics surface as long-running services, pushed via Prometheus Pushgateway, and
           Grafana dashboards are provisioned as code through grafanalib so observability config
           ships with the repo rather than living in a clicked-together UI. Structured JSON logging
-          via structlog, distributed tracing with OpenTelemetry, and Jaeger for trace visualization
+          via structlog, distributed tracing with OpenTelemetry, and Jaeger for trace visualisation
           round out the stack. Telegram notifications cover trade alerts and system events.
         </p>
       </div>
@@ -228,11 +229,11 @@ const projectSchema = JSON.stringify({
         is unavailable, the system falls back to automatic polling to maintain data freshness.
       </p>
       <ul class="feature-list">
-        <li><strong>WebSocket-Driven Cache Invalidation</strong> — Domain events trigger targeted query invalidation for sub-second dashboard updates</li>
-        <li><strong>Redis Pub/Sub Event Bridge</strong> — Cross-process event delivery from background workers to API server to frontend clients</li>
-        <li><strong>Stale Price Guards</strong> — Prevents exit decisions and order submissions when market data exceeds freshness thresholds</li>
-        <li><strong>Atomic Order Repricing</strong> — Background monitoring adjusts pending orders using broker-native replace operations</li>
-        <li><strong>Live Notification Bell</strong> — Severity-tiered event notifications with toast alerts for critical trading events, connection status indicator, and automatic backfill on reconnect</li>
+        <li><strong>WebSocket-Driven Cache Invalidation</strong>: Domain events trigger targeted query invalidation for sub-second dashboard updates</li>
+        <li><strong>Redis Pub/Sub Event Bridge</strong>: Cross-process event delivery from background workers to API server to frontend clients</li>
+        <li><strong>Stale Price Guards</strong>: Prevents exit decisions and order submissions when market data exceeds freshness thresholds</li>
+        <li><strong>Atomic Order Repricing</strong>: Background monitoring adjusts pending orders using broker-native replace operations</li>
+        <li><strong>Live Notification Bell</strong>: Severity-tiered event notifications with toast alerts for critical trading events, connection status indicator, and automatic backfill on reconnect</li>
       </ul>
     </section>
 
@@ -244,7 +245,7 @@ const projectSchema = JSON.stringify({
         handles server state. Key pages include real-time portfolio monitoring, order entry, strategy
         configuration with independent fast/slow detection toggles, backtest analytics with equity
         curves, campaign backtesting for multi-day comparison, a strategy discovery interface for
-        visualizing and promoting mined rules with detection-type tagging, a fingerprinting dashboard
+        visualising and promoting mined rules with detection-type tagging, a fingerprinting dashboard
         with multi-tab run details, a trade detail view that shows the decision audit trail (signal,
         filters, arbiter result, risk gate, conditions that fired) alongside entry/exit markers on
         candlestick charts, a live position monitor with exit state tracking, and a rule lifecycle

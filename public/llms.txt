@@ -4,7 +4,7 @@
 
 ## Who
 
-Marc Borer designs and runs business-critical Microsoft infrastructure (hybrid identity, Exchange Online and Teams, Intune and endpoint lifecycle, SIEM) and has been responsible since 2019 for the target architecture of an international industrial company's cloud and hybrid infrastructure. Since 2026 he is the founder of Attestree (https://attestree.com), an app-patching control plane that attests software for Windows fleets before rollout: sandbox detonation, an observed SBOM and a signed in-toto statement per winget, Chocolatey or Scoop version, then ring-based delivery (canary, pilot, broad, all) pinned to the attested bytes.
+Marc Borer designs and runs business-critical Microsoft infrastructure (hybrid identity, Exchange Online and Teams, Intune and endpoint lifecycle, SIEM) and has been responsible since 2019 for the target architecture of an international industrial company's cloud and hybrid infrastructure. Since 2026 he has been building Attestree (https://attestree.com), an independent research and open-core project: an app-patching control plane that attests software for Windows fleets before rollout: sandbox detonation, an observed SBOM and a signed in-toto statement per winget, Chocolatey or Scoop version, then ring-based delivery (canary, pilot, broad, all) pinned to the attested bytes.
 
 ## Pages
 
@@ -13,10 +13,16 @@ Marc Borer designs and runs business-critical Microsoft infrastructure (hybrid i
 - Attestree case study: https://marc-borer.ch/projects/attestree/ with architecture and component pages below it
 - Enterprise cloud and hybrid infrastructure case study: https://marc-borer.ch/projects/cloud-infrastructure/
 - Enterprise SaaS platform CI/CD case study: https://marc-borer.ch/projects/cicd-automation/
+- SmallCapTrader (algorithmic trading platform) case study: https://marc-borer.ch/projects/smallcaptrader/
+- options-gex (gamma-exposure research engine for options trading) case study: https://marc-borer.ch/projects/options-gex/
 - Skills: https://marc-borer.ch/kompetenzen/ (English: https://marc-borer.ch/en/skills/)
 - Career: https://marc-borer.ch/experience/ (English: https://marc-borer.ch/en/experience/)
 - Principles: https://marc-borer.ch/grundsaetze/ (English: https://marc-borer.ch/en/principles/)
 - Contact: https://marc-borer.ch/contact/ (English: https://marc-borer.ch/en/contact/)
+
+## Full text
+
+- Every English page in one file: https://marc-borer.ch/llms-full.txt
 
 ## CV
 
