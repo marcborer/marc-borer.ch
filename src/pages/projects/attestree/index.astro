@@ -105,7 +105,7 @@ const projectSchema = JSON.stringify({
       <p>
         Das System hat zwei Oberflächen. Eine Control Plane mit Endpoint-Agent betreibt Ingest,
         Attestierung und Deployment. Die öffentliche Eingangstür bilden die Website und die
-        Open-Core Community Edition. Das Deployment ist einfach abzusichern: Nur der Server nimmt
+        kostenlose Community Edition. Das Deployment ist einfach abzusichern: Nur der Server nimmt
         Verbindungen an.
       </p>
 
@@ -196,11 +196,12 @@ const projectSchema = JSON.stringify({
       </div>
 
       <div class="decision">
-        <h3>Open-Core mit erzwungener Lizenzgrenze</h3>
+        <h3>Community Edition und Lizenzgrenze</h3>
         <p>
-          Der Installer-Shim und sein IPC-Vertrag sind Apache-2.0; die Plattform ist Closed-Source.
+          Die Plattform ist Closed-Source, die kostenlose Community Edition eingeschlossen. Zwei Teile
+          sind Open Source unter Apache-2.0: der Installer-Shim mit seinem IPC-Vertrag und die <a href="https://github.com/attestree/publish" target="_blank" rel="noopener noreferrer">Publish-Tools</a>.
           Die Lizenzgrenze wird mechanisch im Build durchgesetzt, sodass Closed-Source-Code nicht
-          versehentlich umlizenziert werden kann. Die kostenlose Community Edition läuft selbst
+          versehentlich umlizenziert werden kann. Die Community Edition läuft selbst
           gehostet auf Docker Compose, wird als Sigstore-cosign-signierte Images ausgeliefert und
           ist im Early Access. Sie läuft auf dem eigenen Server des Kunden, damit steht kein Anbieter
           zwischen ihm und seiner Flotte. Kommerziell gibt es eine dedizierte Instanz im eigenen
