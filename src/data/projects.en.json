@@ -2,7 +2,7 @@
   {
     "title": "Attestree",
     "period": "2026 —",
-    "description": "App-patching control plane for Windows fleets: every winget, Chocolatey and Scoop version is detonated in a sandbox at ingest, given an observed SBOM and attested with a signed in-toto statement before it rolls out in rings, pinned to the attested bytes. Open-core, with a free Community Edition.",
+    "description": "App-patching control plane for Windows fleets: every winget, Chocolatey and Scoop version is detonated in a sandbox at ingest, given an observed SBOM and attested with a signed in-toto statement before it rolls out in rings, pinned to the attested bytes. A free Community Edition; the installer shim and the publish tools are open source (Apache-2.0).",
     "tech": [
       ".NET",
       "winget",

@@ -2,12 +2,12 @@
   {
     "date": "2026 — heute",
     "kind": "Eigenes Projekt",
-    "title": "Unabhängiges Forschungs- & Open-Core-Projekt",
+    "title": "Unabhängiges Forschungsprojekt",
     "company": "Attestree, Breitenbach",
     "description": [
       "Konzeption und Umsetzung einer Deployment-Control-Plane für Windows-Flotten: Pakete werden beim Ingest in einer Sandbox detoniert, mit einer beobachteten SBOM versehen und als signiertes in-toto-Statement attestiert, bevor sie über einen eingezäunten winget-Feed ring-basiert ausgerollt werden",
       "Plattform-Engineering end-to-end: .NET-Control-Plane mit PostgreSQL, Native-AOT-Agent und Installer-Shim, selbstaktualisierende Agents über dieselben Rings, selbst gehosteter CVE-Index",
-      "Open-Core-Distribution: Apache-2.0-Shim, kostenlose Community Edition auf Docker Compose mit Sigstore-signierten Images, öffentliche Website attestree.com mit Build-Security-Baseline",
+      "Distribution: kostenlose Community Edition auf Docker Compose mit Sigstore-signierten Images; Installer-Shim und Publish-Tools sind Open Source (Apache-2.0); öffentliche Website attestree.com mit Build-Security-Baseline",
       "Release-Engineering mit täglichem Release-Takt, CI-Gates und Authenticode-signierten Windows-Binaries"
     ],
     "projectLink": "/projects/attestree/"
