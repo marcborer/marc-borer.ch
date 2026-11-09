@@ -1,6 +1,6 @@
 ---
 title: Component Reference
-description: "Attestree key components: ingest evidence, attestation, fenced feed, groups × rings, update pipeline, CVE index, and the open-core edition"
+description: "Attestree key components: ingest evidence, attestation, fenced feed, groups × rings, update pipeline, CVE index, and the Community Edition with its license boundary"
 ---
 
 ## Ingest Evidence
@@ -80,15 +80,16 @@ An opt-in pipeline keeps winget packages, and subscribed Chocolatey and Scoop ap
 
 ---
 
-## Open-Core Edition
+## Community Edition and the license boundary
 
-Attestree is open-core, with a deliberate license boundary.
+The platform is closed source, the free Community Edition included. Two parts are open source under Apache-2.0, with a deliberate license boundary between them and the platform.
 
 | Component | License / Distribution |
 |-----------|------------------------|
 | **Installer shim + IPC contract** | Apache-2.0 (open source) |
+| **Publish tools** ([attestree/publish](https://github.com/attestree/publish)) | Apache-2.0 (open source) |
 | **Platform control plane** | Closed-source, commercial |
-| **Community edition** | Free, self-hosted Docker Compose stack with no cloud dependency; Sigstore-cosign signed images; early access |
+| **Community edition** | Free, self-hosted Docker Compose stack with no cloud dependency; closed-source (EULA); Sigstore-cosign signed images; early access |
 | **Commercial topology** | A dedicated instance in the customer's own Azure subscription, deployed, upgraded and operated by Attestree, in external or internal network mode; no shared multi-tenant SaaS |
 
 The license boundary is enforced mechanically in the build, so closed-source code cannot be relicensed by accident. A `git mv` of a project between the open and closed trees fails the build rather than quietly changing its license.
@@ -114,4 +115,4 @@ The public site at attestree.com presents product pages, buyer segments, complia
 
 ## Role
 
-End-to-end architecture and implementation: the ingest-evidence and attestation model, the fenced feed, the groups × rings deployment lifecycle, the unattended update pipeline, the fleet inventory and CVE index, the open-core license-segregation strategy, and the public marketing site and community-edition distribution. The platform is engineered to a compliance-grade bar so the architecture stays open to larger regulated deployments as scope grows.
+End-to-end architecture and implementation: the ingest-evidence and attestation model, the fenced feed, the groups × rings deployment lifecycle, the unattended update pipeline, the fleet inventory and CVE index, the license-segregation strategy, and the public marketing site and community-edition distribution. The platform is engineered to a compliance-grade bar so the architecture stays open to larger regulated deployments as scope grows.

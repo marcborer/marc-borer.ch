@@ -1,6 +1,6 @@
 ---
 title: Komponentenreferenz
-description: Attestree Schlüsselkomponenten — Ingest-Evidenz, Attestierung, eingezäunter Feed, Groups × Rings, Update-Pipeline, CVE-Index und die Open-Core Edition
+description: Attestree Schlüsselkomponenten — Ingest-Evidenz, Attestierung, eingezäunter Feed, Groups × Rings, Update-Pipeline, CVE-Index und die Community Edition mit ihrer Lizenzgrenze
 ---
 
 ## Ingest-Evidenz
@@ -80,15 +80,16 @@ Eine optionale Pipeline hält winget-Pakete und abonnierte Chocolatey- und Scoop
 
 ---
 
-## Open-Core Edition
+## Community Edition und Lizenzgrenze
 
-Attestree ist Open-Core, mit einer bewussten Lizenzgrenze.
+Die Plattform ist Closed-Source, die kostenlose Community Edition eingeschlossen. Zwei Teile sind Open Source unter Apache-2.0, mit einer bewussten Lizenzgrenze zwischen ihnen und der Plattform.
 
 | Komponente | Lizenz / Distribution |
 |------------|-----------------------|
 | **Installer-Shim + IPC-Vertrag** | Apache-2.0 (Open Source) |
+| **Publish-Tools** ([attestree/publish](https://github.com/attestree/publish)) | Apache-2.0 (Open Source) |
 | **Plattform-Control-Plane** | Closed-Source, kommerziell |
-| **Community Edition** | Kostenloser, selbst gehosteter Docker-Compose-Stack ohne Cloud-Abhängigkeit; Sigstore-cosign-signierte Images; Early Access |
+| **Community Edition** | Kostenloser, selbst gehosteter Docker-Compose-Stack ohne Cloud-Abhängigkeit; Closed-Source (EULA); Sigstore-cosign-signierte Images; Early Access |
 | **Kommerzielle Topologie** | Eine dedizierte Instanz im eigenen Azure-Abonnement des Kunden, bereitgestellt, aktualisiert und betrieben durch Attestree, im externen oder internen Netzmodus; kein geteiltes Multi-Tenant-SaaS |
 
 Die Lizenzgrenze wird mechanisch im Build durchgesetzt, sodass Closed-Source-Code nicht versehentlich umlizenziert werden kann. Ein `git mv` eines Projekts zwischen dem offenen und dem geschlossenen Baum lässt den Build fehlschlagen, statt seine Lizenz still zu ändern.
@@ -114,4 +115,4 @@ Die öffentliche Website unter attestree.com präsentiert Produktseiten, Käufer
 
 ## Rolle
 
-Architektur und Umsetzung end-to-end: das Ingest-Evidenz- und Attestierungsmodell, der eingezäunte Feed, der Groups-×-Rings-Deployment-Lebenszyklus, die unbeaufsichtigte Update-Pipeline, Flotteninventar und CVE-Index, die Open-Core-Strategie zur Lizenz-Segregation sowie die öffentliche Marketing-Website und die Community-Edition-Distribution. Die Plattform ist auf ein Compliance-taugliches Niveau ausgelegt, damit die Architektur offen bleibt für grössere regulierte Deployments, wenn der Umfang wächst.
+Architektur und Umsetzung end-to-end: das Ingest-Evidenz- und Attestierungsmodell, der eingezäunte Feed, der Groups-×-Rings-Deployment-Lebenszyklus, die unbeaufsichtigte Update-Pipeline, Flotteninventar und CVE-Index, die Strategie zur Lizenz-Segregation sowie die öffentliche Marketing-Website und die Community-Edition-Distribution. Die Plattform ist auf ein Compliance-taugliches Niveau ausgelegt, damit die Architektur offen bleibt für grössere regulierte Deployments, wenn der Umfang wächst.

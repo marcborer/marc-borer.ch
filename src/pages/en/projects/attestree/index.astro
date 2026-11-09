@@ -101,7 +101,7 @@ const projectSchema = JSON.stringify({
       <h2>Architecture</h2>
       <p>
         The system has two surfaces. A control plane with an endpoint agent runs ingest, attestation
-        and deployment. The public front door is the website and the open-core Community Edition.
+        and deployment. The public front door is the website and the free Community Edition.
         The deployment is easy to firewall: only the server accepts connections.
       </p>
 
@@ -187,11 +187,12 @@ const projectSchema = JSON.stringify({
       </div>
 
       <div class="decision">
-        <h3>Open-core with an enforced licence boundary</h3>
+        <h3>Community Edition and the licence boundary</h3>
         <p>
-          The installer shim and its IPC contract are Apache-2.0; the platform is closed source. The
+          The platform is closed source, the free Community Edition included. Two parts are open
+          source under Apache-2.0: the installer shim with its IPC contract, and the <a href="https://github.com/attestree/publish" target="_blank" rel="noopener noreferrer">publish tools</a>. The
           licence boundary is enforced mechanically in the build, so closed-source code cannot be
-          relicensed by accident. The free Community Edition self-hosts on Docker Compose, ships as
+          relicensed by accident. The Community Edition self-hosts on Docker Compose, ships as
           Sigstore-cosign-signed images and is in early access. It runs on the customer’s own server, so
           no vendor sits between them and their fleet. Commercially there is a dedicated instance in
           the customer’s own Azure subscription, operated by Attestree, deliberately no shared
