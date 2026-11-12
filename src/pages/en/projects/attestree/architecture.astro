@@ -27,9 +27,9 @@ const nav = docNavs['attestree'];
   <p>
     Every version passes the gate before it enters the catalog: winget, Chocolatey and Scoop today.
     Chocolatey and Scoop are tested with the manager’s own install, need a Hyper-V detonation host,
-    and their upstream reads stay off until an operator allows that egress. Your own apps are partly built: prefixes, their private sources and CI pipelines are managed in
-    the console, installers arrive by upload or from a pipeline that signs in with its own OIDC token
-    and are attested like any other version, but no endpoint installs one yet. Cached MSIs with
+    and their upstream reads stay off until an operator allows that egress. Your own apps take the same path: prefixes, their private sources and CI pipelines are managed in
+    the console, installers arrive by upload or from a pipeline that signs in with its own OIDC token,
+    are attested like any other version, and endpoints on agent 0.252.0 or later install them. Cached MSIs with
     generated MST transforms, npm and pip are on the roadmap.
   </p>
   <table>

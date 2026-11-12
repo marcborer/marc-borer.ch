@@ -120,9 +120,9 @@ const projectSchema = JSON.stringify({
         hat; SLSA-Build-Provenance ist es nicht, weil Attestree den Installer des Herstellers nicht
         baut. winget, Chocolatey und Scoop werden heute attestiert; Chocolatey und Scoop brauchen einen
         Hyper-V-Detonation-Host, und ihre Upstream-Abrufe bleiben aus, bis ein Operator diesen Egress
-        freigibt. Eigene Apps sind im Aufbau: Präfixe, ihre privaten Quellen und CI-Pipelines werden in der Konsole
-        verwaltet, Installer kommen per Upload oder aus einer Pipeline mit eigenem OIDC-Token und werden
-        wie jede andere Version attestiert, nur installiert sie noch kein Endpunkt. Zwischengespeicherte
+        freigibt. Eigene Apps gehen denselben Weg: Präfixe, ihre privaten Quellen und CI-Pipelines werden in der Konsole
+        verwaltet, Installer kommen per Upload oder aus einer Pipeline mit eigenem OIDC-Token, werden
+        wie jede andere Version attestiert, und Endpunkte ab Agent 0.252.0 installieren sie. Zwischengespeicherte
         MSIs mit generierten MST-Transforms, npm und pip stehen auf der Roadmap.
       </p>
 

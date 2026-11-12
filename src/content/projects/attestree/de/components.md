@@ -38,7 +38,7 @@ Das schliesst die Lücke, die der Status quo offenlässt: Wenn ein Artefakt ausg
 - **Eingezäunte Endpunkte**: Der Agent bindet Endpunkte an diese Quelle; ein normales `winget install` löst gegen den freigegebenen Katalog auf, nicht gegen das öffentliche Repository.
 - **Hash-gepinnt**: Endpunkte installieren nur exakt den freigegebenen SHA-256.
 - **Chocolatey und Scoop**: kommen nur als Bytes vom Server und nur auf Endpunkte, deren Groups die App nennen.
-- **Eigene Apps, im Aufbau**: Ein beanspruchtes Paket-ID-Präfix wird nur aus seiner privaten Quelle gelesen, nie aus dem öffentlichen Katalog. Quellen und CI-Pipelines (GitHub, GitHub Enterprise Server, Azure DevOps) werden in der Konsole verwaltet; Installer kommen per Upload oder aus einer Pipeline mit eigenem OIDC-Token und werden wie jede andere Version attestiert. Noch installiert sie kein Endpunkt.
+- **Eigene Apps**: Ein beanspruchtes Paket-ID-Präfix wird nur aus seiner privaten Quelle gelesen, nie aus dem öffentlichen Katalog. Quellen und CI-Pipelines (GitHub, GitHub Enterprise Server, Azure DevOps) werden in der Konsole verwaltet; Installer kommen per Upload oder aus einer Pipeline mit eigenem OIDC-Token und werden wie jede andere Version attestiert. Endpunkte ab Agent 0.252.0 installieren sie: einer, der auf die eigene Quelle des Operators gesperrt ist, aus dem attestierten Feed, einer ohne Sperre aus einer Eigene-Apps-Quelle neben der öffentlichen.
 
 ---
 
