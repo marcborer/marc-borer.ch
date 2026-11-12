@@ -115,9 +115,9 @@ const projectSchema = JSON.stringify({
         It records what the deployment observed; it is not SLSA build provenance, because Attestree
         does not build the vendor’s installer. winget, Chocolatey and Scoop are attested today;
         Chocolatey and Scoop need a Hyper-V detonation host, and their upstream reads stay off until an
-        operator allows that egress. Your own apps are partly built: prefixes, their private sources and CI pipelines are managed in
-        the console, installers arrive by upload or from a pipeline that signs in with its own OIDC token
-        and are attested like any other version, but no endpoint installs one yet. Cached MSIs with
+        operator allows that egress. Your own apps take the same path: prefixes, their private sources and CI pipelines are managed in
+        the console, installers arrive by upload or from a pipeline that signs in with its own OIDC token,
+        are attested like any other version, and endpoints on agent 0.252.0 or later install them. Cached MSIs with
         generated MST transforms, npm and pip are on the roadmap.
       </p>
 

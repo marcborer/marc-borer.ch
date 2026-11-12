@@ -123,7 +123,7 @@ For Attestree: positioning against patch-management and scanning tools belongs t
 | Evidence-first | Every claim points to a project, number or decision | Boasting, adjectives instead of proof | "Six domains, each with evidence." |
 | Precise and plain | Short declaratives, exact technical terms, colons over dashes | Jargon for its own sake, marketing filler | "Infrastructure that can show its work." |
 | Calm authority | States convictions learned in operations | Hedging, or overclaiming | "The destructive step stays with a person." |
-| Engineer's humility | Says what is built and what is on the roadmap | Selling the roadmap as done | "Your own apps are partly built … but no endpoint installs one yet." |
+| Engineer's humility | Says what is built and what is on the roadmap | Selling the roadmap as done | "Cached MSIs with generated MST transforms, npm and pip are on the roadmap." |
 
 **Tone by context:**
 - Support / contact: direct and brief ("For questions on infrastructure architecture, software supply chains or Attestree, an email is enough. German or English.")

@@ -38,7 +38,7 @@ This closes the gap the status quo leaves open: when an artifact ships because "
 - **Fenced endpoints**: the agent locks endpoints to that source; a normal `winget install` resolves against the approved catalog, not the public repository.
 - **Hash-pinned**: endpoints install only the exact SHA-256 that was approved.
 - **Chocolatey and Scoop**: served only from bytes the server holds, and only to endpoints whose groups name the app.
-- **Own apps, partly built**: a claimed package-id prefix is read only from its private source, never from the public catalog. Sources and CI pipelines (GitHub, GitHub Enterprise Server, Azure DevOps) are managed in the console; installers arrive by upload or from a pipeline that signs in with its own OIDC token and are attested like any other version. No endpoint installs one yet.
+- **Own apps**: a claimed package-id prefix is read only from its private source, never from the public catalog. Sources and CI pipelines (GitHub, GitHub Enterprise Server, Azure DevOps) are managed in the console; installers arrive by upload or from a pipeline that signs in with its own OIDC token and are attested like any other version. Endpoints on agent 0.252.0 or later install them: one locked to the operator's own source from the attested feed, one that is not from an own-apps source beside the public one.
 
 ---
 
