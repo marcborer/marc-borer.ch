@@ -9,7 +9,7 @@ const copy = {
   de: {
     claim: 'Standardmässig erreicht eine Version die Flotte erst nach Detonation, SBOM und signiertem Statement, und nur als ihre attestierten Bytes. Ein Signer-Wechsel stoppt sie, ein CVE-Treffer in der Flotte zieht den Fix Ring für Ring nach.',
     titles: ['Quellen', 'Ingest Gate', 'Signiertes Statement', 'Ausliefern', 'Groups × Rings', 'Windows-Flotte'],
-    sources: ['winget', 'Chocolatey', 'Scoop', 'eigene Apps · im Aufbau'],
+    sources: ['winget', 'Chocolatey', 'Scoop', 'eigene Apps'],
     notes: ['Roadmap: MSI/MST · npm · pip', 'Evidenz vor der Aufnahme', 'offline prüfbar', 'nur attestierte Bytes', 'Fenster · Freezes · Rollback auf den Vorgänger', 'kein offener Port'],
     gate: ['Abruf', 'Signatur', 'Detonation', 'SBOM, beobachtet'],
     haltWhy: 'Signer neu',
@@ -22,7 +22,7 @@ const copy = {
   en: {
     claim: 'By default a version reaches the fleet only after detonation, an SBOM and a signed statement, and only as its attested bytes. A signer change halts it; a CVE match in the fleet pulls the fix through the rings.',
     titles: ['Sources', 'Ingest gate', 'Signed statement', 'Serve', 'Groups × rings', 'Windows fleet'],
-    sources: ['winget', 'Chocolatey', 'Scoop', 'own apps · partly built'],
+    sources: ['winget', 'Chocolatey', 'Scoop', 'own apps'],
     notes: ['roadmap: MSI/MST · npm · pip', 'evidence before admission', 'verifiable offline', 'attested bytes only', 'windows · freezes · rollback to the predecessor', 'no inbound port'],
     gate: ['fetch', 'signature', 'detonation', 'observed SBOM'],
     haltWhy: 'new signer',
